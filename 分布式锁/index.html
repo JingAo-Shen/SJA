@@ -124,11 +124,11 @@ public boolean unlock(String lockKey, String requestId) {
                     </div>
                     
                     <div class="animation-container">
-                        <div class="diagram" id="redis-lock-diagram">
+                        <div class="diagram" id="redis-lock-demo">
                             <!-- 动态演示区域：Redis实现分布式锁 -->
                         </div>
                         <div class="controls">
-                            <button id="redis-lock-demo-btn">演示Redis分布式锁</button>
+                            <button class="demo-button" data-demo="redis-lock-demo">演示Redis分布式锁</button>
                         </div>
                     </div>
                 </article>
@@ -202,11 +202,11 @@ public class ZookeeperDistributedLock {
                     </div>
                     
                     <div class="animation-container">
-                        <div class="diagram" id="zookeeper-lock-diagram">
+                        <div class="diagram" id="zookeeper-lock-demo">
                             <!-- 动态演示区域：ZooKeeper实现分布式锁 -->
                         </div>
                         <div class="controls">
-                            <button id="zookeeper-lock-demo-btn">演示ZooKeeper分布式锁</button>
+                            <button class="demo-button" data-demo="zookeeper-lock-demo">演示ZooKeeper分布式锁</button>
                         </div>
                     </div>
                 </article>
@@ -263,11 +263,11 @@ public boolean unlock(String lockKey, String requestId) {
                     </div>
                     
                     <div class="animation-container">
-                        <div class="diagram" id="db-lock-diagram">
+                        <div class="diagram" id="database-lock-demo">
                             <!-- 动态演示区域：数据库实现分布式锁 -->
                         </div>
                         <div class="controls">
-                            <button id="db-lock-demo-btn">演示数据库分布式锁</button>
+                            <button class="demo-button" data-demo="database-lock-demo">演示数据库分布式锁</button>
                         </div>
                     </div>
                 </article>
@@ -437,9 +437,10 @@ public boolean unlock(String lockKey, String requestId) {
     </div>
 
     <footer>
-        <p>分布式锁教学演示 | &copy; 2023</p>
+        <p>© 2024 分布式锁教学演示. All rights reserved.</p>
     </footer>
 
+    <!-- JavaScript文件 -->
     <script src="script.js"></script>
     <script src="script-advanced.js"></script>
     <script src="script-comparison.js"></script>

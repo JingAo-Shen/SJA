@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜设计与实现 - 教学演示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>排行榜设计与实现</h1>
+        <p class="subtitle">动态演示不同类型排行榜的设计方案与实现细节</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#intro">排行榜概述</a></li>
+                <li><a href="#types">排行榜类型</a>
+                    <ul>
+                        <li><a href="#real-time">实时排行榜</a></li>
+                        <li><a href="#periodic">周期性排行榜</a></li>
+                        <li><a href="#historical">历史排行榜</a></li>
+                    </ul>
+                </li>
+                <li><a href="#storage">存储方案</a>
+                    <ul>
+                        <li><a href="#redis-zset">Redis ZSet</a></li>
+                        <li><a href="#mysql">MySQL方案</a></li>
+                        <li><a href="#hybrid">混合存储</a></li>
+                    </ul>
+                </li>
+                <li><a href="#optimization">性能优化</a>
+                    <ul>
+                        <li><a href="#cache">缓存策略</a></li>
+                        <li><a href="#batch">批量更新</a></li>
+                        <li><a href="#sharding">分片设计</a></li>
+                    </ul>
+                </li>
+                <li><a href="#challenges">挑战与解决方案</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="intro">
+                <h2>排行榜概述</h2>
+                <p>排行榜是一种常见的功能，用于展示和比较用户或物品的排名情况。设计一个高性能的排行榜系统需要考虑数据更新频率、查询效率、存储方案等多个方面。</p>
+                
+                <div class="key-points">
+                    <h3>核心特点</h3>
+                    <ul>
+                        <li><strong>实时性</strong>：能够及时反映数据变化</li>
+                        <li><strong>可扩展性</strong>：支持大规模数据和高并发访问</li>
+                        <li><strong>一致性</strong>：确保排名计算的准确性</li>
+                        <li><strong>性能</strong>：快速的读写响应时间</li>
+                    </ul>
+                </div>
+
+                <div class="animation-container">
+                    <div class="diagram" id="leaderboard-basic-diagram">
+                        <!-- 基础架构演示区域 -->
+                    </div>
+                    <div class="controls">
+                        <button class="demo-button" data-demo="basic-structure">演示基本架构</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="types">
+                <h2>排行榜类型</h2>
+                
+                <article id="real-time">
+                    <h3>实时排行榜</h3>
+                    <p>实时更新排名，适用于需要立即反映数据变化的场景，如游戏实时积分榜、直播打赏榜等。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="real-time-diagram">
+                            <!-- 实时排行榜演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="real-time">演示实时排行榜</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="periodic">
+                    <h3>周期性排行榜</h3>
+                    <p>按固定时间周期更新的排行榜，如日榜、周榜、月榜等，可以减少实时计算压力。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="periodic-diagram">
+                            <!-- 周期性排行榜演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="periodic">演示周期性排行榜</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="historical">
+                    <h3>历史排行榜</h3>
+                    <p>记录和展示历史时间段的排名数据，支持数据回溯和趋势分析。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="historical-diagram">
+                            <!-- 历史排行榜演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="historical">演示历史排行榜</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="storage">
+                <h2>存储方案</h2>
+                
+                <article id="redis-zset">
+                    <h3>Redis ZSet方案</h3>
+                    <p>使用Redis的有序集合(ZSet)实现高性能的排行榜，支持实时更新和快速查询。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="redis-zset-diagram">
+                            <!-- Redis ZSet演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="redis-zset">演示Redis ZSet</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="mysql">
+                    <h3>MySQL方案</h3>
+                    <p>使用关系数据库存储排行榜数据，适合需要复杂查询和历史数据管理的场景。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="mysql-diagram">
+                            <!-- MySQL方案演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="mysql">演示MySQL方案</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="hybrid">
+                    <h3>混合存储方案</h3>
+                    <p>结合Redis和MySQL的优势，实现高性能读写和可靠数据存储。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="hybrid-diagram">
+                            <!-- 混合存储演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="hybrid">演示混合存储</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="optimization">
+                <h2>性能优化</h2>
+                
+                <article id="cache">
+                    <h3>缓存策略</h3>
+                    <p>合理使用多级缓存，减少数据库访问压力。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="cache-diagram">
+                            <!-- 缓存策略演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="cache">演示缓存策略</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="batch">
+                    <h3>批量更新</h3>
+                    <p>使用批量操作优化数据更新性能。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="batch-diagram">
+                            <!-- 批量更新演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="batch">演示批量更新</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="sharding">
+                    <h3>分片设计</h3>
+                    <p>通过分片提高系统扩展性和并发处理能力。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="sharding-diagram">
+                            <!-- 分片设计演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="sharding">演示分片设计</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="challenges">
+                <h2>挑战与解决方案</h2>
+                <div class="challenges-grid">
+                    <div class="challenge-card">
+                        <h3>数据一致性</h3>
+                        <p>使用分布式锁和事务确保数据一致性。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>高并发处理</h3>
+                        <p>采用异步更新和队列机制处理高并发。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>数据量增长</h3>
+                        <p>实施数据分片和归档策略。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>实时性要求</h3>
+                        <p>平衡实时性和系统性能。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2024 排行榜设计教学演示. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript文件 -->
+    <script src="script.js"></script>
+    <script src="script-types.js"></script>
+    <script src="script-storage.js"></script>
+    <script src="script-optimization.js"></script>
+</body>
+</html> 

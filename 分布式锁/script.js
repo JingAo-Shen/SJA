@@ -597,20 +597,35 @@ async function simulateDatabaseLock(diagram, logContainer) {
     addLog(logContainer, '演示完成', 'success');
 }
 
-// 初始化页面
+// 初始化所有演示
 document.addEventListener('DOMContentLoaded', function() {
-    // 初始化各种演示
-    initRedisLockDemo();
-    initZookeeperLockDemo();
-    initDatabaseLockDemo();
-    
-    // 平滑滚动处理
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+    // 初始化Redis分布式锁演示
+    const redisDemo = document.getElementById('redis-lock-demo');
+    if (redisDemo) {
+        initRedisLockDemo();
+    }
+
+    // 初始化ZooKeeper分布式锁演示
+    const zkDemo = document.getElementById('zookeeper-lock-demo');
+    if (zkDemo) {
+        initZookeeperLockDemo();
+    }
+
+    // 初始化数据库分布式锁演示
+    const dbDemo = document.getElementById('database-lock-demo');
+    if (dbDemo) {
+        initDatabaseLockDemo();
+    }
+
+    // 为所有演示按钮添加点击事件
+    const demoButtons = document.querySelectorAll('.demo-button');
+    demoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const demoId = this.getAttribute('data-demo');
+            const demoContainer = document.getElementById(demoId);
+            if (demoContainer) {
+                demoContainer.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     });
 }); 

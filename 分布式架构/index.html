@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分布式架构原理与实践 - 教学演示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>分布式架构原理与实践</h1>
+        <p class="subtitle">动态演示分布式系统的核心概念与设计模式</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#intro">分布式架构概述</a></li>
+                <li><a href="#principles">核心原理</a>
+                    <ul>
+                        <li><a href="#scalability">可扩展性</a></li>
+                        <li><a href="#reliability">可靠性</a></li>
+                        <li><a href="#consistency">一致性</a></li>
+                    </ul>
+                </li>
+                <li><a href="#patterns">架构模式</a>
+                    <ul>
+                        <li><a href="#microservices">微服务架构</a></li>
+                        <li><a href="#soa">服务导向架构</a></li>
+                        <li><a href="#event-driven">事件驱动架构</a></li>
+                    </ul>
+                </li>
+                <li><a href="#components">核心组件</a>
+                    <ul>
+                        <li><a href="#load-balancer">负载均衡</a></li>
+                        <li><a href="#service-registry">服务注册与发现</a></li>
+                        <li><a href="#api-gateway">API网关</a></li>
+                    </ul>
+                </li>
+                <li><a href="#communication">通信模式</a>
+                    <ul>
+                        <li><a href="#sync">同步通信</a></li>
+                        <li><a href="#async">异步通信</a></li>
+                        <li><a href="#message-queue">消息队列</a></li>
+                    </ul>
+                </li>
+                <li><a href="#challenges">挑战与解决方案</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="intro">
+                <h2>分布式架构概述</h2>
+                <p>分布式架构是一种将应用系统分散到多个独立计算机上的软件架构模式，通过网络连接实现各个部分之间的协同工作。这种架构模式能够提供更好的可扩展性、可靠性和性能。</p>
+                
+                <div class="key-points">
+                    <h3>主要特点</h3>
+                    <ul>
+                        <li><strong>分布性</strong>：系统中的多个组件分布在不同的网络计算机上</li>
+                        <li><strong>对等性</strong>：组件之间地位对等，无主从之分</li>
+                        <li><strong>并发性</strong>：多个组件可以并发执行</li>
+                        <li><strong>缺乏全局时钟</strong>：难以定义绝对的事件顺序</li>
+                        <li><strong>故障的独立性</strong>：部分组件的故障不会影响整个系统</li>
+                    </ul>
+                </div>
+
+                <div class="animation-container">
+                    <div class="diagram" id="distributed-system-diagram">
+                        <!-- 动态演示区域：分布式系统基本结构 -->
+                    </div>
+                    <div class="controls">
+                        <button class="demo-button" data-demo="basic-architecture">演示基本架构</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="principles">
+                <h2>核心原理</h2>
+                
+                <article id="scalability">
+                    <h3>可扩展性</h3>
+                    <p>系统能够通过添加更多的资源来提高其处理能力，包括横向扩展（添加更多节点）和纵向扩展（提升单个节点的能力）。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="scalability-diagram">
+                            <!-- 动态演示区域：系统扩展过程 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="scalability">演示扩展过程</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="reliability">
+                    <h3>可靠性</h3>
+                    <p>通过冗余和故障转移机制确保系统的持续可用性，即使在部分组件失效的情况下也能继续提供服务。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="reliability-diagram">
+                            <!-- 动态演示区域：故障转移过程 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="reliability">演示故障转移</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="consistency">
+                    <h3>一致性</h3>
+                    <p>在分布式环境下保持数据的一致性，包括强一致性、最终一致性等不同级别的一致性模型。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="consistency-diagram">
+                            <!-- 动态演示区域：数据一致性 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="consistency">演示一致性模型</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="patterns">
+                <h2>架构模式</h2>
+                
+                <article id="microservices">
+                    <h3>微服务架构</h3>
+                    <p>将应用程序构建为一组小型服务，每个服务运行在自己的进程中，通过轻量级机制通信。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="microservices-diagram">
+                            <!-- 动态演示区域：微服务架构 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="microservices">演示微服务架构</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="soa">
+                    <h3>服务导向架构 (SOA)</h3>
+                    <p>通过服务接口将功能单元（服务）连接起来，强调服务的重用性和标准化。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="soa-diagram">
+                            <!-- 动态演示区域：SOA架构 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="soa">演示SOA架构</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="event-driven">
+                    <h3>事件驱动架构</h3>
+                    <p>系统组件通过事件的产生、检测、消费和反应进行交互，实现松耦合的系统设计。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="event-driven-diagram">
+                            <!-- 动态演示区域：事件驱动架构 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="event-driven">演示事件驱动架构</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="components">
+                <h2>核心组件</h2>
+                
+                <article id="load-balancer">
+                    <h3>负载均衡</h3>
+                    <p>通过不同的负载均衡策略将请求分发到多个服务实例，提高系统的处理能力和可用性。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="load-balancer-diagram">
+                            <!-- 动态演示区域：负载均衡 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="load-balancer">演示负载均衡</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="service-registry">
+                    <h3>服务注册与发现</h3>
+                    <p>服务实例将自己的位置信息注册到注册中心，消费者通过注册中心发现可用的服务实例。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="service-registry-diagram">
+                            <!-- 动态演示区域：服务注册与发现 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="service-registry">演示服务注册发现</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="api-gateway">
+                    <h3>API网关</h3>
+                    <p>作为系统的统一入口，处理跨切面关注点，如认证、限流、请求路由等。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="api-gateway-diagram">
+                            <!-- 动态演示区域：API网关 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="api-gateway">演示API网关</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="communication">
+                <h2>通信模式</h2>
+                
+                <article id="sync">
+                    <h3>同步通信</h3>
+                    <p>服务之间通过HTTP/RPC等方式进行同步调用，调用方等待响应后继续执行。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="sync-diagram">
+                            <!-- 动态演示区域：同步通信 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="sync-comm">演示同步通信</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="async">
+                    <h3>异步通信</h3>
+                    <p>服务之间通过消息或事件进行异步通信，调用方无需等待响应即可继续执行。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="async-diagram">
+                            <!-- 动态演示区域：异步通信 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="async-comm">演示异步通信</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="message-queue">
+                    <h3>消息队列</h3>
+                    <p>通过消息队列实现服务间的解耦，支持异步处理和削峰填谷。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="message-queue-diagram">
+                            <!-- 动态演示区域：消息队列 -->
+                        </div>
+                        <div class="controls">
+                            <button class="demo-button" data-demo="message-queue">演示消息队列</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="challenges">
+                <h2>挑战与解决方案</h2>
+                <div class="challenges-grid">
+                    <div class="challenge-card">
+                        <h3>网络不可靠</h3>
+                        <p>通过重试机制、断路器模式等处理网络故障。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>数据一致性</h3>
+                        <p>采用最终一致性、SAGA模式等确保数据一致。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>服务依赖</h3>
+                        <p>使用服务降级、熔断等机制处理依赖故障。</p>
+                    </div>
+                    <div class="challenge-card">
+                        <h3>监控与追踪</h3>
+                        <p>实施分布式追踪、日志聚合等监控手段。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2024 分布式架构教学演示. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript文件 -->
+    <script src="script.js"></script>
+    <script src="script-patterns.js"></script>
+    <script src="script-components.js"></script>
+    <script src="script-communication.js"></script>
+</body>
+</html> 
