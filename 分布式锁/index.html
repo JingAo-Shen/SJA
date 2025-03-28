@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分布式锁原理与实现 - 教学演示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>分布式锁原理与实现</h1>
+        <p class="subtitle">动态演示分布式锁的工作机制与应用场景</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#intro">分布式锁概述</a></li>
+                <li><a href="#scenarios">应用场景</a></li>
+                <li><a href="#implementations">常见实现方式</a>
+                    <ul>
+                        <li><a href="#redis-lock">Redis实现</a></li>
+                        <li><a href="#zookeeper-lock">ZooKeeper实现</a></li>
+                        <li><a href="#db-lock">数据库实现</a></li>
+                    </ul>
+                </li>
+                <li><a href="#challenges">面临的挑战</a>
+                    <ul>
+                        <li><a href="#deadlock">死锁问题</a></li>
+                        <li><a href="#performance">性能问题</a></li>
+                        <li><a href="#reliability">可靠性问题</a></li>
+                    </ul>
+                </li>
+                <li><a href="#demos">动态演示</a></li>
+                <li><a href="#comparison">方案对比</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="intro">
+                <h2>分布式锁概述</h2>
+                <p>分布式锁是控制分布式系统或不同进程对共享资源访问的一种锁实现，用于在分布式环境下保证互斥性。当多个进程不在同一个系统中，无法使用操作系统的锁机制时，需要一种跨进程的互斥手段来保持一致性。</p>
+                
+                <div class="key-points">
+                    <h3>分布式锁的特性</h3>
+                    <ul>
+                        <li><strong>互斥性</strong>：任意时刻只有一个客户端能持有锁</li>
+                        <li><strong>避免死锁</strong>：即使持有锁的客户端崩溃，锁也能被释放</li>
+                        <li><strong>高可用</strong>：锁服务要保证高可用，避免单点故障</li>
+                        <li><strong>高性能</strong>：加锁、解锁操作要高效，不影响业务性能</li>
+                    </ul>
+                </div>
+                
+                <div class="animation-container">
+                    <div class="diagram" id="distributed-system-diagram">
+                        <!-- 动态演示区域：分布式系统中多个节点并发访问 -->
+                    </div>
+                    <div class="controls">
+                        <button id="distributed-system-demo-btn">演示分布式系统并发访问</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="scenarios">
+                <h2>应用场景</h2>
+                <div class="scenario-cards">
+                    <div class="card">
+                        <h3>秒杀/库存扣减</h3>
+                        <p>防止超卖，确保库存准确性。多个服务实例同时处理下单请求时，需要对库存加锁以保证原子性。</p>
+                    </div>
+                    <div class="card">
+                        <h3>分布式定时任务</h3>
+                        <p>集群环境下，确保定时任务只被一个节点执行，避免任务重复执行。</p>
+                    </div>
+                    <div class="card">
+                        <h3>防重提交</h3>
+                        <p>防止表单或API的重复提交，尤其在支付场景下，保证幂等性。</p>
+                    </div>
+                    <div class="card">
+                        <h3>业务流程控制</h3>
+                        <p>在某些业务流程中，需要保证同一时间只能有一个操作执行，如账务系统日终结算。</p>
+                    </div>
+                </div>
+                
+                <div class="animation-container">
+                    <div class="diagram" id="scenario-diagram">
+                        <!-- 动态演示区域：秒杀场景 -->
+                    </div>
+                    <div class="controls">
+                        <button id="scenario-demo-btn">演示秒杀场景</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="implementations">
+                <h2>常见实现方式</h2>
+                
+                <article id="redis-lock">
+                    <h3>基于Redis的分布式锁</h3>
+                    <p>利用Redis的原子操作特性实现分布式锁，具有高性能、实现简单的优点。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 获取锁 SETNX + 过期时间
+public boolean lock(String lockKey, String requestId, int expireTime) {
+    // 使用SETNX命令尝试获取锁
+    // SET key value NX PX milliseconds
+    String result = jedis.set(lockKey, requestId, SetParams.setParams().nx().px(expireTime));
+    return "OK".equals(result);
+}
+
+// 释放锁 Lua脚本保证原子性
+public boolean unlock(String lockKey, String requestId) {
+    String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
+                  + "return redis.call('del', KEYS[1]) "
+                  + "else return 0 end";
+    Object result = jedis.eval(script, 
+                              Collections.singletonList(lockKey),
+                              Collections.singletonList(requestId));
+    return Long.valueOf(1L).equals(result);
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="redis-lock-diagram">
+                            <!-- 动态演示区域：Redis实现分布式锁 -->
+                        </div>
+                        <div class="controls">
+                            <button id="redis-lock-demo-btn">演示Redis分布式锁</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="zookeeper-lock">
+                    <h3>基于ZooKeeper的分布式锁</h3>
+                    <p>利用ZooKeeper的临时顺序节点特性实现分布式锁，具有高可靠性、自动释放的优点。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 创建分布式锁
+public class ZookeeperDistributedLock {
+    private ZooKeeper zk;
+    private String lockPath;
+    private String currentNode;
+    private CountDownLatch connectedLatch = new CountDownLatch(1);
+    
+    // 获取锁
+    public boolean lock() throws Exception {
+        // 创建临时顺序节点
+        currentNode = zk.create(lockPath + "/lock_", new byte[0], 
+                                ZooDefs.Ids.OPEN_ACL_UNSAFE, 
+                                CreateMode.EPHEMERAL_SEQUENTIAL);
+        
+        // 获取所有子节点
+        List<String> children = zk.getChildren(lockPath, false);
+        Collections.sort(children); // 按照顺序排序
+        
+        // 如果是第一个节点，则获取锁成功
+        String firstNode = children.get(0);
+        if (currentNode.endsWith(firstNode)) {
+            return true;
+        }
+        
+        // 否则监听前一个节点
+        String prevNode = firstNode;
+        for (String node : children) {
+            if (currentNode.endsWith(node)) {
+                break;
+            }
+            prevNode = node;
+        }
+        
+        CountDownLatch latch = new CountDownLatch(1);
+        // 监听前一个节点的删除事件
+        Stat stat = zk.exists(lockPath + "/" + prevNode, event -> {
+            if (event.getType() == Watcher.Event.EventType.NodeDeleted) {
+                latch.countDown();
+            }
+        });
+        
+        // 如果前一个节点不存在，说明已经释放，获取锁成功
+        if (stat == null) {
+            return true;
+        }
+        
+        // 等待前一个节点释放锁
+        latch.await();
+        return true;
+    }
+    
+    // 释放锁
+    public void unlock() throws Exception {
+        if (currentNode != null) {
+            zk.delete(currentNode, -1);
+            currentNode = null;
+        }
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="zookeeper-lock-diagram">
+                            <!-- 动态演示区域：ZooKeeper实现分布式锁 -->
+                        </div>
+                        <div class="controls">
+                            <button id="zookeeper-lock-demo-btn">演示ZooKeeper分布式锁</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="db-lock">
+                    <h3>基于数据库的分布式锁</h3>
+                    <p>利用数据库的行锁或唯一索引特性实现分布式锁，简单直接但性能较低。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 方法1：基于唯一索引
+public boolean lock(String lockKey, String requestId, long expireTime) {
+    try {
+        // 创建一个包含唯一键约束的记录
+        String sql = "INSERT INTO distributed_lock(lock_key, request_id, expire_time) VALUES(?, ?, ?)";
+        int inserted = jdbcTemplate.update(sql, lockKey, requestId, System.currentTimeMillis() + expireTime);
+        return inserted > 0;
+    } catch (Exception e) {
+        // 插入失败，说明锁已存在
+        return false;
+    }
+}
+
+// 方法2：基于行锁
+public boolean lock(String lockKey, String requestId, long expireTime) {
+    String sql = "SELECT * FROM distributed_lock WHERE lock_key = ? FOR UPDATE";
+    List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, lockKey);
+    
+    if (result.isEmpty()) {
+        // 锁不存在，创建锁
+        jdbcTemplate.update("INSERT INTO distributed_lock(lock_key, request_id, expire_time) VALUES(?, ?, ?)", 
+                          lockKey, requestId, System.currentTimeMillis() + expireTime);
+        return true;
+    } else {
+        // 检查锁是否过期
+        long expireAt = Long.parseLong(result.get(0).get("expire_time").toString());
+        if (System.currentTimeMillis() > expireAt) {
+            // 锁已过期，更新锁
+            jdbcTemplate.update("UPDATE distributed_lock SET request_id = ?, expire_time = ? WHERE lock_key = ?", 
+                              requestId, System.currentTimeMillis() + expireTime, lockKey);
+            return true;
+        }
+    }
+    return false;
+}
+
+// 释放锁
+public boolean unlock(String lockKey, String requestId) {
+    String sql = "DELETE FROM distributed_lock WHERE lock_key = ? AND request_id = ?";
+    int deleted = jdbcTemplate.update(sql, lockKey, requestId);
+    return deleted > 0;
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="db-lock-diagram">
+                            <!-- 动态演示区域：数据库实现分布式锁 -->
+                        </div>
+                        <div class="controls">
+                            <button id="db-lock-demo-btn">演示数据库分布式锁</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="challenges">
+                <h2>面临的挑战</h2>
+                
+                <article id="deadlock">
+                    <h3>死锁问题</h3>
+                    <p>当客户端获取锁后崩溃或网络中断，可能导致锁无法释放，造成死锁。解决方案包括设置锁超时、使用看门狗机制延长锁时间等。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="deadlock-diagram">
+                            <!-- 动态演示区域：死锁情况及解决方案 -->
+                        </div>
+                        <div class="controls">
+                            <button id="deadlock-demo-btn">演示死锁问题</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="performance">
+                    <h3>性能问题</h3>
+                    <p>频繁的锁操作会增加系统负载，尤其在高并发场景下。优化方案包括使用本地缓存减少锁操作、锁粒度优化等。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="performance-diagram">
+                            <!-- 动态演示区域：性能问题及优化 -->
+                        </div>
+                        <div class="controls">
+                            <button id="performance-demo-btn">演示性能优化</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="reliability">
+                    <h3>可靠性问题</h3>
+                    <p>在分布式环境中，网络延迟、时钟偏移等因素可能导致锁失效。解决方案包括Redlock算法、强一致性分布式协调服务等。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="reliability-diagram">
+                            <!-- 动态演示区域：可靠性问题 -->
+                        </div>
+                        <div class="controls">
+                            <button id="reliability-demo-btn">演示可靠性保障</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="demos">
+                <h2>动态演示</h2>
+                <div class="simulation-area">
+                    <div class="simulation-controls">
+                        <select id="lock-select">
+                            <option value="redis">Redis分布式锁</option>
+                            <option value="zookeeper">ZooKeeper分布式锁</option>
+                            <option value="database">数据库分布式锁</option>
+                            <option value="redlock">Redlock算法</option>
+                        </select>
+                        <select id="scenario-select">
+                            <option value="normal">正常场景</option>
+                            <option value="client-crash">客户端崩溃</option>
+                            <option value="network-delay">网络延迟</option>
+                            <option value="high-concurrency">高并发场景</option>
+                        </select>
+                        <button id="start-simulation">开始模拟</button>
+                        <button id="reset-simulation">重置</button>
+                    </div>
+                    <div id="simulation-view">
+                        <!-- 模拟区域 -->
+                    </div>
+                    <div id="simulation-logs">
+                        <!-- 日志记录区域 -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="comparison">
+                <h2>方案对比</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>实现方式</th>
+                            <th>优点</th>
+                            <th>缺点</th>
+                            <th>适用场景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Redis</td>
+                            <td>
+                                <ul>
+                                    <li>实现简单</li>
+                                    <li>性能高</li>
+                                    <li>可设置过期时间自动释放</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>单点Redis可靠性不高</li>
+                                    <li>锁超时设置不当可能导致锁失效</li>
+                                </ul>
+                            </td>
+                            <td>高性能要求的场景，对锁可靠性要求不是特别高的业务</td>
+                        </tr>
+                        <tr>
+                            <td>ZooKeeper</td>
+                            <td>
+                                <ul>
+                                    <li>可靠性高，具有强一致性</li>
+                                    <li>自动释放机制（临时节点）</li>
+                                    <li>支持阻塞等待</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>实现复杂</li>
+                                    <li>性能相对较低</li>
+                                    <li>需要额外维护ZooKeeper集群</li>
+                                </ul>
+                            </td>
+                            <td>对一致性要求高的场景，需要阻塞等待功能的业务</td>
+                        </tr>
+                        <tr>
+                            <td>数据库</td>
+                            <td>
+                                <ul>
+                                    <li>实现最简单</li>
+                                    <li>利用现有数据库系统</li>
+                                    <li>易于理解和排查问题</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>性能最差</li>
+                                    <li>行锁占用数据库连接</li>
+                                    <li>可能产生额外的数据库负担</li>
+                                </ul>
+                            </td>
+                            <td>并发量低，对性能要求不高的场景，或者已经有事务操作的情况</td>
+                        </tr>
+                        <tr>
+                            <td>Redlock</td>
+                            <td>
+                                <ul>
+                                    <li>高可靠性</li>
+                                    <li>避免单点故障</li>
+                                    <li>保证正确性</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>实现复杂</li>
+                                    <li>需要多个独立的Redis节点</li>
+                                    <li>性能比单Redis略低</li>
+                                </ul>
+                            </td>
+                            <td>对锁的可靠性要求高，同时需要较好性能的场景</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>分布式锁教学演示 | &copy; 2023</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="script-advanced.js"></script>
+    <script src="script-comparison.js"></script>
+</body>
+</html> 

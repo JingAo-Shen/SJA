@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis缓存与数据库数据一致性问题解决方案</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Redis缓存与数据库数据一致性问题</h1>
+        <p class="subtitle">解决方案与最佳实践</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#problem">问题概述</a></li>
+                <li><a href="#patterns">解决模式</a>
+                    <ul>
+                        <li><a href="#cache-aside">Cache-Aside模式</a></li>
+                        <li><a href="#write-through">Write-Through模式</a></li>
+                        <li><a href="#write-behind">Write-Behind模式</a></li>
+                        <li><a href="#refresh-ahead">Refresh-Ahead模式</a></li>
+                    </ul>
+                </li>
+                <li><a href="#strategies">具体策略</a>
+                    <ul>
+                        <li><a href="#double-deletion">双删策略</a></li>
+                        <li><a href="#mq">消息队列保证最终一致性</a></li>
+                        <li><a href="#ttl">TTL策略</a></li>
+                    </ul>
+                </li>
+                <li><a href="#demo">动态演示</a></li>
+                <li><a href="#comparison">方案对比</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="problem">
+                <h2>问题概述</h2>
+                <p>在使用Redis作为缓存层时，当数据库中的数据发生变化，如果不及时更新或删除缓存，就会导致缓存数据与数据库数据不一致的问题。</p>
+                
+                <div class="animation-container">
+                    <div class="diagram" id="problem-diagram">
+                        <!-- 动态演示区域 -->
+                    </div>
+                    <div class="controls">
+                        <button id="problem-demo-btn">演示问题发生</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="patterns">
+                <h2>解决模式</h2>
+
+                <article id="cache-aside">
+                    <h3>Cache-Aside模式（旁路缓存模式）</h3>
+                    <p>应用程序负责维护缓存和数据库之间的一致性。读取数据时先查缓存，缓存未命中时从数据库读取并更新缓存；写入数据时先更新数据库，然后使缓存失效。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 读取数据
+public Data get(String key) {
+    // 1. 从缓存读取
+    Data data = redisCache.get(key);
+    
+    // 2. 缓存未命中，从数据库读取
+    if (data == null) {
+        data = database.get(key);
+        // 3. 将数据库数据写入缓存
+        if (data != null) {
+            redisCache.set(key, data);
+        }
+    }
+    
+    return data;
+}
+
+// 更新数据
+public void update(String key, Data newData) {
+    // 1. 更新数据库
+    database.update(key, newData);
+    
+    // 2. 删除缓存
+    redisCache.delete(key);
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="cache-aside-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="cache-aside-demo-btn">演示Cache-Aside模式</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="write-through">
+                    <h3>Write-Through模式（直写模式）</h3>
+                    <p>写入数据时，同时更新缓存和数据库。读取数据时直接从缓存获取。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 读取数据
+public Data get(String key) {
+    // 直接从缓存读取
+    return redisCache.get(key);
+}
+
+// 更新数据
+public void update(String key, Data newData) {
+    // 同时更新数据库和缓存
+    database.update(key, newData);
+    redisCache.set(key, newData);
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="write-through-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="write-through-demo-btn">演示Write-Through模式</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="write-behind">
+                    <h3>Write-Behind模式（异步写入模式）</h3>
+                    <p>写入数据时，先更新缓存，然后异步批量更新数据库，提高写性能。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 读取数据
+public Data get(String key) {
+    // 直接从缓存读取
+    return redisCache.get(key);
+}
+
+// 更新数据
+public void update(String key, Data newData) {
+    // 1. 更新缓存
+    redisCache.set(key, newData);
+    
+    // 2. 将更新操作放入队列，异步更新数据库
+    updateQueue.add(new UpdateOperation(key, newData));
+}
+
+// 异步更新线程
+public void asyncDatabaseUpdater() {
+    while (true) {
+        List<UpdateOperation> batch = updateQueue.getBatch(MAX_BATCH_SIZE);
+        if (!batch.isEmpty()) {
+            database.batchUpdate(batch);
+        }
+        Thread.sleep(BATCH_INTERVAL);
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="write-behind-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="write-behind-demo-btn">演示Write-Behind模式</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="refresh-ahead">
+                    <h3>Refresh-Ahead模式（预刷新模式）</h3>
+                    <p>系统智能地预测哪些数据可能会被访问，在数据过期之前主动刷新缓存。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 定时刷新任务
+@Scheduled(fixedRate = 60000) // 每分钟执行一次
+public void refreshHotData() {
+    List<String> hotKeys = accessStatistics.getTopAccessedKeys(100);
+    
+    for (String key : hotKeys) {
+        CacheEntry entry = redisCache.getWithMeta(key);
+        
+        // 如果数据即将过期（例如 TTL < 5分钟），提前刷新
+        if (entry != null && entry.getTtl() < 300) {
+            Data freshData = database.get(key);
+            redisCache.set(key, freshData);
+        }
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="refresh-ahead-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="refresh-ahead-demo-btn">演示Refresh-Ahead模式</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="strategies">
+                <h2>具体策略</h2>
+
+                <article id="double-deletion">
+                    <h3>双删策略</h3>
+                    <p>为了解决更新数据库后，可能其他线程把旧数据读入缓存的问题，可以采用双删策略。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 更新数据
+public void update(String key, Data newData) {
+    // 1. 先删除缓存
+    redisCache.delete(key);
+    
+    // 2. 更新数据库
+    database.update(key, newData);
+    
+    // 3. 延时再次删除缓存，避免其他线程将旧数据写入缓存
+    executor.schedule(() -> {
+        redisCache.delete(key);
+    }, 500, TimeUnit.MILLISECONDS);
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="double-deletion-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="double-deletion-demo-btn">演示双删策略</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="mq">
+                    <h3>消息队列保证最终一致性</h3>
+                    <p>使用消息队列在缓存和数据库操作之间进行解耦，确保最终一致性。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 更新数据
+public void update(String key, Data newData) {
+    // 1. 更新数据库
+    database.update(key, newData);
+    
+    // 2. 发送消息到消息队列
+    messageQueue.send(new CacheInvalidateMessage(key));
+}
+
+// 消息消费者
+@KafkaListener(topics = "cache-invalidate")
+public void processCacheInvalidation(CacheInvalidateMessage message) {
+    // 收到消息后删除对应的缓存
+    redisCache.delete(message.getKey());
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="mq-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="mq-demo-btn">演示消息队列策略</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="ttl">
+                    <h3>TTL策略</h3>
+                    <p>为缓存设置合理的过期时间，过期后自动从数据库加载新数据。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// 读取数据
+public Data get(String key) {
+    // 从缓存读取
+    Data data = redisCache.get(key);
+    
+    // 缓存未命中，从数据库读取
+    if (data == null) {
+        data = database.get(key);
+        // 设置缓存并添加过期时间
+        if (data != null) {
+            redisCache.set(key, data, 5, TimeUnit.MINUTES);
+        }
+    }
+    
+    return data;
+}
+
+// 更新数据
+public void update(String key, Data newData) {
+    // 只需要更新数据库，缓存会自动过期
+    database.update(key, newData);
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="ttl-diagram">
+                            <!-- 动态演示区域 -->
+                        </div>
+                        <div class="controls">
+                            <button id="ttl-demo-btn">演示TTL策略</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="demo">
+                <h2>动态演示</h2>
+                <div class="simulation-area">
+                    <div class="simulation-controls">
+                        <select id="strategy-select">
+                            <option value="cache-aside">Cache-Aside模式</option>
+                            <option value="write-through">Write-Through模式</option>
+                            <option value="write-behind">Write-Behind模式</option>
+                            <option value="double-deletion">双删策略</option>
+                            <option value="mq">消息队列策略</option>
+                            <option value="ttl">TTL策略</option>
+                        </select>
+                        <button id="start-simulation">开始模拟</button>
+                        <button id="reset-simulation">重置</button>
+                    </div>
+                    <div id="simulation-view">
+                        <!-- 模拟区域 -->
+                    </div>
+                    <div id="simulation-logs">
+                        <!-- 日志记录区域 -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="comparison">
+                <h2>方案对比</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>策略</th>
+                            <th>优点</th>
+                            <th>缺点</th>
+                            <th>适用场景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cache-Aside</td>
+                            <td>
+                                <ul>
+                                    <li>实现简单</li>
+                                    <li>读多写少场景高效</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>可能产生短暂不一致</li>
+                                    <li>首次访问延迟高</li>
+                                </ul>
+                            </td>
+                            <td>读多写少的通用场景</td>
+                        </tr>
+                        <tr>
+                            <td>Write-Through</td>
+                            <td>
+                                <ul>
+                                    <li>保证强一致性</li>
+                                    <li>读取性能高</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>写入延迟增加</li>
+                                    <li>可能存在冷数据</li>
+                                </ul>
+                            </td>
+                            <td>需要强一致性的场景</td>
+                        </tr>
+                        <tr>
+                            <td>Write-Behind</td>
+                            <td>
+                                <ul>
+                                    <li>写入性能极高</li>
+                                    <li>可批量处理提升效率</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>一致性保证弱</li>
+                                    <li>数据可能丢失</li>
+                                </ul>
+                            </td>
+                            <td>高并发写入、对一致性要求不高的场景</td>
+                        </tr>
+                        <tr>
+                            <td>双删策略</td>
+                            <td>
+                                <ul>
+                                    <li>解决并发读写问题</li>
+                                    <li>实现简单</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>延迟删除可能失败</li>
+                                    <li>增加系统复杂性</li>
+                                </ul>
+                            </td>
+                            <td>读写并发较高的场景</td>
+                        </tr>
+                        <tr>
+                            <td>消息队列</td>
+                            <td>
+                                <ul>
+                                    <li>系统解耦</li>
+                                    <li>保证最终一致性</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>引入消息队列增加复杂度</li>
+                                    <li>一致性有延迟</li>
+                                </ul>
+                            </td>
+                            <td>高可用分布式系统</td>
+                        </tr>
+                        <tr>
+                            <td>TTL策略</td>
+                            <td>
+                                <ul>
+                                    <li>实现最简单</li>
+                                    <li>自动过期机制</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>不一致窗口期较长</li>
+                                    <li>过期设置需要权衡</li>
+                                </ul>
+                            </td>
+                            <td>对一致性要求不高、数据变化较少的场景</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>Redis缓存与数据库一致性教学演示 | &copy; 2023</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="script-part2.js"></script>
+    <script src="script-part3.js"></script>
+</body>
+</html> 

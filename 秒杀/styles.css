@@ -1,0 +1,222 @@
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f7fa;
+}
+
+header {
+    background: linear-gradient(135deg, #1a237e, #283593);
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #1a237e;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: #283593;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    background-color: #1a237e;
+    color: white;
+}
+
+/* 组件卡片样式 */
+.component-card {
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #3f51b5;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.component-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 策略区块样式 */
+#strategy-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.strategy {
+    flex: 1;
+    min-width: 250px;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.strategy ul {
+    margin-left: 1.5rem;
+}
+
+/* 演示容器样式 */
+.demo-container {
+    height: 400px;
+    background-color: #f5f7fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 控制按钮样式 */
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #303f9f;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* 流程阶段样式 */
+.flow-stages {
+    display: flex;
+    margin: 1.5rem 0;
+    justify-content: space-between;
+}
+
+.stage {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    background-color: #e8eaf6;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.stage.active {
+    background-color: #3f51b5;
+    color: white;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #strategy-container {
+        flex-direction: column;
+    }
+    
+    .flow-stages {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+}
+
+/* 架构图中的节点样式 */
+.system-node {
+    fill: #e8eaf6;
+    stroke: #3f51b5;
+    stroke-width: 2px;
+}
+
+.system-node.active {
+    fill: #c5cae9;
+    stroke: #303f9f;
+    stroke-width: 3px;
+}
+
+.node-text {
+    text-anchor: middle;
+    font-size: 12px;
+    font-weight: 600;
+    fill: #283593;
+}
+
+.node-link {
+    stroke: #9fa8da;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.node-link.active {
+    stroke: #5c6bc0;
+    stroke-width: 3px;
+    stroke-dasharray: 5;
+    animation: dash 0.5s linear infinite;
+}
+
+.request-particle {
+    fill: #f44336;
+    r: 5;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: -10;
+    }
+} 

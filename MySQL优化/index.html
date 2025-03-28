@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL分库分表与性能优化</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>MySQL分库分表与性能优化</h1>
+        <p class="subtitle">深入理解MySQL性能优化策略和分库分表实践</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#overview">概述</a></li>
+                <li>
+                    <a href="#sharding">分库分表</a>
+                    <ul>
+                        <li><a href="#vertical-sharding">垂直拆分</a></li>
+                        <li><a href="#horizontal-sharding">水平拆分</a></li>
+                        <li><a href="#sharding-strategy">分片策略</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#optimization">性能优化</a>
+                    <ul>
+                        <li><a href="#index-optimization">索引优化</a></li>
+                        <li><a href="#sql-optimization">SQL优化</a></li>
+                        <li><a href="#table-optimization">表结构优化</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#demos">实践演示</a>
+                    <ul>
+                        <li><a href="#sharding-demo">分库分表演示</a></li>
+                        <li><a href="#index-demo">索引效果演示</a></li>
+                        <li><a href="#query-demo">查询优化演示</a></li>
+                    </ul>
+                </li>
+                <li><a href="#best-practices">最佳实践</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <!-- 概述部分 -->
+            <section id="overview">
+                <h2>概述</h2>
+                <div class="key-points">
+                    <h3>为什么需要分库分表？</h3>
+                    <ul>
+                        <li>单表数据量过大，影响查询性能</li>
+                        <li>单库数据量过大，备份和恢复困难</li>
+                        <li>单机资源有限，需要分散数据库压力</li>
+                        <li>业务需要隔离，提高可维护性</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 分库分表部分 -->
+            <section id="sharding">
+                <h2>分库分表</h2>
+                
+                <!-- 垂直拆分 -->
+                <section id="vertical-sharding">
+                    <h3>垂直拆分</h3>
+                    <div class="animation-container">
+                        <div id="vertical-sharding-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="vertical-demo-btn">演示垂直拆分</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 水平拆分 -->
+                <section id="horizontal-sharding">
+                    <h3>水平拆分</h3>
+                    <div class="animation-container">
+                        <div id="horizontal-sharding-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="horizontal-demo-btn">演示水平拆分</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 分片策略 -->
+                <section id="sharding-strategy">
+                    <h3>分片策略</h3>
+                    <div class="animation-container">
+                        <div id="sharding-strategy-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="hash-strategy-btn">Hash分片</button>
+                            <button id="range-strategy-btn">Range分片</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 性能优化部分 -->
+            <section id="optimization">
+                <h2>性能优化</h2>
+
+                <!-- 索引优化 -->
+                <section id="index-optimization">
+                    <h3>索引优化</h3>
+                    <div class="animation-container">
+                        <div id="index-optimization-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="index-demo-btn">演示索引效果</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SQL优化 -->
+                <section id="sql-optimization">
+                    <h3>SQL优化</h3>
+                    <div class="animation-container">
+                        <div id="sql-optimization-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="sql-demo-btn">演示SQL优化</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 表结构优化 -->
+                <section id="table-optimization">
+                    <h3>表结构优化</h3>
+                    <div class="animation-container">
+                        <div id="table-optimization-diagram" class="diagram"></div>
+                        <div class="controls">
+                            <button id="table-demo-btn">演示表优化</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 实践演示部分 -->
+            <section id="demos">
+                <h2>实践演示</h2>
+
+                <!-- 分库分表演示 -->
+                <section id="sharding-demo">
+                    <h3>分库分表演示</h3>
+                    <div class="simulation-area">
+                        <div class="simulation-controls">
+                            <select id="sharding-type">
+                                <option value="vertical">垂直拆分</option>
+                                <option value="horizontal">水平拆分</option>
+                                <option value="hybrid">混合拆分</option>
+                            </select>
+                            <button id="start-sharding">开始演示</button>
+                            <button id="reset-sharding">重置</button>
+                        </div>
+                        <div id="sharding-view"></div>
+                        <div id="sharding-logs"></div>
+                    </div>
+                </section>
+
+                <!-- 索引效果演示 -->
+                <section id="index-demo">
+                    <h3>索引效果演示</h3>
+                    <div class="simulation-area">
+                        <div class="simulation-controls">
+                            <select id="index-type">
+                                <option value="btree">B+树索引</option>
+                                <option value="hash">Hash索引</option>
+                                <option value="fulltext">全文索引</option>
+                            </select>
+                            <button id="start-index">开始演示</button>
+                            <button id="reset-index">重置</button>
+                        </div>
+                        <div id="index-view"></div>
+                        <div id="index-logs"></div>
+                    </div>
+                </section>
+
+                <!-- 查询优化演示 -->
+                <section id="query-demo">
+                    <h3>查询优化演示</h3>
+                    <div class="simulation-area">
+                        <div class="simulation-controls">
+                            <select id="query-type">
+                                <option value="explain">执行计划分析</option>
+                                <option value="join">JOIN优化</option>
+                                <option value="subquery">子查询优化</option>
+                            </select>
+                            <button id="start-query">开始演示</button>
+                            <button id="reset-query">重置</button>
+                        </div>
+                        <div id="query-view"></div>
+                        <div id="query-logs"></div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 最佳实践部分 -->
+            <section id="best-practices">
+                <h2>最佳实践</h2>
+                <div class="best-practices-container">
+                    <div class="practice-card">
+                        <h4>分库分表规范</h4>
+                        <ul>
+                            <li>合理选择分片键</li>
+                            <li>避免跨库关联查询</li>
+                            <li>考虑数据平衡性</li>
+                            <li>预留扩展空间</li>
+                        </ul>
+                    </div>
+                    <div class="practice-card">
+                        <h4>索引使用规范</h4>
+                        <ul>
+                            <li>避免过多索引</li>
+                            <li>选择合适的索引类型</li>
+                            <li>及时更新统计信息</li>
+                            <li>定期维护索引</li>
+                        </ul>
+                    </div>
+                    <div class="practice-card">
+                        <h4>SQL编写规范</h4>
+                        <ul>
+                            <li>避免使用SELECT *</li>
+                            <li>合理使用子查询</li>
+                            <li>优化JOIN语句</li>
+                            <li>使用合适的字段类型</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>MySQL分库分表与性能优化教学演示 &copy; 2024</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="script-sharding.js"></script>
+    <script src="script-optimization.js"></script>
+    <script src="script-demo.js"></script>
+</body>
+</html> 

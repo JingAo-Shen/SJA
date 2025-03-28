@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分布式缓存原理与实现 - 教学演示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>分布式缓存原理与实现</h1>
+        <p class="subtitle">动态演示分布式缓存的工作机制与应用场景</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#intro">分布式缓存概述</a></li>
+                <li><a href="#architecture">架构设计</a>
+                    <ul>
+                        <li><a href="#cache-topology">缓存拓扑</a></li>
+                        <li><a href="#consistency">一致性策略</a></li>
+                        <li><a href="#distribution">分布策略</a></li>
+                    </ul>
+                </li>
+                <li><a href="#implementations">常见实现方式</a>
+                    <ul>
+                        <li><a href="#redis-cluster">Redis集群</a></li>
+                        <li><a href="#memcached">Memcached</a></li>
+                        <li><a href="#ehcache">EhCache</a></li>
+                    </ul>
+                </li>
+                <li><a href="#patterns">缓存模式</a>
+                    <ul>
+                        <li><a href="#cache-aside">Cache Aside</a></li>
+                        <li><a href="#read-through">Read Through</a></li>
+                        <li><a href="#write-through">Write Through</a></li>
+                        <li><a href="#write-behind">Write Behind</a></li>
+                    </ul>
+                </li>
+                <li><a href="#challenges">面临的挑战</a>
+                    <ul>
+                        <li><a href="#consistency-issues">一致性问题</a></li>
+                        <li><a href="#avalanche">缓存雪崩</a></li>
+                        <li><a href="#penetration">缓存穿透</a></li>
+                        <li><a href="#hotspot">热点缓存</a></li>
+                    </ul>
+                </li>
+                <li><a href="#demos">动态演示</a></li>
+                <li><a href="#comparison">方案对比</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="intro">
+                <h2>分布式缓存概述</h2>
+                <p>分布式缓存是一种将数据缓存分散存储在多个节点上的系统架构，通过数据分片和复制来提供高性能、高可用性和可扩展性的缓存服务。</p>
+                
+                <div class="key-points">
+                    <h3>分布式缓存的特点</h3>
+                    <ul>
+                        <li><strong>高性能</strong>：数据存储在内存中，访问速度快</li>
+                        <li><strong>可扩展性</strong>：通过增加节点实现水平扩展</li>
+                        <li><strong>高可用性</strong>：数据复制和故障转移机制</li>
+                        <li><strong>一致性保证</strong>：支持不同级别的数据一致性</li>
+                    </ul>
+                </div>
+                
+                <div class="animation-container">
+                    <div class="diagram" id="distributed-cache-diagram">
+                        <!-- 动态演示区域：分布式缓存基本架构 -->
+                    </div>
+                    <div class="controls">
+                        <button id="architecture-demo-btn">演示基本架构</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture">
+                <h2>架构设计</h2>
+                
+                <article id="cache-topology">
+                    <h3>缓存拓扑</h3>
+                    <div class="topology-cards">
+                        <div class="card">
+                            <h4>客户端分布式</h4>
+                            <p>缓存分布在应用服务器上，每个应用实例维护自己的本地缓存。</p>
+                        </div>
+                        <div class="card">
+                            <h4>中心式分布式</h4>
+                            <p>独立的缓存服务器集群，所有应用共享访问。</p>
+                        </div>
+                        <div class="card">
+                            <h4>混合式分布式</h4>
+                            <p>结合本地缓存和远程缓存，多级缓存架构。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="topology-diagram">
+                            <!-- 动态演示区域：不同拓扑结构 -->
+                        </div>
+                        <div class="controls">
+                            <button id="topology-demo-btn">演示拓扑结构</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="consistency">
+                    <h3>一致性策略</h3>
+                    <p>分布式缓存系统需要在性能和一致性之间做出权衡，常见的一致性策略包括：</p>
+                    <ul>
+                        <li>强一致性：所有节点数据实时同步</li>
+                        <li>最终一致性：允许短暂的不一致，但最终会达到一致</li>
+                        <li>弱一致性：允许数据不一致，但要求及时通知</li>
+                    </ul>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="consistency-diagram">
+                            <!-- 动态演示区域：一致性策略 -->
+                        </div>
+                        <div class="controls">
+                            <button id="consistency-demo-btn">演示一致性策略</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="distribution">
+                    <h3>分布策略</h3>
+                    <div class="distribution-methods">
+                        <div class="method">
+                            <h4>哈希分布</h4>
+                            <p>使用哈希算法将数据映射到不同节点。</p>
+                        </div>
+                        <div class="method">
+                            <h4>一致性哈希</h4>
+                            <p>减少节点变化时的数据迁移量。</p>
+                        </div>
+                        <div class="method">
+                            <h4>虚拟节点</h4>
+                            <p>提高数据分布的均匀性。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="distribution-diagram">
+                            <!-- 动态演示区域：分布策略 -->
+                        </div>
+                        <div class="controls">
+                            <button id="distribution-demo-btn">演示分布策略</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="implementations">
+                <h2>常见实现方式</h2>
+                
+                <article id="redis-cluster">
+                    <h3>Redis集群</h3>
+                    <p>Redis集群通过分片机制实现数据分布式存储，支持主从复制和故障转移。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// Redis集群配置示例
+@Configuration
+public class RedisClusterConfig {
+    @Bean
+    public RedisClusterConfiguration redisClusterConfiguration() {
+        RedisClusterConfiguration cluster = new RedisClusterConfiguration();
+        cluster.setMaxRedirects(3);
+        cluster.setClusterNodes(Arrays.asList(
+            new RedisNode("redis1", 6379),
+            new RedisNode("redis2", 6379),
+            new RedisNode("redis3", 6379)
+        ));
+        return cluster;
+    }
+}
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="redis-cluster-diagram">
+                            <!-- 动态演示区域：Redis集群 -->
+                        </div>
+                        <div class="controls">
+                            <button id="redis-cluster-demo-btn">演示Redis集群</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="memcached">
+                    <h3>Memcached</h3>
+                    <p>Memcached采用客户端分片方式实现分布式缓存，简单高效。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="java">
+// Memcached配置示例
+MemcachedClient client = new MemcachedClient(
+    new ConnectionFactoryBuilder()
+        .setDaemon(true)
+        .setFailureMode(FailureMode.Retry)
+        .build(),
+    AddrUtil.getAddresses("server1:11211 server2:11211")
+);
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="memcached-diagram">
+                            <!-- 动态演示区域：Memcached -->
+                        </div>
+                        <div class="controls">
+                            <button id="memcached-demo-btn">演示Memcached</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="ehcache">
+                    <h3>EhCache</h3>
+                    <p>EhCache支持分布式缓存和多级缓存，适合Java应用。</p>
+                    
+                    <div class="code-container">
+                        <pre><code class="xml">
+<!-- EhCache配置示例 -->
+<ehcache>
+    <terracottaConfig url="localhost:9510"/>
+    <cache name="distributedCache"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToIdleSeconds="120"
+           timeToLiveSeconds="120"
+           overflowToDisk="false">
+        <terracotta/>
+    </cache>
+</ehcache>
+                        </code></pre>
+                    </div>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="ehcache-diagram">
+                            <!-- 动态演示区域：EhCache -->
+                        </div>
+                        <div class="controls">
+                            <button id="ehcache-demo-btn">演示EhCache</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="patterns">
+                <h2>缓存模式</h2>
+                
+                <article id="cache-aside">
+                    <h3>Cache Aside模式</h3>
+                    <p>应用程序同时维护缓存和数据库，是最常用的缓存模式。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="cache-aside-diagram">
+                            <!-- 动态演示区域：Cache Aside模式 -->
+                        </div>
+                        <div class="controls">
+                            <button id="cache-aside-demo-btn">演示Cache Aside</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="read-through">
+                    <h3>Read Through模式</h3>
+                    <p>缓存负责从数据源加载数据，对应用透明。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="read-through-diagram">
+                            <!-- 动态演示区域：Read Through模式 -->
+                        </div>
+                        <div class="controls">
+                            <button id="read-through-demo-btn">演示Read Through</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="write-through">
+                    <h3>Write Through模式</h3>
+                    <p>写操作先更新缓存，再由缓存同步更新数据库。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="write-through-diagram">
+                            <!-- 动态演示区域：Write Through模式 -->
+                        </div>
+                        <div class="controls">
+                            <button id="write-through-demo-btn">演示Write Through</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="write-behind">
+                    <h3>Write Behind模式</h3>
+                    <p>写操作只更新缓存，异步批量更新数据库。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="write-behind-diagram">
+                            <!-- 动态演示区域：Write Behind模式 -->
+                        </div>
+                        <div class="controls">
+                            <button id="write-behind-demo-btn">演示Write Behind</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="challenges">
+                <h2>面临的挑战</h2>
+                
+                <article id="consistency-issues">
+                    <h3>一致性问题</h3>
+                    <p>缓存与数据库的数据一致性问题，包括更新策略和失效策略。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="consistency-issues-diagram">
+                            <!-- 动态演示区域：一致性问题 -->
+                        </div>
+                        <div class="controls">
+                            <button id="consistency-issues-demo-btn">演示一致性问题</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="avalanche">
+                    <h3>缓存雪崩</h3>
+                    <p>大量缓存同时失效，导致请求直接访问数据库，引起系统雪崩。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="avalanche-diagram">
+                            <!-- 动态演示区域：缓存雪崩 -->
+                        </div>
+                        <div class="controls">
+                            <button id="avalanche-demo-btn">演示缓存雪崩</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="penetration">
+                    <h3>缓存穿透</h3>
+                    <p>查询不存在的数据，导致请求直接访问数据库。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="penetration-diagram">
+                            <!-- 动态演示区域：缓存穿透 -->
+                        </div>
+                        <div class="controls">
+                            <button id="penetration-demo-btn">演示缓存穿透</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="hotspot">
+                    <h3>热点缓存</h3>
+                    <p>某些缓存数据被频繁访问，导致缓存节点负载不均衡。</p>
+                    
+                    <div class="animation-container">
+                        <div class="diagram" id="hotspot-diagram">
+                            <!-- 动态演示区域：热点缓存 -->
+                        </div>
+                        <div class="controls">
+                            <button id="hotspot-demo-btn">演示热点缓存</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section id="demos">
+                <h2>动态演示</h2>
+                <div class="simulation-area">
+                    <div class="simulation-controls">
+                        <select id="cache-pattern">
+                            <option value="cache-aside">Cache Aside模式</option>
+                            <option value="read-through">Read Through模式</option>
+                            <option value="write-through">Write Through模式</option>
+                            <option value="write-behind">Write Behind模式</option>
+                        </select>
+                        <select id="scenario">
+                            <option value="normal">正常场景</option>
+                            <option value="high-concurrency">高并发场景</option>
+                            <option value="node-failure">节点故障</option>
+                            <option value="data-sync">数据同步</option>
+                        </select>
+                        <button id="start-simulation">开始模拟</button>
+                        <button id="reset-simulation">重置</button>
+                    </div>
+                    <div id="simulation-view">
+                        <!-- 模拟区域 -->
+                    </div>
+                    <div id="simulation-logs">
+                        <!-- 日志记录区域 -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="comparison">
+                <h2>方案对比</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>Redis集群</th>
+                            <th>Memcached</th>
+                            <th>EhCache</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>数据结构</td>
+                            <td>丰富的数据类型</td>
+                            <td>简单key-value</td>
+                            <td>对象存储</td>
+                        </tr>
+                        <tr>
+                            <td>持久化</td>
+                            <td>支持</td>
+                            <td>不支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>分布式策略</td>
+                            <td>服务端分片</td>
+                            <td>客户端分片</td>
+                            <td>RMI/JGroups</td>
+                        </tr>
+                        <tr>
+                            <td>一致性</td>
+                            <td>强一致性</td>
+                            <td>最终一致性</td>
+                            <td>可配置</td>
+                        </tr>
+                        <tr>
+                            <td>性能</td>
+                            <td>高</td>
+                            <td>极高</td>
+                            <td>中等</td>
+                        </tr>
+                        <tr>
+                            <td>扩展性</td>
+                            <td>良好</td>
+                            <td>良好</td>
+                            <td>一般</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>分布式缓存教学演示 | &copy; 2024</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="script-patterns.js"></script>
+    <script src="script-challenges.js"></script>
+</body>
+</html> 

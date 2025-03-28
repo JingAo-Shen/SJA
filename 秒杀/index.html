@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秒杀系统架构设计教学演示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>秒杀系统架构设计</h1>
+        <p>动态演示电商秒杀系统的设计思路与实现方案</p>
+    </header>
+
+    <main>
+        <section id="intro">
+            <h2>什么是秒杀系统？</h2>
+            <p>秒杀系统是电商平台中常见的促销活动系统，特点是在同一时间有大量用户抢购限量商品，对系统并发处理能力要求极高。</p>
+            <p>主要挑战包括：瞬时高并发、一致性保证、防止超卖、用户体验等。</p>
+        </section>
+
+        <section id="architecture">
+            <h2>系统架构图</h2>
+            <div id="architecture-container" class="demo-container">
+                <!-- 这里将通过JS动态生成架构图 -->
+            </div>
+            <div class="controls">
+                <button id="start-flow">开始请求流程演示</button>
+                <button id="reset-flow">重置演示</button>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>核心组件详解</h2>
+            
+            <div class="component-card" id="cdn">
+                <h3>CDN静态资源</h3>
+                <p>将静态资源分发到全国各地的CDN节点，减轻源站压力</p>
+            </div>
+            
+            <div class="component-card" id="gateway">
+                <h3>API网关</h3>
+                <p>请求过滤、限流、路由分发、统一鉴权</p>
+            </div>
+            
+            <div class="component-card" id="cache">
+                <h3>缓存层</h3>
+                <p>Redis集群：商品信息、库存、用户请求去重</p>
+            </div>
+            
+            <div class="component-card" id="queue">
+                <h3>消息队列</h3>
+                <p>请求削峰填谷，异步处理订单</p>
+            </div>
+            
+            <div class="component-card" id="database">
+                <h3>数据库</h3>
+                <p>主从架构，读写分离，最终库存一致性保障</p>
+            </div>
+        </section>
+        
+        <section id="strategies">
+            <h2>核心设计策略</h2>
+            <div id="strategy-container">
+                <div class="strategy" data-id="client">
+                    <h3>前端优化</h3>
+                    <ul>
+                        <li>页面静态化</li>
+                        <li>倒计时同步</li>
+                        <li>按钮控制</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy" data-id="server">
+                    <h3>服务端优化</h3>
+                    <ul>
+                        <li>限流与熔断</li>
+                        <li>请求合并</li>
+                        <li>读多写少优化</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy" data-id="database">
+                    <h3>数据库优化</h3>
+                    <ul>
+                        <li>乐观锁控制</li>
+                        <li>库存分段</li>
+                        <li>异步事务</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="flow-demo">
+            <h2>秒杀流程演示</h2>
+            <div id="flow-container" class="demo-container">
+                <!-- 这里将通过JS动态生成流程演示 -->
+            </div>
+            <div class="flow-stages">
+                <div class="stage" id="stage-1">1. 商品预热</div>
+                <div class="stage" id="stage-2">2. 用户请求</div>
+                <div class="stage" id="stage-3">3. 库存校验</div>
+                <div class="stage" id="stage-4">4. 订单处理</div>
+                <div class="stage" id="stage-5">5. 支付确认</div>
+            </div>
+            <div class="controls">
+                <button id="next-stage">下一阶段</button>
+                <button id="reset-stages">重置演示</button>
+            </div>
+        </section>
+        
+        <section id="performance">
+            <h2>性能对比</h2>
+            <div id="chart-container">
+                <!-- 这里将通过JS动态生成性能对比图表 -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>秒杀系统教学演示 - 仅供学习参考</p>
+    </footer>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
