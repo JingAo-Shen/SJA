@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 学习演示</title>
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #1976D2;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #e3f2fd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #666;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .demo-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .demo-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .demo-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .demo-card .features {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .demo-card .features li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .demo-card .features li::before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+        }
+
+        .demo-card .link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .demo-card .link:hover {
+            background-color: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Java 学习演示</h1>
+            <p class="subtitle">交互式学习平台</p>
+            <p class="description">
+                这是一个用于演示 Java 相关技术的交互式学习平台。每个演示都包含详细的说明和可视化的示例，帮助您更好地理解各种概念和技术。
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="demo-grid">
+            <!-- 分布式缓存演示 -->
+            <div class="demo-card">
+                <h2>分布式缓存</h2>
+                <p>演示分布式缓存的工作原理和实现方式</p>
+                <ul class="features">
+                    <li>缓存架构设计</li>
+                    <li>一致性策略</li>
+                    <li>性能优化</li>
+                    <li>实际应用案例</li>
+                </ul>
+                <a href="分布式缓存/index.html" class="link">查看演示</a>
+            </div>
+
+            <!-- MySQL优化演示 -->
+            <div class="demo-card">
+                <h2>MySQL 优化</h2>
+                <p>展示 MySQL 性能优化的各种技术和方法</p>
+                <ul class="features">
+                    <li>分库分表策略</li>
+                    <li>索引优化</li>
+                    <li>SQL 优化</li>
+                    <li>性能监控</li>
+                </ul>
+                <a href="MySQL优化/index.html" class="link">查看演示</a>
+            </div>
+
+            <!-- 分布式锁演示 -->
+            <div class="demo-card">
+                <h2>分布式锁</h2>
+                <p>演示分布式锁的实现原理和应用场景</p>
+                <ul class="features">
+                    <li>锁的实现方式</li>
+                    <li>并发控制</li>
+                    <li>死锁预防</li>
+                    <li>性能考虑</li>
+                </ul>
+                <a href="分布式锁/index.html" class="link">查看演示</a>
+            </div>
+
+            <!-- Redis缓存一致性演示 -->
+            <div class="demo-card">
+                <h2>Redis缓存一致性</h2>
+                <p>展示 Redis 缓存与数据库数据一致性的解决方案</p>
+                <ul class="features">
+                    <li>缓存更新策略</li>
+                    <li>数据同步机制</li>
+                    <li>一致性保证</li>
+                    <li>性能优化</li>
+                </ul>
+                <a href="Redis缓存与数据库数据不一致/index.html" class="link">查看演示</a>
+            </div>
+
+            <!-- 秒杀系统演示 -->
+            <div class="demo-card">
+                <h2>秒杀系统</h2>
+                <p>演示高并发秒杀系统的设计和实现</p>
+                <ul class="features">
+                    <li>系统架构设计</li>
+                    <li>并发控制</li>
+                    <li>库存管理</li>
+                    <li>性能优化</li>
+                </ul>
+                <a href="秒杀/index.html" class="link">查看演示</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Java 学习演示. All rights reserved.</p>
+            <p>使用 HTML5, CSS3 和 JavaScript 构建</p>
+        </div>
+    </footer>
+</body>
+</html> 
