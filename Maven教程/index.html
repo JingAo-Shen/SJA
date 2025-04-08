@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maven 详细教程</title>
+    <style>
+        :root {
+            --primary-color: #388E3C;
+            --secondary-color: #2E7D32;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background-color: #f8f8f8;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            border-left: 4px solid var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            color: #333;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .tip {
+            background-color: #E8F5E9;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .note {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .note-title {
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--hover-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .toc {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .toc-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-to-home:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Maven 详细教程</h1>
+            <p class="subtitle">从入门到精通的 Maven 学习指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="toc">
+            <div class="toc-title">目录</div>
+            <ul>
+                <li><a href="#introduction">1. Maven 简介</a></li>
+                <li><a href="#installation">2. Maven 安装与配置</a></li>
+                <li><a href="#pom">3. POM 文件详解</a></li>
+                <li><a href="#dependencies">4. 依赖管理</a></li>
+                <li><a href="#lifecycle">5. 构建生命周期</a></li>
+                <li><a href="#plugins">6. 插件使用</a></li>
+                <li><a href="#repository">7. 仓库管理</a></li>
+                <li><a href="#profiles">8. 构建配置文件</a></li>
+                <li><a href="#archetype">9. 项目模板</a></li>
+                <li><a href="#multimodule">10. 多模块项目</a></li>
+                <li><a href="#best-practices">11. 最佳实践</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="card">
+            <h2>1. Maven 简介</h2>
+            <p>Maven 是一个项目管理和构建自动化工具，为 Java 项目提供了一个构建框架。它可以管理项目的构建、报告和文档。</p>
+            
+            <h3>1.1 Maven 的核心功能</h3>
+            <ul>
+                <li><strong>依赖管理</strong>：自动下载和管理项目依赖的 jar 包</li>
+                <li><strong>构建标准化</strong>：提供标准化的构建过程</li>
+                <li><strong>项目信息管理</strong>：提供项目信息，如开发文档、开发者列表等</li>
+                <li><strong>项目构建报告</strong>：生成项目文档和报告</li>
+            </ul>
+
+            <h3>1.2 Maven 的优势</h3>
+            <ul>
+                <li>简化构建过程</li>
+                <li>统一开发规范</li>
+                <li>提高开发效率</li>
+                <li>方便项目管理</li>
+                <li>可重用的构建逻辑</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>Maven 的核心理念是"约定优于配置"，它提供了合理的默认行为，减少了大量的配置工作。</p>
+            </div>
+        </section>
+
+        <section id="installation" class="card">
+            <h2>2. Maven 安装与配置</h2>
+            
+            <h3>2.1 安装前提</h3>
+            <p>Maven 是基于 Java 的工具，因此需要预先安装 JDK（Java Development Kit）。</p>
+            <ul>
+                <li>JDK 1.7 或更高版本</li>
+                <li>设置 JAVA_HOME 环境变量</li>
+            </ul>
+
+            <h3>2.2 下载与安装</h3>
+            <ol>
+                <li>从官方网站 <a href="https://maven.apache.org/download.cgi" target="_blank">https://maven.apache.org/download.cgi</a> 下载最新版本的 Maven</li>
+                <li>解压下载的压缩文件到指定目录</li>
+                <li>设置环境变量：
+                    <ul>
+                        <li>设置 M2_HOME 环境变量为 Maven 安装目录</li>
+                        <li>将 %M2_HOME%\bin 添加到 PATH 环境变量</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>2.3 验证安装</h3>
+            <p>打开命令行终端，输入：</p>
+            <pre><code>mvn -version</code></pre>
+            <p>如果显示 Maven 版本信息，则安装成功。</p>
+
+            <h3>2.4 配置文件</h3>
+            <p>Maven 的主要配置文件是 <code>settings.xml</code>，位于以下两个位置：</p>
+            <ul>
+                <li>全局配置：Maven 安装目录下的 <code>conf/settings.xml</code></li>
+                <li>用户配置：用户目录下的 <code>.m2/settings.xml</code></li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>用户级别的配置文件会覆盖全局配置。如果没有用户级别的配置文件，Maven 将使用全局配置。</p>
+            </div>
+
+            <section id="offline-config" class="card">
+                <h2>2.5 离线环境配置</h2>
+                
+                <h3>2.5.1 离线环境配置概述</h3>
+                <p>在内网环境或无法访问外网的情况下，需要配置 Maven 离线环境，以便能够正常构建项目。这通常涉及配置本地仓库、修改 settings.xml 文件，并在 IDE 中设置离线模式。</p>
+
+                <h3>2.5.2 配置本地仓库</h3>
+                <p>首先，需要将外网环境中的本地仓库复制到内网环境中：</p>
+                <ol>
+                    <li>在外网环境中，找到 Maven 本地仓库（默认为 <code>~/.m2/repository</code>）</li>
+                    <li>将整个仓库目录复制到内网环境的指定位置，例如 <code>D:\App\DevApp\apache-maven-3.6.0\repository</code></li>
+                </ol>
+
+                <h3>2.5.3 修改 settings.xml 配置</h3>
+                <p>在内网环境中，需要修改 Maven 的 settings.xml 文件（位于 <code>D:\App\DevApp\apache-maven-3.6.0\conf\settings.xml</code>）：</p>
+                
+                <h4>设置本地仓库路径</h4>
+                <pre><code>&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+
+        &lt;localRepository&gt;D:\App\DevApp\apache-maven-3.6.0\repository&lt;/localRepository&gt;
+        ...
+    &lt;/settings&gt;</code></pre>
+                
+                <h4>启用离线模式</h4>
+                <pre><code>&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+
+        &lt;offline&gt;true&lt;/offline&gt;
+        ...
+    &lt;/settings&gt;</code></pre>
+                
+                <h4>配置镜像指向本地仓库</h4>
+                <pre><code>&lt;mirrors&gt;
+    &lt;mirror&gt;
+      &lt;id&gt;central&lt;/id&gt;
+      &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;
+      &lt;name&gt;central&lt;/name&gt;
+      &lt;url&gt;file://D:\App\DevApp\apache-maven-3.6.0\repository&lt;/url&gt;
+    &lt;/mirror&gt;
+&lt;/mirrors&gt;</code></pre>
+
+                <h3>2.5.4 删除 _remote.repositories 文件</h3>
+                <p>为了确保 Maven 不会尝试从远程仓库下载依赖，需要删除仓库中的 <code>_remote.repositories</code> 文件：</p>
+                
+                <p>Windows 环境下可以使用以下命令：</p>
+                <pre><code>cd /d D:/App/DevApp/apache-maven-3.6.0/repository
+for /r %i in (_remote.repositories) do del %i</code></pre>
+                
+                <p>Linux 环境下可以使用以下命令：</p>
+                <pre><code>find /home/maven/localRepository -name "_remote.repositories" -exec grep -q "Could not transfer" {} \; -print -exec rm {} \;</code></pre>
+
+                <h3>2.5.5 IDE 配置</h3>
+                <p>如果使用 IntelliJ IDEA，可以按照以下步骤配置离线模式：</p>
+                <ol>
+                    <li>打开 IDEA 设置（File > Settings）</li>
+                    <li>导航到 Build, Execution, Deployment > Build Tools > Maven</li>
+                    <li>勾选 "Offline work" 选项</li>
+                    <li>点击 "Apply" 和 "OK" 保存设置</li>
+                </ol>
+
+                <div class="tip">
+                    <div class="tip-title">小提示</div>
+                    <p>在命令行中执行 Maven 命令时，可以添加 <code>-o</code> 参数来启用离线模式，例如：<code>mvn clean package -o</code>。不过，如果已经在 settings.xml 中设置了 <code>&lt;offline&gt;true&lt;/offline&gt;</code>，则不需要添加此参数。</p>
+                </div>
+
+                <div class="note">
+                    <div class="note-title">注意事项</div>
+                    <p>在离线环境中，确保所有必要的依赖都已经包含在本地仓库中。如果缺少某些依赖，构建过程可能会失败。在这种情况下，需要在外网环境中预先下载所有必要的依赖，然后将它们添加到内网环境的本地仓库中。</p>
+                </div>
+            </section>
+        </section>
+
+        <section id="pom" class="card">
+            <h2>3. POM 文件详解</h2>
+            
+            <h3>3.1 什么是 POM</h3>
+            <p>POM（Project Object Model）是 Maven 项目的核心配置文件，位于项目根目录下，文件名为 <code>pom.xml</code>。它包含了项目的描述信息、依赖关系、构建设置等。</p>
+
+            <h3>3.2 基础 POM 文件示例</h3>
+            <pre><code>&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    
+    &lt;groupId&gt;com.example&lt;/groupId&gt;
+    &lt;artifactId&gt;my-app&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+    
+    &lt;name&gt;My Application&lt;/name&gt;
+    &lt;description&gt;Sample Maven Project&lt;/description&gt;
+    
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+    &lt;/properties&gt;
+    
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+
+            <h3>3.3 POM 文件关键元素</h3>
+            <table>
+                <tr>
+                    <th>元素</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>modelVersion</td>
+                    <td>POM 模型版本（通常是 4.0.0）</td>
+                </tr>
+                <tr>
+                    <td>groupId</td>
+                    <td>项目组织唯一标识符，通常使用公司或组织域名的反向表示</td>
+                </tr>
+                <tr>
+                    <td>artifactId</td>
+                    <td>项目唯一标识符，通常是项目名称</td>
+                </tr>
+                <tr>
+                    <td>version</td>
+                    <td>项目版本号，SNAPSHOT 表示开发版本</td>
+                </tr>
+                <tr>
+                    <td>packaging</td>
+                    <td>项目打包方式，如 jar、war、ear 等</td>
+                </tr>
+                <tr>
+                    <td>dependencies</td>
+                    <td>项目依赖列表</td>
+                </tr>
+                <tr>
+                    <td>properties</td>
+                    <td>自定义属性，可被其他元素引用</td>
+                </tr>
+                <tr>
+                    <td>build</td>
+                    <td>构建配置，包括插件、资源等</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="dependencies" class="card">
+            <h2>4. 依赖管理</h2>
+            
+            <h3>4.1 依赖声明</h3>
+            <p>Maven 通过 POM 文件中的 <code>&lt;dependencies&gt;</code> 元素声明项目依赖：</p>
+            <pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+        &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+            <h3>4.2 依赖范围（Scope）</h3>
+            <table>
+                <tr>
+                    <th>范围</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>compile</td>
+                    <td>默认范围，编译、测试、运行时都有效</td>
+                    <td>Spring Core</td>
+                </tr>
+                <tr>
+                    <td>provided</td>
+                    <td>编译和测试有效，运行时由 JDK 或容器提供</td>
+                    <td>Servlet API</td>
+                </tr>
+                <tr>
+                    <td>runtime</td>
+                    <td>测试和运行时有效，编译时不需要</td>
+                    <td>JDBC 驱动</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>仅在测试编译和测试运行时有效</td>
+                    <td>JUnit</td>
+                </tr>
+                <tr>
+                    <td>system</td>
+                    <td>类似 provided，但需要显式指定 jar 路径</td>
+                    <td>本地系统依赖</td>
+                </tr>
+                <tr>
+                    <td>import</td>
+                    <td>仅用于 dependencyManagement，导入依赖</td>
+                    <td>Spring BOM</td>
+                </tr>
+            </table>
+
+            <h3>4.3 依赖传递</h3>
+            <p>Maven 会自动引入项目依赖的依赖（称为传递性依赖）。例如，如果你的项目依赖 A，而 A 依赖 B，那么 B 也会自动成为你项目的依赖。</p>
+
+            <h3>4.4 依赖排除</h3>
+            <p>可以使用 <code>&lt;exclusions&gt;</code> 元素排除传递性依赖：</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+    &lt;version&gt;5.3.9&lt;/version&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <h3>4.5 依赖冲突</h3>
+            <p>当项目中存在同一依赖的不同版本时，Maven 会解决依赖冲突：</p>
+            <ul>
+                <li><strong>最短路径优先</strong>：路径短的依赖版本会被优先选择</li>
+                <li><strong>声明顺序优先</strong>：如果路径长度相同，POM 文件中先声明的依赖版本会被选择</li>
+            </ul>
+        </section>
+
+        <section id="lifecycle" class="card">
+            <h2>5. 构建生命周期</h2>
+            
+            <h3>5.1 Maven 生命周期概述</h3>
+            <p>Maven 构建生命周期是一系列阶段（phases）的序列，用于定义构建和分发项目的过程。Maven 定义了三个标准生命周期：</p>
+            <ul>
+                <li><strong>clean</strong>：清理项目</li>
+                <li><strong>default</strong>：构建项目</li>
+                <li><strong>site</strong>：生成项目站点文档</li>
+            </ul>
+
+            <h3>5.2 Default 生命周期的主要阶段</h3>
+            <table>
+                <tr>
+                    <th>阶段</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>validate</td>
+                    <td>验证项目是否正确且所有必要信息是否可用</td>
+                </tr>
+                <tr>
+                    <td>compile</td>
+                    <td>编译项目的源代码</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>使用合适的单元测试框架测试编译后的源代码</td>
+                </tr>
+                <tr>
+                    <td>package</td>
+                    <td>将编译后的代码打包为可分发的格式，如 JAR</td>
+                </tr>
+                <tr>
+                    <td>verify</td>
+                    <td>对集成测试的结果进行检查，确保质量达标</td>
+                </tr>
+                <tr>
+                    <td>install</td>
+                    <td>将包安装到本地仓库，供其他项目使用</td>
+                </tr>
+                <tr>
+                    <td>deploy</td>
+                    <td>将最终的包复制到远程仓库，与其他开发者和项目共享</td>
+                </tr>
+            </table>
+
+            <h3>5.3 执行生命周期</h3>
+            <p>可以通过命令行执行 Maven 生命周期的特定阶段：</p>
+            <pre><code>mvn clean install</code></pre>
+            <p>这个命令会先执行 clean 生命周期，然后执行 default 生命周期直到 install 阶段。</p>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>执行某个阶段时，Maven 会自动执行该阶段之前的所有阶段。例如，执行 <code>mvn package</code> 时，会自动执行 validate、compile、test 等阶段。</p>
+            </div>
+        </section>
+
+        <section id="plugins" class="card">
+            <h2>6. 插件使用</h2>
+            
+            <h3>6.1 插件概述</h3>
+            <p>Maven 的核心功能相对简单，主要依靠插件来执行具体的构建任务。插件是 Maven 的核心，每个构建阶段都绑定了一个或多个插件目标（goals）。</p>
+
+            <h3>6.2 常用插件</h3>
+            <table>
+                <tr>
+                    <th>插件名称</th>
+                    <th>用途</th>
+                </tr>
+                <tr>
+                    <td>maven-compiler-plugin</td>
+                    <td>编译 Java 源代码</td>
+                </tr>
+                <tr>
+                    <td>maven-surefire-plugin</td>
+                    <td>运行单元测试</td>
+                </tr>
+                <tr>
+                    <td>maven-jar-plugin</td>
+                    <td>打包 JAR 文件</td>
+                </tr>
+                <tr>
+                    <td>maven-war-plugin</td>
+                    <td>打包 WAR 文件</td>
+                </tr>
+                <tr>
+                    <td>maven-source-plugin</td>
+                    <td>打包源代码</td>
+                </tr>
+                <tr>
+                    <td>maven-javadoc-plugin</td>
+                    <td>生成 Javadoc</td>
+                </tr>
+                <tr>
+                    <td>maven-deploy-plugin</td>
+                    <td>部署到远程仓库</td>
+                </tr>
+                <tr>
+                    <td>spring-boot-maven-plugin</td>
+                    <td>Spring Boot 应用打包和运行</td>
+                </tr>
+            </table>
+
+            <h3>6.3 插件配置</h3>
+            <p>可以在 POM 文件的 <code>&lt;build&gt;</code> 元素中配置插件：</p>
+            <pre><code>&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+            &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+            &lt;version&gt;3.8.1&lt;/version&gt;
+            &lt;configuration&gt;
+                &lt;source&gt;1.8&lt;/source&gt;
+                &lt;target&gt;1.8&lt;/target&gt;
+            &lt;/configuration&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+
+            <h3>6.4 插件执行</h3>
+            <p>可以通过命令行直接执行插件目标：</p>
+            <pre><code>mvn clean package</code></pre>
+            <p>也可以直接执行特定插件的目标：</p>
+            <pre><code>mvn compiler:compile</code></pre>
+        </section>
+
+        <section id="repository" class="card">
+            <h2>7. 仓库管理</h2>
+            
+            <h3>7.1 仓库类型</h3>
+            <p>Maven 使用不同类型的仓库来管理依赖：</p>
+            <ul>
+                <li><strong>本地仓库</strong>：位于本地计算机上，存储下载的依赖和构建的项目包</li>
+                <li><strong>中央仓库</strong>：Maven 社区提供的默认仓库，包含大量的开源依赖</li>
+                <li><strong>远程仓库</strong>：第三方或组织自己维护的仓库，可以存储私有依赖</li>
+            </ul>
+
+            <h3>7.2 本地仓库配置</h3>
+            <p>本地仓库默认位于 <code>~/.m2/repository</code>，可以在 <code>settings.xml</code> 中修改：</p>
+            <pre><code>&lt;settings&gt;
+    &lt;localRepository&gt;D:/maven-repository&lt;/localRepository&gt;
+&lt;/settings&gt;</code></pre>
+
+            <h3>7.3 远程仓库配置</h3>
+            <p>可以在 POM 文件中配置远程仓库：</p>
+            <pre><code>&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;company-repository&lt;/id&gt;
+        &lt;url&gt;http://repository.company.com/maven2&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;</code></pre>
+
+            <h3>7.4 镜像仓库</h3>
+            <p>镜像仓库是中央仓库的一种替代品，可以提供更快的访问速度：</p>
+            <pre><code>&lt;mirrors&gt;
+    &lt;mirror&gt;
+        &lt;id&gt;aliyun-maven&lt;/id&gt;
+        &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+        &lt;name&gt;Aliyun Maven Repository&lt;/name&gt;
+        &lt;url&gt;https://maven.aliyun.com/repository/public&lt;/url&gt;
+    &lt;/mirror&gt;
+&lt;/mirrors&gt;</code></pre>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>在国内使用 Maven 时，建议配置阿里云等国内镜像，可以显著提高依赖下载速度。</p>
+            </div>
+        </section>
+
+        <section id="profiles" class="card">
+            <h2>8. 构建配置文件</h2>
+            
+            <h3>8.1 什么是配置文件</h3>
+            <p>Maven 配置文件（Profile）允许为不同环境（如开发、测试、生产）定义不同的构建配置。配置文件可以修改 POM 的某些部分，从而实现构建的灵活性。</p>
+
+            <h3>8.2 配置文件类型</h3>
+            <ul>
+                <li><strong>POM 文件中的配置文件</strong>：定义在项目的 POM 文件中</li>
+                <li><strong>用户级别的配置文件</strong>：定义在 Maven 用户设置中 (<code>~/.m2/settings.xml</code>)</li>
+                <li><strong>全局配置文件</strong>：定义在 Maven 全局设置中 (<code>$M2_HOME/conf/settings.xml</code>)</li>
+            </ul>
+
+            <h3>8.3 配置文件示例</h3>
+            <pre><code>&lt;profiles&gt;
+    &lt;profile&gt;
+        &lt;id&gt;dev&lt;/id&gt;
+        &lt;properties&gt;
+            &lt;db.url&gt;jdbc:mysql://localhost:3306/devdb&lt;/db.url&gt;
+            &lt;log.level&gt;DEBUG&lt;/log.level&gt;
+        &lt;/properties&gt;
+    &lt;/profile&gt;
+    
+    &lt;profile&gt;
+        &lt;id&gt;prod&lt;/id&gt;
+        &lt;properties&gt;
+            &lt;db.url&gt;jdbc:mysql://db-server:3306/proddb&lt;/db.url&gt;
+            &lt;log.level&gt;ERROR&lt;/log.level&gt;
+        &lt;/properties&gt;
+    &lt;/profile&gt;
+&lt;/profiles&gt;</code></pre>
+
+            <h3>8.4 激活配置文件</h3>
+            <p>可以通过多种方式激活配置文件：</p>
+            <ul>
+                <li><strong>命令行</strong>：<code>mvn clean install -Pprod</code></li>
+                <li><strong>settings.xml</strong>：
+                <pre><code>&lt;activeProfiles&gt;
+    &lt;activeProfile&gt;prod&lt;/activeProfile&gt;
+&lt;/activeProfiles&gt;</code></pre>
+                </li>
+                <li><strong>环境变量</strong>：可以根据环境变量的值激活配置文件</li>
+                <li><strong>操作系统</strong>：可以根据操作系统类型激活配置文件</li>
+                <li><strong>文件存在或不存在</strong>：可以根据文件的存在与否激活配置文件</li>
+            </ul>
+        </section>
+
+        <section id="archetype" class="card">
+            <h2>9. 项目模板</h2>
+            
+            <h3>9.1 什么是 Archetype</h3>
+            <p>Maven Archetype 是一个项目模板工具包，用于快速创建符合特定模式的项目结构。它可以帮助开发者快速搭建项目骨架。</p>
+
+            <h3>9.2 常用 Archetype</h3>
+            <table>
+                <tr>
+                    <th>Archetype</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>maven-archetype-quickstart</td>
+                    <td>创建简单的 Java 项目</td>
+                </tr>
+                <tr>
+                    <td>maven-archetype-webapp</td>
+                    <td>创建简单的 Java Web 应用</td>
+                </tr>
+                <tr>
+                    <td>spring-boot-starter-parent</td>
+                    <td>创建 Spring Boot 应用</td>
+                </tr>
+            </table>
+
+            <h3>9.3 使用 Archetype 创建项目</h3>
+            <p>可以使用以下命令创建基于特定 Archetype 的项目：</p>
+            <pre><code>mvn archetype:generate -DgroupId=com.example -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false</code></pre>
+
+            <h3>9.4 自定义 Archetype</h3>
+            <p>也可以创建自定义的 Archetype，用于满足特定的项目需求：</p>
+            <ol>
+                <li>创建一个项目作为模板</li>
+                <li>使用 <code>mvn archetype:create-from-project</code> 命令从现有项目创建 Archetype</li>
+                <li>安装或部署生成的 Archetype</li>
+                <li>使用自定义 Archetype 创建新项目</li>
+            </ol>
+        </section>
+
+        <section id="multimodule" class="card">
+            <h2>10. 多模块项目</h2>
+            
+            <h3>10.1 多模块项目概述</h3>
+            <p>多模块项目允许将一个大型项目拆分为若干个子模块，每个子模块可以独立构建，但又共享同一个父 POM。这种方式有助于更好地组织和管理复杂项目。</p>
+
+            <h3>10.2 多模块项目结构</h3>
+            <pre><code>multi-module-project/
+├── pom.xml                 # 父 POM
+├── common/
+│   └── pom.xml             # 通用模块 POM
+├── service/
+│   └── pom.xml             # 服务模块 POM
+└── web/
+    └── pom.xml             # Web 模块 POM</code></pre>
+
+            <h3>10.3 父 POM 配置</h3>
+            <p>父 POM 需要指定打包方式为 pom，并列出所有子模块：</p>
+            <pre><code>&lt;project&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    
+    &lt;groupId&gt;com.example&lt;/groupId&gt;
+    &lt;artifactId&gt;multi-module-project&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;packaging&gt;pom&lt;/packaging&gt;
+    
+    &lt;modules&gt;
+        &lt;module&gt;common&lt;/module&gt;
+        &lt;module&gt;service&lt;/module&gt;
+        &lt;module&gt;web&lt;/module&gt;
+    &lt;/modules&gt;
+    
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+    
+    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+            &lt;!-- 在这里管理所有子模块共用的依赖 --&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+&lt;/project&gt;</code></pre>
+
+            <h3>10.4 子模块 POM 配置</h3>
+            <p>子模块 POM 需要指定父模块：</p>
+            <pre><code>&lt;project&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    
+    &lt;parent&gt;
+        &lt;groupId&gt;com.example&lt;/groupId&gt;
+        &lt;artifactId&gt;multi-module-project&lt;/artifactId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;/parent&gt;
+    
+    &lt;artifactId&gt;common&lt;/artifactId&gt;
+    
+    &lt;dependencies&gt;
+        &lt;!-- 该模块特有的依赖 --&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+
+            <h3>10.5 模块间依赖</h3>
+            <p>子模块之间可以相互依赖：</p>
+            <pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.example&lt;/groupId&gt;
+        &lt;artifactId&gt;common&lt;/artifactId&gt;
+        &lt;version&gt;${project.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>构建多模块项目时，Maven 会自动解析模块间的依赖关系，确保按正确的顺序构建各个模块。</p>
+            </div>
+        </section>
+
+        <section id="best-practices" class="card">
+            <h2>11. 最佳实践</h2>
+            
+            <h3>11.1 依赖管理</h3>
+            <ul>
+                <li>使用 <code>&lt;dependencyManagement&gt;</code> 统一管理依赖版本</li>
+                <li>使用属性定义版本号，便于统一升级</li>
+                <li>定期检查依赖更新，尤其是安全更新</li>
+                <li>避免使用 SNAPSHOT 版本依赖于生产环境</li>
+                <li>使用依赖范围（scope）控制依赖传递</li>
+            </ul>
+
+            <h3>11.2 构建配置</h3>
+            <ul>
+                <li>遵循标准的目录结构</li>
+                <li>利用配置文件（profiles）进行环境隔离</li>
+                <li>使用插件管理统一插件版本</li>
+                <li>根据实际需求选择合适的打包类型</li>
+                <li>配置资源过滤，实现配置文件的动态替换</li>
+            </ul>
+
+            <h3>11.3 多模块项目</h3>
+            <ul>
+                <li>合理划分模块，保持模块的独立性</li>
+                <li>共享代码放在公共模块中</li>
+                <li>避免循环依赖</li>
+                <li>使用聚合构建简化命令</li>
+                <li>使用继承统一配置</li>
+            </ul>
+
+            <h3>11.4 持续集成</h3>
+            <ul>
+                <li>使用 Maven 与 CI 工具（如 Jenkins）集成</li>
+                <li>配置自动化测试</li>
+                <li>使用 site 插件生成项目文档</li>
+                <li>使用 checkstyle、PMD 等插件保证代码质量</li>
+                <li>配置自动部署流程</li>
+            </ul>
+
+            <h3>11.5 性能优化</h3>
+            <ul>
+                <li>使用并行构建：<code>mvn -T 4 clean install</code></li>
+                <li>配置合适的内存设置：<code>MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"</code></li>
+                <li>使用增量构建</li>
+                <li>使用本地镜像仓库加速依赖下载</li>
+                <li>适当使用离线模式：<code>mvn -o clean install</code></li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">笔记</div>
+                <p>随着项目的增长，定期审查 Maven 配置非常重要，确保其遵循最佳实践并满足项目需求。</p>
+            </div>
+        </section>
+
+        <a href="../index.html" class="back-to-home">返回首页</a>
+    </main>
+</body>
+</html> 
