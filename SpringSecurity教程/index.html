@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Security 教程</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #388E3C;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background-color: #f8f8f8;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            border-left: 4px solid var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            color: #333;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .tip {
+            background-color: #E8F5E9;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .note {
+            background-color: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .note-title {
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--hover-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .toc {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .toc-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-to-home:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Spring Security 教程</h1>
+            <p class="subtitle">Spring 应用程序的安全框架</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="toc">
+            <div class="toc-title">目录</div>
+            <ul>
+                <li><a href="#introduction">1. Spring Security 概述</a></li>
+                <li><a href="#getting-started">2. 快速入门</a></li>
+                <li><a href="#authentication">3. 认证机制</a></li>
+                <li><a href="#authorization">4. 授权机制</a></li>
+                <li><a href="#web-security">5. Web 安全</a></li>
+                <li><a href="#method-security">6. 方法级安全</a></li>
+                <li><a href="#oauth2">7. OAuth2 集成</a></li>
+                <li><a href="#jwt">8. JWT 支持</a></li>
+                <li><a href="#csrf">9. CSRF 防护</a></li>
+                <li><a href="#best-practices">10. 最佳实践</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="card">
+            <h2>1. Spring Security 概述</h2>
+            <p>Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架，是保护基于 Spring 的应用程序的标准。它专注于为 Java 应用程序提供身份验证和授权。</p>
+            
+            <h3>1.1 Spring Security 的主要特性</h3>
+            <ul>
+                <li><strong>全面的身份验证和授权支持</strong>：支持多种身份验证方式，包括表单登录、HTTP Basic、OAuth2、JWT 等</li>
+                <li><strong>防止常见攻击</strong>：内置对 CSRF、XSS、SQL 注入等常见攻击的防护</li>
+                <li><strong>会话管理</strong>：提供会话固定攻击防护、会话超时等功能</li>
+                <li><strong>与 Spring 框架无缝集成</strong>：与 Spring MVC、Spring Boot 等框架完美配合</li>
+                <li><strong>可扩展性</strong>：提供丰富的扩展点，可以根据需求定制安全行为</li>
+            </ul>
+
+            <h3>1.2 Spring Security 的核心组件</h3>
+            <ul>
+                <li><strong>SecurityContextHolder</strong>：存储当前用户的安全上下文</li>
+                <li><strong>Authentication</strong>：表示用户的身份验证信息</li>
+                <li><strong>UserDetails</strong>：提供核心用户信息</li>
+                <li><strong>UserDetailsService</strong>：加载特定用户的用户数据</li>
+                <li><strong>GrantedAuthority</strong>：表示授予用户的权限</li>
+                <li><strong>SecurityFilterChain</strong>：定义请求处理过程中的过滤器链</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>Spring Security 默认采用"安全优先"的设计理念，这意味着默认情况下所有资源都是受保护的，需要明确配置才能访问。</p>
+            </div>
+        </section>
+
+        <section id="getting-started" class="card">
+            <h2>2. 快速入门</h2>
+            
+            <h3>2.1 添加依赖</h3>
+            <p>在 Maven 项目中添加 Spring Security 依赖：</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+            
+            <p>在 Gradle 项目中添加依赖：</p>
+            <pre><code>implementation 'org.springframework.boot:spring-boot-starter-security'</code></pre>
+
+            <h3>2.2 基本配置</h3>
+            <p>创建一个基本的 Spring Security 配置类：</p>
+            <pre><code>import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/", "/home").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin((form) -> form
+                .loginPage("/login")
+                .permitAll()
+            )
+            .logout((logout) -> logout.permitAll());
+
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
+}</code></pre>
+
+            <h3>2.3 测试配置</h3>
+            <p>创建一个简单的控制器来测试安全配置：</p>
+            <pre><code>import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
+}</code></pre>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>上面的示例使用了内存中的用户存储，这在生产环境中是不推荐的。在实际应用中，应该使用数据库或其他持久化存储来管理用户信息。</p>
+            </div>
+        </section>
+
+        <section id="authentication" class="card">
+            <h2>3. 认证机制</h2>
+            
+            <h3>3.1 认证流程</h3>
+            <p>Spring Security 的认证流程如下：</p>
+            <ol>
+                <li>用户提交用户名和密码</li>
+                <li>Spring Security 的过滤器链处理请求</li>
+                <li>AuthenticationManager 验证用户凭据</li>
+                <li>如果验证成功，创建 Authentication 对象并存储在 SecurityContextHolder 中</li>
+                <li>如果验证失败，抛出 AuthenticationException</li>
+            </ol>
+
+            <h3>3.2 自定义认证</h3>
+            <p>实现自定义的 UserDetailsService：</p>
+            <pre><code>import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRoles().toArray(new String[0]))
+                .build();
+    }
+}</code></pre>
+
+            <h3>3.3 密码编码器</h3>
+            <p>配置密码编码器：</p>
+            <pre><code>@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}</code></pre>
+
+            <h3>3.4 自定义登录页面</h3>
+            <p>配置自定义登录页面：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests((requests) -> requests
+            .requestMatchers("/", "/home", "/css/**", "/js/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .formLogin((form) -> form
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .defaultSuccessUrl("/dashboard")
+            .failureUrl("/login?error=true")
+            .permitAll()
+        )
+        .logout((logout) -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout=true")
+            .permitAll()
+        );
+
+    return http.build();
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>在生产环境中，应该使用 HTTPS 来保护用户凭据的传输。可以通过配置 `http.requiresChannel().anyRequest().requiresSecure()` 来强制使用 HTTPS。</p>
+            </div>
+        </section>
+
+        <section id="authorization" class="card">
+            <h2>4. 授权机制</h2>
+            
+            <h3>4.1 基于角色的访问控制</h3>
+            <p>配置基于角色的访问控制：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests((requests) -> requests
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/user/**").hasRole("USER")
+            .requestMatchers("/", "/home").permitAll()
+            .anyRequest().authenticated()
+        );
+
+    return http.build();
+}</code></pre>
+
+            <h3>4.2 基于权限的访问控制</h3>
+            <p>配置基于权限的访问控制：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests((requests) -> requests
+            .requestMatchers("/read/**").hasAuthority("READ")
+            .requestMatchers("/write/**").hasAuthority("WRITE")
+            .requestMatchers("/", "/home").permitAll()
+            .anyRequest().authenticated()
+        );
+
+    return http.build();
+}</code></pre>
+
+            <h3>4.3 自定义访问决策</h3>
+            <p>实现自定义的 AccessDecisionVoter：</p>
+            <pre><code>import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+
+public class CustomAccessDecisionVoter implements AccessDecisionVoter&lt;Object&gt; {
+
+    @Override
+    public boolean supports(ConfigAttribute attribute) {
+        return attribute.getAttribute() != null && 
+               attribute.getAttribute().startsWith("CUSTOM_");
+    }
+
+    @Override
+    public boolean supports(Class&lt;?&gt; clazz) {
+        return true;
+    }
+
+    @Override
+    public int vote(Authentication authentication, Object object, Collection&lt;ConfigAttribute&gt; attributes) {
+        if (authentication == null) {
+            return ACCESS_DENIED;
+        }
+
+        for (ConfigAttribute attribute : attributes) {
+            if (this.supports(attribute)) {
+                // 自定义投票逻辑
+                for (GrantedAuthority authority : authentication.getAuthorities()) {
+                    if (authority.getAuthority().equals(attribute.getAttribute())) {
+                        return ACCESS_GRANTED;
+                    }
+                }
+            }
+        }
+
+        return ACCESS_ABSTAIN;
+    }
+}</code></pre>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>Spring Security 的授权机制遵循"最小权限原则"，即默认情况下拒绝所有访问，然后明确授予必要的权限。</p>
+            </div>
+        </section>
+
+        <section id="web-security" class="card">
+            <h2>5. Web 安全</h2>
+            
+            <h3>5.1 安全过滤器链</h3>
+            <p>Spring Security 使用过滤器链来保护 Web 应用程序：</p>
+            <ul>
+                <li><strong>ChannelProcessingFilter</strong>：确保请求通过正确的通道（HTTP/HTTPS）</li>
+                <li><strong>SecurityContextPersistenceFilter</strong>：在请求之间维护 SecurityContext</li>
+                <li><strong>ConcurrentSessionFilter</strong>：处理并发会话</li>
+                <li><strong>UsernamePasswordAuthenticationFilter</strong>：处理表单登录</li>
+                <li><strong>BasicAuthenticationFilter</strong>：处理 HTTP Basic 认证</li>
+                <li><strong>RequestCacheAwareFilter</strong>：缓存请求以便在认证后重定向</li>
+                <li><strong>SecurityContextHolderAwareRequestFilter</strong>：将 SecurityContext 绑定到 HttpServletRequest</li>
+                <li><strong>JaasApiIntegrationFilter</strong>：集成 JAAS</li>
+                <li><strong>RememberMeAuthenticationFilter</strong>：处理"记住我"功能</li>
+                <li><strong>AnonymousAuthenticationFilter</strong>：为未认证用户创建匿名 Authentication</li>
+                <li><strong>SessionManagementFilter</strong>：管理会话</li>
+                <li><strong>ExceptionTranslationFilter</strong>：处理 Spring Security 异常</li>
+                <li><strong>FilterSecurityInterceptor</strong>：执行授权决策</li>
+            </ul>
+
+            <h3>5.2 自定义过滤器</h3>
+            <p>添加自定义过滤器到过滤器链：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .addFilterBefore(new CustomFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}</code></pre>
+
+            <h3>5.3 会话管理</h3>
+            <p>配置会话管理：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .sessionManagement((session) -> session
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            .maximumSessions(1)
+            .maxSessionsPreventsLogin(true)
+            .expiredUrl("/login?expired")
+        );
+
+    return http.build();
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>对于无状态应用程序，可以将会话创建策略设置为 STATELESS，这样 Spring Security 不会创建或使用 HttpSession。</p>
+            </div>
+        </section>
+
+        <section id="method-security" class="card">
+            <h2>6. 方法级安全</h2>
+            
+            <h3>6.1 启用方法级安全</h3>
+            <p>在配置类上启用方法级安全：</p>
+            <pre><code>import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+@Configuration
+@EnableMethodSecurity
+public class MethodSecurityConfig {
+    // 配置内容
+}</code></pre>
+
+            <h3>6.2 使用注解保护方法</h3>
+            <p>使用 @PreAuthorize 注解保护方法：</p>
+            <pre><code>import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(Long userId) {
+        // 删除用户的逻辑
+    }
+
+    @PreAuthorize("hasRole('USER') and #userId == authentication.principal.id")
+    public void updateUserProfile(Long userId, UserProfile profile) {
+        // 更新用户资料的逻辑
+    }
+}</code></pre>
+
+            <h3>6.3 使用 @PostAuthorize 注解</h3>
+            <p>使用 @PostAuthorize 注解在方法执行后进行授权检查：</p>
+            <pre><code>import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.stereotype.Service;
+
+@Service
+public class DocumentService {
+
+    @PostAuthorize("returnObject.owner == authentication.principal.username")
+    public Document getDocument(Long documentId) {
+        // 获取文档的逻辑
+        return documentRepository.findById(documentId).orElse(null);
+    }
+}</code></pre>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>方法级安全注解需要启用 AOP 支持。在 Spring Boot 应用中，spring-boot-starter-aop 依赖会自动添加。</p>
+            </div>
+        </section>
+
+        <section id="oauth2" class="card">
+            <h2>7. OAuth2 集成</h2>
+            
+            <h3>7.1 OAuth2 概述</h3>
+            <p>OAuth2 是一种授权框架，允许第三方应用程序代表资源所有者访问受保护的资源。Spring Security 提供了对 OAuth2 的全面支持。</p>
+
+            <h3>7.2 添加 OAuth2 依赖</h3>
+            <p>在 Maven 项目中添加 OAuth2 依赖：</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <h3>7.3 配置 OAuth2 客户端</h3>
+            <p>在 application.properties 中配置 OAuth2 客户端：</p>
+            <pre><code>spring.security.oauth2.client.registration.google.client-id=your-client-id
+spring.security.oauth2.client.registration.google.client-secret=your-client-secret
+spring.security.oauth2.client.registration.google.scope=profile,email</code></pre>
+
+            <h3>7.4 配置 OAuth2 登录</h3>
+            <p>配置 OAuth2 登录：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests((requests) -> requests
+            .requestMatchers("/", "/home").permitAll()
+            .anyRequest().authenticated()
+        )
+        .oauth2Login((oauth2) -> oauth2
+            .loginPage("/login")
+            .defaultSuccessUrl("/dashboard")
+        );
+
+    return http.build();
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>Spring Security 支持多种 OAuth2 提供商，包括 Google、GitHub、Facebook 等。只需添加相应的配置即可。</p>
+            </div>
+        </section>
+
+        <section id="jwt" class="card">
+            <h2>8. JWT 支持</h2>
+            
+            <h3>8.1 JWT 概述</h3>
+            <p>JSON Web Token (JWT) 是一种紧凑的、自包含的方式，用于在各方之间安全地传输信息。Spring Security 可以与 JWT 集成，用于无状态认证。</p>
+
+            <h3>8.2 添加 JWT 依赖</h3>
+            <p>在 Maven 项目中添加 JWT 依赖：</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-api&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-impl&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-jackson&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <h3>8.3 创建 JWT 工具类</h3>
+            <p>创建 JWT 工具类用于生成和验证令牌：</p>
+            <pre><code>import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+@Component
+public class JwtUtil {
+
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long jwtTokenValidity = 5 * 60 * 60 * 1000; // 5 hours
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public &lt;T&gt; T extractClaim(String token, Function&lt;Claims, T&gt; claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String createToken(Map&lt;String, Object&gt; claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity))
+                .signWith(key)
+                .compact();
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+}</code></pre>
+
+            <h3>8.4 创建 JWT 过滤器</h3>
+            <p>创建 JWT 过滤器用于处理 JWT 认证：</p>
+            <pre><code>import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+@Component
+public class JwtRequestFilter extends OncePerRequestFilter {
+
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+
+    public JwtRequestFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+
+        final String authorizationHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwt = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7);
+            username = jwtUtil.extractUsername(jwt);
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+            if (jwtUtil.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        chain.doFilter(request, response);
+    }
+}</code></pre>
+
+            <div class="note">
+                <div class="note-title">注意</div>
+                <p>JWT 令牌一旦签发就无法撤销，除非它们过期。对于需要立即撤销访问权限的场景，可以考虑使用黑名单或短令牌有效期。</p>
+            </div>
+        </section>
+
+        <section id="csrf" class="card">
+            <h2>9. CSRF 防护</h2>
+            
+            <h3>9.1 CSRF 概述</h3>
+            <p>跨站请求伪造 (CSRF) 是一种攻击，其中恶意网站诱使用户的浏览器向用户已认证的网站发送请求。Spring Security 提供了内置的 CSRF 防护机制。</p>
+
+            <h3>9.2 启用 CSRF 防护</h3>
+            <p>默认情况下，Spring Security 启用 CSRF 防护。如果需要显式配置：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf((csrf) -> csrf
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        );
+
+    return http.build();
+}</code></pre>
+
+            <h3>9.3 在表单中包含 CSRF 令牌</h3>
+            <p>在 Thymeleaf 模板中包含 CSRF 令牌：</p>
+            <pre><code>&lt;form th:action="@{/login}" method="post"&gt;
+    &lt;input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /&gt;
+    &lt;!-- 其他表单字段 --&gt;
+&lt;/form&gt;</code></pre>
+
+            <h3>9.4 禁用 CSRF 防护</h3>
+            <p>对于某些场景（如 REST API），可能需要禁用 CSRF 防护：</p>
+            <pre><code>@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf((csrf) -> csrf.disable());
+
+    return http.build();
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">小提示</div>
+                <p>对于使用 JWT 的无状态 API，通常可以禁用 CSRF 防护，因为每个请求都需要包含有效的 JWT 令牌。</p>
+            </div>
+        </section>
+
+        <section id="best-practices" class="card">
+            <h2>10. 最佳实践</h2>
+            
+            <h3>10.1 安全配置最佳实践</h3>
+            <ul>
+                <li><strong>使用 HTTPS</strong>：在生产环境中始终使用 HTTPS</li>
+                <li><strong>设置安全响应头</strong>：配置 X-Content-Type-Options、X-Frame-Options 等安全响应头</li>
+                <li><strong>使用安全的密码编码器</strong>：使用 BCryptPasswordEncoder 或更强的算法</li>
+                <li><strong>实施最小权限原则</strong>：只授予必要的权限</li>
+                <li><strong>定期更新依赖</strong>：保持 Spring Security 和其他依赖的最新版本</li>
+            </ul>
+
+            <h3>10.2 认证最佳实践</h3>
+            <ul>
+                <li><strong>实施强密码策略</strong>：要求用户使用强密码</li>
+                <li><strong>实施账户锁定</strong>：在多次失败登录尝试后锁定账户</li>
+                <li><strong>实施密码重置流程</strong>：提供安全的密码重置机制</li>
+                <li><strong>实施多因素认证</strong>：对于敏感操作，要求额外的认证步骤</li>
+                <li><strong>记录安全事件</strong>：记录登录尝试、权限更改等安全事件</li>
+            </ul>
+
+            <h3>10.3 授权最佳实践</h3>
+            <ul>
+                <li><strong>使用细粒度的权限</strong>：使用细粒度的权限而不是粗粒度的角色</li>
+                <li><strong>实施职责分离</strong>：确保敏感操作需要多个角色的批准</li>
+                <li><strong>定期审查权限</strong>：定期审查和更新用户权限</li>
+                <li><strong>实施最小权限原则</strong>：只授予必要的权限</li>
+                <li><strong>使用声明式安全</strong>：优先使用注解进行方法级安全控制</li>
+            </ul>
+
+            <h3>10.4 测试安全配置</h3>
+            <ul>
+                <li><strong>进行安全测试</strong>：使用 OWASP ZAP 等工具进行安全测试</li>
+                <li><strong>进行渗透测试</strong>：定期进行渗透测试</li>
+                <li><strong>进行代码审查</strong>：审查安全相关代码</li>
+                <li><strong>进行依赖扫描</strong>：使用 OWASP Dependency-Check 等工具扫描依赖漏洞</li>
+                <li><strong>进行安全培训</strong>：对开发团队进行安全培训</li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">笔记</div>
+                <p>安全是一个持续的过程，而不是一次性的任务。定期审查和更新安全配置是保持应用程序安全的关键。</p>
+            </div>
+        </section>
+
+        <a href="../index.html" class="back-to-home">返回首页</a>
+    </main>
+</body>
+</html> 

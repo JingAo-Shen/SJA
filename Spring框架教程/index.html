@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring 框架教程</title>
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .demo-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .demo-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .demo-description {
+            margin-bottom: 1rem;
+        }
+
+        .demo-controls {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .demo-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .demo-area {
+            min-height: 200px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip {
+            background-color: #E8F5E9;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+
+        /* 动画元素样式 */
+        .animated-element {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .bean {
+            width: 60px;
+            height: 60px;
+            background-color: #6DB33F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .container-box {
+            border: 2px dashed #6DB33F;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: rgba(109, 179, 63, 0.1);
+        }
+
+        .arrow {
+            position: absolute;
+            height: 2px;
+            background-color: #6DB33F;
+            transform-origin: left center;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid #6DB33F;
+        }
+
+        .highlight {
+            animation: highlight 1s ease;
+        }
+
+        @keyframes highlight {
+            0% { box-shadow: 0 0 0 0 rgba(109, 179, 63, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(109, 179, 63, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(109, 179, 63, 0); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Spring 框架教程</h1>
+            <p class="subtitle">全面的 Spring 框架学习指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="table-of-contents">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#introduction">1. Spring 框架概述</a></li>
+                <li><a href="#ioc">2. IoC 容器</a></li>
+                <li><a href="#aop">3. AOP 面向切面编程</a></li>
+                <li><a href="#beans">4. Bean 管理</a></li>
+                <li><a href="#di">5. 依赖注入</a></li>
+                <li><a href="#transactions">6. 事务管理</a></li>
+                <li><a href="#mvc">7. Spring MVC</a></li>
+                <li><a href="#data-access">8. 数据访问</a></li>
+                <li><a href="#security">9. 安全框架</a></li>
+                <li><a href="#testing">10. 测试支持</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="content">
+            <h2>1. Spring 框架概述</h2>
+            <p>Spring 框架是一个开源的 Java 平台，为开发 Java 应用程序提供全面的基础架构支持。Spring 的主要优势包括：</p>
+            <ul>
+                <li>依赖注入（DI）和面向切面编程（AOP）的支持</li>
+                <li>声明式事务管理</li>
+                <li>简化数据访问</li>
+                <li>强大的 Web 框架</li>
+                <li>完善的安全框架</li>
+            </ul>
+
+            <div class="demo-container">
+                <h3 class="demo-title">Spring 框架架构</h3>
+                <p class="demo-description">Spring 框架的整体架构图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看架构图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 架构图将在这里动态显示 -->
+                </div>
+            </div>
+        </section>
+
+        <section id="ioc" class="content">
+            <h2>2. IoC 容器</h2>
+            <p>控制反转（Inversion of Control）是 Spring 框架的核心概念。IoC 容器负责对象的创建、配置和管理它们的生命周期。</p>
+
+            <h3>2.1 IoC 容器工作原理</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">IoC 容器工作原理</h3>
+                <p class="demo-description">IoC 容器工作原理图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看原理图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 原理图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>2.2 配置方式</h3>
+            <p>Spring 支持两种配置方式：</p>
+            <ul>
+                <li>基于 XML 的配置</li>
+                <li>基于 Java 的配置</li>
+            </ul>
+
+            <pre><code>// 基于 Java 的配置示例
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myService() {
+        return new MyServiceImpl();
+    }
+}</code></pre>
+        </section>
+
+        <section id="aop" class="content">
+            <h2>3. AOP 面向切面编程</h2>
+            <p>AOP 允许将横切关注点（如日志、事务、安全等）从主业务逻辑中分离出来。</p>
+
+            <h3>3.1 AOP 核心概念</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">AOP 核心概念</h3>
+                <p class="demo-description">AOP 核心概念图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看概念图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 概念图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>3.2 切面示例</h3>
+            <pre><code>@Aspect
+@Component
+public class LoggingAspect {
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBefore(JoinPoint joinPoint) {
+        System.out.println("Before method: " + joinPoint.getSignature().getName());
+    }
+}</code></pre>
+        </section>
+
+        <section id="beans" class="content">
+            <h2>4. Bean 管理</h2>
+            <p>Spring Bean 是 Spring 容器管理的对象。容器负责创建、配置和管理 Bean 的生命周期。</p>
+
+            <h3>4.1 Bean 生命周期</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">Bean 生命周期</h3>
+                <p class="demo-description">Bean 生命周期图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看生命周期图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 生命周期图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>4.2 Bean 作用域</h3>
+            <ul>
+                <li>singleton：单例（默认）</li>
+                <li>prototype：原型</li>
+                <li>request：请求</li>
+                <li>session：会话</li>
+                <li>global-session：全局会话</li>
+            </ul>
+        </section>
+
+        <section id="di" class="content">
+            <h2>5. 依赖注入</h2>
+            <p>依赖注入是 Spring 框架实现 IoC 的主要方式。</p>
+
+            <h3>5.1 依赖注入方式</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">依赖注入方式</h3>
+                <p class="demo-description">依赖注入方式图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看注入方式图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 注入方式图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>5.2 注入示例</h3>
+            <pre><code>@Component
+public class UserService {
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+}</code></pre>
+        </section>
+
+        <section id="transactions" class="content">
+            <h2>6. 事务管理</h2>
+            <p>Spring 提供了声明式和编程式事务管理。</p>
+
+            <h3>6.1 事务特性</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">事务 ACID 特性</h3>
+                <p class="demo-description">事务 ACID 特性图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看 ACID 特性图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- ACID 特性图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>6.2 声明式事务示例</h3>
+            <pre><code>@Transactional
+public void transferMoney(Account from, Account to, BigDecimal amount) {
+    from.debit(amount);
+    to.credit(amount);
+}</code></pre>
+        </section>
+
+        <section id="mvc" class="content">
+            <h2>7. Spring MVC</h2>
+            <p>Spring MVC 是一个基于 MVC 设计模式的 Web 框架。</p>
+
+            <h3>7.1 MVC 架构</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">Spring MVC 架构</h3>
+                <p class="demo-description">Spring MVC 架构图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看架构图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- MVC 架构图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>7.2 控制器示例</h3>
+            <pre><code>@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+}</code></pre>
+        </section>
+
+        <section id="data-access" class="content">
+            <h2>8. 数据访问</h2>
+            <p>Spring 提供了多种数据访问方式，包括 JDBC、ORM 等。</p>
+
+            <h3>8.1 数据访问层</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">数据访问层架构</h3>
+                <p class="demo-description">数据访问层架构图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看架构图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- 数据访问层架构图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>8.2 JPA 示例</h3>
+            <pre><code>@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByEmail(String email);
+}</code></pre>
+        </section>
+
+        <section id="security" class="content">
+            <h2>9. 安全框架</h2>
+            <p>Spring Security 提供了全面的安全解决方案。</p>
+
+            <h3>9.1 安全架构</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">Spring Security 架构</h3>
+                <p class="demo-description">Spring Security 架构图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看架构图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- Spring Security 架构图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>9.2 安全配置示例</h3>
+            <pre><code>@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/public/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin();
+    }
+}</code></pre>
+        </section>
+
+        <section id="testing" class="content">
+            <h2>10. 测试支持</h2>
+            <p>Spring 提供了全面的测试支持，包括单元测试和集成测试。</p>
+
+            <h3>10.1 测试架构</h3>
+            <div class="demo-container">
+                <h3 class="demo-title">Spring 测试架构</h3>
+                <p class="demo-description">Spring 测试架构图</p>
+                <div class="demo-controls">
+                    <button class="demo-button">查看架构图</button>
+                </div>
+                <div class="demo-area">
+                    <!-- Spring 测试架构图将在这里动态显示 -->
+                </div>
+            </div>
+
+            <h3>10.2 测试示例</h3>
+            <pre><code>@SpringBootTest
+class UserServiceTest {
+    @Autowired
+    private UserService userService;
+
+    @Test
+    void testCreateUser() {
+        User user = new User("test@example.com");
+        User saved = userService.createUser(user);
+        assertNotNull(saved.getId());
+    }
+}</code></pre>
+        </section>
+    </main>
+    <script>
+        // IoC 容器演示
+        function initIoCDemo() {
+            const demoArea = document.querySelector('#ioc .demo-area');
+            const demoButton = document.querySelector('#ioc .demo-button');
+            
+            // 创建容器
+            const container = document.createElement('div');
+            container.className = 'container-box';
+            container.style.width = '80%';
+            container.style.height = '150px';
+            container.style.margin = '20px auto';
+            container.style.position = 'relative';
+            demoArea.appendChild(container);
+
+            // 创建 Bean 对象
+            const beans = [
+                { id: 'userService', x: 20, y: 20 },
+                { id: 'userRepo', x: 120, y: 80 },
+                { id: 'dataSource', x: 220, y: 20 }
+            ];
+
+            let isAnimating = false;
+
+            demoButton.addEventListener('click', () => {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 清除现有内容
+                container.innerHTML = '';
+
+                // 创建并添加 Bean
+                beans.forEach(bean => {
+                    const beanElement = document.createElement('div');
+                    beanElement.className = 'bean animated-element';
+                    beanElement.textContent = bean.id;
+                    beanElement.style.left = bean.x + 'px';
+                    beanElement.style.top = bean.y + 'px';
+                    container.appendChild(beanElement);
+                });
+
+                // 创建依赖关系箭头
+                setTimeout(() => {
+                    const arrow1 = createArrow(20, 50, 120, 80);
+                    const arrow2 = createArrow(120, 80, 220, 50);
+                    container.appendChild(arrow1);
+                    container.appendChild(arrow2);
+                }, 1000);
+
+                // 添加高亮动画
+                setTimeout(() => {
+                    document.querySelectorAll('.bean').forEach(bean => {
+                        bean.classList.add('highlight');
+                    });
+                    isAnimating = false;
+                }, 2000);
+            });
+        }
+
+        // 创建箭头函数
+        function createArrow(x1, y1, x2, y2) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow animated-element';
+            
+            // 计算箭头长度和角度
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            arrow.style.width = length + 'px';
+            arrow.style.left = x1 + 'px';
+            arrow.style.top = y1 + 'px';
+            arrow.style.transform = `rotate(${angle}deg)`;
+            
+            return arrow;
+        }
+
+        // AOP 演示
+        function initAOPDemo() {
+            const demoArea = document.querySelector('#aop .demo-area');
+            const demoButton = document.querySelector('#aop .demo-button');
+            
+            // 创建主要业务逻辑容器
+            const container = document.createElement('div');
+            container.className = 'container-box';
+            container.style.width = '80%';
+            container.style.height = '200px';
+            container.style.margin = '20px auto';
+            container.style.position = 'relative';
+            demoArea.appendChild(container);
+
+            // 创建业务方法和切面
+            const elements = [
+                { id: 'BusinessMethod', x: 120, y: 80, type: 'bean' },
+                { id: 'LoggingAspect', x: 20, y: 20, type: 'aspect' },
+                { id: 'SecurityAspect', x: 220, y: 20, type: 'aspect' },
+                { id: 'TransactionAspect', x: 120, y: 140, type: 'aspect' }
+            ];
+
+            let isAnimating = false;
+
+            demoButton.addEventListener('click', () => {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 清除现有内容
+                container.innerHTML = '';
+
+                // 创建并添加元素
+                elements.forEach(element => {
+                    const el = document.createElement('div');
+                    el.className = `bean animated-element ${element.type}`;
+                    el.textContent = element.id;
+                    el.style.left = element.x + 'px';
+                    el.style.top = element.y + 'px';
+                    if (element.type === 'aspect') {
+                        el.style.backgroundColor = '#FF6B6B';
+                    }
+                    container.appendChild(el);
+                });
+
+                // 创建切面连接
+                setTimeout(() => {
+                    const arrows = [
+                        createArrow(20, 40, 120, 80),
+                        createArrow(220, 40, 120, 80),
+                        createArrow(120, 140, 120, 100)
+                    ];
+                    arrows.forEach(arrow => {
+                        arrow.style.borderStyle = 'dashed';
+                        container.appendChild(arrow);
+                    });
+                }, 1000);
+
+                // 演示方法调用流程
+                setTimeout(() => {
+                    const sequence = ['LoggingAspect', 'SecurityAspect', 'BusinessMethod', 'TransactionAspect'];
+                    sequence.forEach((id, index) => {
+                        setTimeout(() => {
+                            const element = container.querySelector(`.bean:nth-child(${elements.findIndex(e => e.id === id) + 1})`);
+                            element.classList.add('highlight');
+                        }, index * 500);
+                    });
+                }, 2000);
+
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 4000);
+            });
+        }
+
+        // 创建箭头函数
+        function createArrow(x1, y1, x2, y2) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow animated-element';
+            
+            // 计算箭头长度和角度
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            arrow.style.width = length + 'px';
+            arrow.style.left = x1 + 'px';
+            arrow.style.top = y1 + 'px';
+            arrow.style.transform = `rotate(${angle}deg)`;
+            
+            return arrow;
+        }
+
+        // 依赖注入演示
+        function initDIDemo() {
+            const demoArea = document.querySelector('#di .demo-area');
+            const demoButton = document.querySelector('#di .demo-button');
+            
+            // 创建容器
+            const container = document.createElement('div');
+            container.className = 'container-box';
+            container.style.width = '80%';
+            container.style.height = '250px';
+            container.style.margin = '20px auto';
+            container.style.position = 'relative';
+            demoArea.appendChild(container);
+
+            // 创建注入方式选择按钮
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.marginBottom = '10px';
+            buttonContainer.style.textAlign = 'center';
+            
+            const methods = ['Constructor', 'Setter', 'Field'];
+            methods.forEach(method => {
+                const btn = document.createElement('button');
+                btn.className = 'demo-button';
+                btn.style.margin = '0 5px';
+                btn.textContent = method + ' Injection';
+                btn.onclick = () => showInjection(method);
+                buttonContainer.appendChild(btn);
+            });
+            
+            demoArea.insertBefore(buttonContainer, container);
+
+            let currentAnimation = null;
+
+            function showInjection(method) {
+                if (currentAnimation) {
+                    clearTimeout(currentAnimation);
+                }
+
+                container.innerHTML = '';
+
+                const components = [
+                    { id: 'UserController', x: 20, y: 20 },
+                    { id: 'UserService', x: 120, y: 100 },
+                    { id: 'UserRepository', x: 220, y: 180 }
+                ];
+
+                // 创建组件
+                components.forEach(comp => {
+                    const element = document.createElement('div');
+                    element.className = 'bean animated-element';
+                    element.textContent = comp.id;
+                    element.style.left = comp.x + 'px';
+                    element.style.top = comp.y + 'px';
+                    container.appendChild(element);
+                });
+
+                // 添加代码示例
+                const codeExample = document.createElement('div');
+                codeExample.style.position = 'absolute';
+                codeExample.style.right = '20px';
+                codeExample.style.top = '20px';
+                codeExample.style.width = '200px';
+                codeExample.style.padding = '10px';
+                codeExample.style.backgroundColor = '#f8f9fa';
+                codeExample.style.borderRadius = '4px';
+                codeExample.style.fontSize = '12px';
+
+                switch(method) {
+                    case 'Constructor':
+                        codeExample.innerHTML = `
+                            <pre>@Component
+class UserController {
+    private final UserService service;
+    
+    @Autowired
+    public UserController(
+        UserService service
+    ) {
+        this.service = service;
+    }
+}</pre>`;
+                        break;
+                    case 'Setter':
+                        codeExample.innerHTML = `
+                            <pre>@Component
+class UserController {
+    private UserService service;
+    
+    @Autowired
+    public void setUserService(
+        UserService service
+    ) {
+        this.service = service;
+    }
+}</pre>`;
+                        break;
+                    case 'Field':
+                        codeExample.innerHTML = `
+                            <pre>@Component
+class UserController {
+    @Autowired
+    private UserService service;
+}</pre>`;
+                        break;
+                }
+
+                container.appendChild(codeExample);
+
+                // 创建注入动画
+                setTimeout(() => {
+                    const arrow1 = createArrow(20, 40, 120, 100);
+                    const arrow2 = createArrow(120, 120, 220, 180);
+                    container.appendChild(arrow1);
+                    container.appendChild(arrow2);
+
+                    // 添加动画效果
+                    const beans = container.querySelectorAll('.bean');
+                    beans.forEach((bean, index) => {
+                        currentAnimation = setTimeout(() => {
+                            bean.classList.add('highlight');
+                        }, index * 500);
+                    });
+                }, 500);
+            }
+
+            // 默认显示构造器注入
+            showInjection('Constructor');
+        }
+
+        // 创建箭头函数
+        function createArrow(x1, y1, x2, y2) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow animated-element';
+            
+            // 计算箭头长度和角度
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            arrow.style.width = length + 'px';
+            arrow.style.left = x1 + 'px';
+            arrow.style.top = y1 + 'px';
+            arrow.style.transform = `rotate(${angle}deg)`;
+            
+            return arrow;
+        }
+
+        // 页面加载完成后初始化演示
+        document.addEventListener('DOMContentLoaded', () => {
+            initIoCDemo();
+            initAOPDemo();
+            initDIDemo();
+        });
+    </script>
+</body>
+</html> 

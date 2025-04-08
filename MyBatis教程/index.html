@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBatis 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #F44336;
+            --secondary-color: #D32F2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #FFEBEE;
+            --code-background: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .tip {
+            background-color: var(--hover-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents {
+            background-color: var(--code-background);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>MyBatis 学习教程</h1>
+            <p class="subtitle">全面的 MyBatis 和 MyBatis Plus 开发指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="table-of-contents">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#introduction">1. MyBatis 简介</a></li>
+                <li><a href="#setup">2. 环境搭建</a></li>
+                <li><a href="#basic-concepts">3. 基础概念</a></li>
+                <li><a href="#configuration">4. XML 配置</a></li>
+                <li><a href="#mapping">5. 映射文件</a></li>
+                <li><a href="#dynamic-sql">6. 动态 SQL</a></li>
+                <li><a href="#annotations">7. 注解开发</a></li>
+                <li><a href="#advanced">8. 高级特性</a></li>
+                <li><a href="#mybatis-plus">9. MyBatis Plus</a></li>
+                <li><a href="#best-practices">10. 最佳实践</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="content">
+            <h2>1. MyBatis 简介</h2>
+            <p>MyBatis 是一款优秀的持久层框架，它支持自定义 SQL、存储过程以及高级映射。MyBatis 几乎消除了所有的 JDBC 代码和参数的手动设置以及结果集的检索。</p>
+
+            <h3>1.1 特点</h3>
+            <ul>
+                <li>简单易学：基于 SQL 的轻量级框架</li>
+                <li>灵活性强：可以使用 XML 或注解来配置和映射</li>
+                <li>解耦设计：SQL 和代码的分离</li>
+                <li>性能优化：支持缓存机制</li>
+                <li>扩展性好：可以自定义插件</li>
+            </ul>
+        </section>
+
+        <section id="setup" class="content">
+            <h2>2. 环境搭建</h2>
+
+            <h3>2.1 Maven 依赖</h3>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+    &lt;version&gt;3.5.13&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <h3>2.2 基础配置</h3>
+            <pre><code>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd"&gt;
+&lt;configuration&gt;
+    &lt;environments default="development"&gt;
+        &lt;environment id="development"&gt;
+            &lt;transactionManager type="JDBC"/&gt;
+            &lt;dataSource type="POOLED"&gt;
+                &lt;property name="driver" value="com.mysql.jdbc.Driver"/&gt;
+                &lt;property name="url" value="jdbc:mysql://localhost:3306/mydb"/&gt;
+                &lt;property name="username" value="root"/&gt;
+                &lt;property name="password" value="password"/&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+&lt;/configuration&gt;</code></pre>
+        </section>
+
+        <section id="basic-concepts" class="content">
+            <h2>3. 基础概念</h2>
+
+            <h3>3.1 核心组件</h3>
+            <ul>
+                <li>SqlSessionFactoryBuilder：构建 SqlSessionFactory</li>
+                <li>SqlSessionFactory：创建 SqlSession</li>
+                <li>SqlSession：执行 SQL 的主要接口</li>
+                <li>Mapper 接口：定义数据操作方法</li>
+            </ul>
+
+            <h3>3.2 工作流程</h3>
+            <pre><code>// 获取 SqlSessionFactory
+String resource = "mybatis-config.xml";
+InputStream inputStream = Resources.getResourceAsStream(resource);
+SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+// 获取 SqlSession
+try (SqlSession session = sqlSessionFactory.openSession()) {
+    // 执行 SQL
+    BlogMapper mapper = session.getMapper(BlogMapper.class);
+    Blog blog = mapper.selectBlog(101);
+}</code></pre>
+        </section>
+
+        <section id="configuration" class="content">
+            <h2>4. XML 配置</h2>
+
+            <h3>4.1 配置文件结构</h3>
+            <ul>
+                <li>properties：属性配置</li>
+                <li>settings：全局设置</li>
+                <li>typeAliases：类型别名</li>
+                <li>typeHandlers：类型处理器</li>
+                <li>environments：环境配置</li>
+                <li>mappers：映射器</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">配置提示</div>
+                <p>建议将数据库配置信息放在单独的 properties 文件中，便于管理和切换环境。</p>
+            </div>
+        </section>
+
+        <section id="mapping" class="content">
+            <h2>5. 映射文件</h2>
+
+            <h3>5.1 基本映射</h3>
+            <pre><code>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;
+&lt;mapper namespace="com.example.BlogMapper"&gt;
+    &lt;select id="selectBlog" resultType="Blog"&gt;
+        SELECT * FROM blog WHERE id = #{id}
+    &lt;/select&gt;
+&lt;/mapper&gt;</code></pre>
+
+            <h3>5.2 结果映射</h3>
+            <pre><code>&lt;resultMap id="blogResult" type="Blog"&gt;
+    &lt;id property="id" column="blog_id" /&gt;
+    &lt;result property="title" column="blog_title"/&gt;
+    &lt;association property="author" javaType="Author"&gt;
+        &lt;id property="id" column="author_id"/&gt;
+        &lt;result property="name" column="author_name"/&gt;
+    &lt;/association&gt;
+&lt;/resultMap&gt;</code></pre>
+        </section>
+
+        <section id="dynamic-sql" class="content">
+            <h2>6. 动态 SQL</h2>
+
+            <h3>6.1 常用标签</h3>
+            <ul>
+                <li>if：条件判断</li>
+                <li>choose/when/otherwise：多条件分支</li>
+                <li>trim/where/set：条件包装</li>
+                <li>foreach：集合遍历</li>
+            </ul>
+
+            <h3>6.2 示例</h3>
+            <pre><code>&lt;select id="findActiveBlogLike" resultType="Blog"&gt;
+    SELECT * FROM blog WHERE state = 'ACTIVE'
+    &lt;if test="title != null"&gt;
+        AND title like #{title}
+    &lt;/if&gt;
+    &lt;if test="author != null and author.name != null"&gt;
+        AND author_name like #{author.name}
+    &lt;/if&gt;
+&lt;/select&gt;</code></pre>
+        </section>
+
+        <section id="annotations" class="content">
+            <h2>7. 注解开发</h2>
+
+            <h3>7.1 基本注解</h3>
+            <pre><code>@Select("SELECT * FROM blog WHERE id = #{id}")
+Blog selectBlog(int id);
+
+@Insert("INSERT INTO blog (title, content) VALUES (#{title}, #{content})")
+int insertBlog(Blog blog);
+
+@Update("UPDATE blog SET title = #{title} WHERE id = #{id}")
+int updateBlog(Blog blog);
+
+@Delete("DELETE FROM blog WHERE id = #{id}")
+int deleteBlog(int id);</code></pre>
+
+            <h3>7.2 高级注解</h3>
+            <ul>
+                <li>@Results：结果映射</li>
+                <li>@One：一对一关联</li>
+                <li>@Many：一对多关联</li>
+                <li>@Options：配置选项</li>
+            </ul>
+        </section>
+
+        <section id="advanced" class="content">
+            <h2>8. 高级特性</h2>
+
+            <h3>8.1 缓存机制</h3>
+            <ul>
+                <li>一级缓存：SqlSession 级别</li>
+                <li>二级缓存：命名空间级别</li>
+                <li>自定义缓存：实现 Cache 接口</li>
+            </ul>
+
+            <h3>8.2 插件开发</h3>
+            <pre><code>@Intercepts({
+    @Signature(type = Executor.class, method = "update",
+        args = {MappedStatement.class, Object.class})
+})
+public class ExamplePlugin implements Interceptor {
+    public Object intercept(Invocation invocation) throws Throwable {
+        return invocation.proceed();
+    }
+}</code></pre>
+        </section>
+
+        <section id="mybatis-plus" class="content">
+            <h2>9. MyBatis Plus</h2>
+
+            <h3>9.1 特性介绍</h3>
+            <ul>
+                <li>无侵入：只做增强不做改变</li>
+                <li>CRUD 操作：内置通用 Mapper</li>
+                <li>代码生成器：一键生成代码</li>
+                <li>分页插件：物理分页</li>
+                <li>性能分析：SQL 执行分析</li>
+            </ul>
+
+            <h3>9.2 快速开始</h3>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;3.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+
+@TableName("user")
+public class User {
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    private String name;
+    private Integer age;
+}
+
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+}</code></pre>
+
+            <h3>9.3 条件构造器</h3>
+            <pre><code>// 查询条件构造
+QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+queryWrapper
+    .like("name", "张")
+    .ge("age", 20)
+    .orderByDesc("id");
+
+// 更新条件构造
+UpdateWrapper&lt;User&gt; updateWrapper = new UpdateWrapper&lt;&gt;();
+updateWrapper
+    .set("age", 18)
+    .eq("name", "张三");</code></pre>
+
+            <h3>9.4 分页查询</h3>
+            <pre><code>@Configuration
+public class MybatisPlusConfig {
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        return interceptor;
+    }
+}
+
+// 使用分页
+Page&lt;User&gt; page = new Page&lt;&gt;(1, 10);
+Page&lt;User&gt; userPage = userMapper.selectPage(page, null);</code></pre>
+        </section>
+
+        <section id="best-practices" class="content">
+            <h2>10. 最佳实践</h2>
+
+            <h3>10.1 开发建议</h3>
+            <ul>
+                <li>合理使用缓存提高性能</li>
+                <li>避免滥用动态 SQL</li>
+                <li>使用批量操作处理大量数据</li>
+                <li>合理设计 Mapper 接口</li>
+                <li>注意 SQL 注入问题</li>
+            </ul>
+
+            <h3>10.2 性能优化</h3>
+            <ul>
+                <li>使用延迟加载减少不必要查询</li>
+                <li>合理配置连接池参数</li>
+                <li>优化 SQL 语句和索引</li>
+                <li>适当使用 MyBatis Plus 提供的查询优化</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">注意事项</div>
+                <p>在使用 MyBatis Plus 时，建议先熟悉原生 MyBatis 的使用，这样能更好地理解和使用增强功能。</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html> 

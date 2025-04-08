@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #F05032;
+            --secondary-color: #D54C27;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #FFF0EC;
+            --code-background: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .command {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            background-color: var(--code-background);
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .interactive-demo {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--code-background);
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .interactive-demo h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .terminal {
+            background-color: #212529;
+            color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .terminal pre {
+            background-color: transparent;
+            color: inherit;
+            margin: 0;
+            padding: 0;
+        }
+
+        .command-input {
+            display: flex;
+            margin-top: 1rem;
+        }
+
+        .command-input input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px 0 0 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .command-input button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .command-input button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .tip {
+            background-color: var(--hover-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents {
+            background-color: var(--code-background);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+
+        .workflow-diagram {
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .workflow-diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Git 学习教程</h1>
+            <p class="subtitle">全面的 Git 版本控制系统学习指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="table-of-contents">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#introduction">1. Git 简介</a></li>
+                <li><a href="#installation">2. 安装与配置</a></li>
+                <li><a href="#basic-commands">3. 基本命令</a></li>
+                <li><a href="#branching">4. 分支管理</a></li>
+                <li><a href="#remote">5. 远程仓库</a></li>
+                <li><a href="#workflow">6. Git 工作流</a></li>
+                <li><a href="#advanced">7. 高级技巧</a></li>
+                <li><a href="#best-practices">8. 最佳实践</a></li>
+                <li><a href="#troubleshooting">9. 常见问题解决</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="content">
+            <h2>1. Git 简介</h2>
+            <p>Git 是一个分布式版本控制系统，由 Linux 创始人 Linus Torvalds 在 2005 年创建，用于 Linux 内核的开发。它可以高效地处理从小型到大型项目的所有内容，并且是完全免费和开源的。</p>
+
+            <h3>1.1 Git 的特点</h3>
+            <ul>
+                <li><strong>分布式系统</strong>：每个开发者都拥有完整的代码库副本</li>
+                <li><strong>快速而高效</strong>：设计用于处理大型项目</li>
+                <li><strong>数据完整性</strong>：Git 确保所有数据的完整性</li>
+                <li><strong>非线性开发</strong>：支持多分支并行开发</li>
+                <li><strong>灵活的工作流</strong>：适应各种开发模式</li>
+            </ul>
+
+            <h3>1.2 Git 与其他版本控制系统的区别</h3>
+            <p>与 SVN 等集中式版本控制系统不同，Git 不依赖中央服务器，每个人的本地仓库都包含完整的历史记录。这使得 Git 在网络不可用时仍然可以工作，并且速度更快。</p>
+
+            <div class="tip">
+                <div class="tip-title">学习建议</div>
+                <p>Git 的概念可能在开始时有些难以理解，尤其是对于从集中式版本控制系统转过来的人。但一旦掌握了基本原理，Git 将成为一个非常强大的工具。</p>
+            </div>
+        </section>
+
+        <section id="installation" class="content">
+            <h2>2. 安装与配置</h2>
+            <p>在开始使用 Git 之前，我们需要先安装 Git 并进行基本配置。</p>
+
+            <h3>2.1 安装 Git</h3>
+
+            <h4>Windows</h4>
+            <p>从 <a href="https://git-scm.com/download/win" target="_blank">Git 官网</a> 下载安装程序，按照向导进行安装。</p>
+
+            <h4>macOS</h4>
+            <p>可以通过 Homebrew 安装：</p>
+            <pre><code>brew install git</code></pre>
+
+            <h4>Linux</h4>
+            <p>对于 Debian/Ubuntu：</p>
+            <pre><code>sudo apt-get update
+sudo apt-get install git</code></pre>
+
+            <p>对于 Fedora：</p>
+            <pre><code>sudo dnf install git</code></pre>
+
+            <h3>2.2 配置 Git</h3>
+            <p>安装 Git 后，需要设置用户名和邮箱：</p>
+            <pre><code>git config --global user.name "你的名字"
+git config --global user.email "你的邮箱"</code></pre>
+
+            <p>查看所有配置：</p>
+            <pre><code>git config --list</code></pre>
+
+            <h3>2.3 配置 SSH 密钥</h3>
+            <p>为了方便与 GitHub 等远程仓库通信，建议配置 SSH 密钥：</p>
+            <pre><code>ssh-keygen -t rsa -b 4096 -C "你的邮箱"</code></pre>
+
+            <p>然后将生成的公钥（通常在 ~/.ssh/id_rsa.pub）添加到 GitHub 的 SSH Keys 中。</p>
+
+            <div class="tip">
+                <div class="tip-title">配置建议</div>
+                <p>设置一些有用的别名可以提高工作效率，例如：</p>
+                <pre><code>git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status</code></pre>
+            </div>
+        </section>
+
+        <section id="basic-commands" class="content">
+            <h2>3. 基本命令</h2>
+            <p>Git 的基本工作流程包括：修改文件，将更改添加到暂存区，然后提交到版本库。</p>
+
+            <h3>3.1 创建与克隆仓库</h3>
+            <p>初始化新仓库：</p>
+            <pre><code>git init</code></pre>
+
+            <p>克隆现有仓库：</p>
+            <pre><code>git clone https://github.com/username/repository.git</code></pre>
+
+            <h3>3.2 基本操作</h3>
+            <p>查看状态：</p>
+            <pre><code>git status</code></pre>
+
+            <p>添加文件到暂存区：</p>
+            <pre><code>git add filename    # 添加单个文件
+git add .          # 添加所有更改</code></pre>
+
+            <p>提交更改：</p>
+            <pre><code>git commit -m "提交信息"</code></pre>
+
+            <p>查看提交历史：</p>
+            <pre><code>git log</code></pre>
+
+            <div class="interactive-demo">
+                <h4>交互式演示：基本 Git 操作</h4>
+                <p>尝试下面的命令来体验 Git 的基本工作流程：</p>
+                <div class="terminal" id="basic-terminal">
+                    <pre>$ git init
+Initialized empty Git repository in /project/.git/
+
+$ echo "# My Project" > README.md
+
+$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        README.md
+
+$ git add README.md
+
+$ git commit -m "Initial commit"
+[master (root-commit) a1b2c3d] Initial commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md</pre>
+                </div>
+            </div>
+
+            <h3>3.3 撤销更改</h3>
+            <p>撤销工作区的更改：</p>
+            <pre><code>git checkout -- filename</code></pre>
+
+            <p>撤销暂存区的更改：</p>
+            <pre><code>git reset HEAD filename</code></pre>
+
+            <p>修改最近的提交：</p>
+            <pre><code>git commit --amend</code></pre>
+        </section>
+
+        <section id="branching" class="content">
+            <h2>4. 分支管理</h2>
+            <p>分支是 Git 的核心概念之一，允许并行开发而不会相互干扰。</p>
+
+            <h3>4.1 分支操作</h3>
+            <p>查看分支：</p>
+            <pre><code>git branch          # 查看本地分支
+git branch -r       # 查看远程分支
+git branch -a       # 查看所有分支</code></pre>
+
+            <p>创建与切换分支：</p>
+            <pre><code>git branch feature       # 创建分支
+git checkout feature     # 切换分支
+git checkout -b feature  # 创建并切换分支</code></pre>
+
+            <h3>4.2 合并分支</h3>
+            <p>将其他分支合并到当前分支：</p>
+            <pre><code>git merge feature</code></pre>
+
+            <p>解决合并冲突后标记为已解决：</p>
+            <pre><code>git add filename
+git commit</code></pre>
+
+            <h3>4.3 变基（Rebase）</h3>
+            <p>与合并类似，但会重写提交历史：</p>
+            <pre><code>git checkout feature
+git rebase master</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">分支使用建议</div>
+                <p>一个常见的工作流是：</p>
+                <ul>
+                    <li><code>master</code>：稳定的生产分支</li>
+                    <li><code>develop</code>：开发分支</li>
+                    <li><code>feature/*</code>：功能分支</li>
+                    <li><code>hotfix/*</code>：紧急修复分支</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="remote" class="content">
+            <h2>5. 远程仓库</h2>
+            <p>远程仓库允许多人协作开发同一个项目。</p>
+
+            <h3>5.1 管理远程仓库</h3>
+            <p>查看远程仓库：</p>
+            <pre><code>git remote -v</code></pre>
+
+            <p>添加远程仓库：</p>
+            <pre><code>git remote add origin https://github.com/username/repository.git</code></pre>
+
+            <p>修改远程仓库地址：</p>
+            <pre><code>git remote set-url origin https://github.com/username/new-repository.git</code></pre>
+
+            <h3>5.2 同步远程仓库</h3>
+            <p>推送本地分支到远程：</p>
+            <pre><code>git push origin master</code></pre>
+
+            <p>拉取远程更新到本地：</p>
+            <pre><code>git fetch origin       # 只下载远程更新
+git pull origin master  # 下载并合并</code></pre>
+
+            <h3>5.3 处理远程分支</h3>
+            <p>跟踪远程分支：</p>
+            <pre><code>git checkout --track origin/feature</code></pre>
+
+            <p>删除远程分支：</p>
+            <pre><code>git push origin --delete feature</code></pre>
+        </section>
+
+        <section id="workflow" class="content">
+            <h2>6. Git 工作流</h2>
+            <p>Git 工作流是团队协作的最佳实践模式。</p>
+
+            <h3>6.1 集中式工作流</h3>
+            <p>所有开发者直接在 master 分支上工作，类似于 SVN。</p>
+
+            <h3>6.2 功能分支工作流</h3>
+            <p>每个新功能都在专门的分支上开发，然后合并回主分支。</p>
+
+            <h3>6.3 Gitflow 工作流</h3>
+            <p>严格的分支模型，包括 master、develop、feature、release 和 hotfix 分支。</p>
+
+            <div class="workflow-diagram">
+                <svg width="500" height="300" viewBox="0 0 500 300">
+                    <g>
+                        <!-- Master Branch -->
+                        <line x1="50" y1="50" x2="450" y2="50" stroke="#F05032" stroke-width="3"/>
+                        <circle cx="150" cy="50" r="8" fill="#F05032"/>
+                        <circle cx="350" cy="50" r="8" fill="#F05032"/>
+                        <text x="25" y="55" fill="#F05032" font-weight="bold">master</text>
+                        
+                        <!-- Develop Branch -->
+                        <line x1="50" y1="100" x2="450" y2="100" stroke="#0078D7" stroke-width="3"/>
+                        <circle cx="100" cy="100" r="8" fill="#0078D7"/>
+                        <circle cx="200" cy="100" r="8" fill="#0078D7"/>
+                        <circle cx="300" cy="100" r="8" fill="#0078D7"/>
+                        <circle cx="400" cy="100" r="8" fill="#0078D7"/>
+                        <text x="25" y="105" fill="#0078D7" font-weight="bold">develop</text>
+                        
+                        <!-- Feature Branch -->
+                        <line x1="200" y1="100" x2="250" y2="150" stroke="#6DB33F" stroke-width="2"/>
+                        <line x1="250" y1="150" x2="300" y2="100" stroke="#6DB33F" stroke-width="2"/>
+                        <circle cx="250" cy="150" r="8" fill="#6DB33F"/>
+                        <text x="260" y="155" fill="#6DB33F">feature</text>
+                        
+                        <!-- Hotfix Branch -->
+                        <line x1="150" y1="50" x2="200" y2="200" stroke="#F44336" stroke-width="2"/>
+                        <line x1="200" y1="200" x2="350" y2="50" stroke="#F44336" stroke-width="2"/>
+                        <circle cx="200" cy="200" r="8" fill="#F44336"/>
+                        <text x="210" y="205" fill="#F44336">hotfix</text>
+                        
+                        <!-- Release Branch -->
+                        <line x1="300" y1="100" x2="350" y2="250" stroke="#FFD700" stroke-width="2"/>
+                        <line x1="350" y1="250" x2="400" y2="100" stroke="#FFD700" stroke-width="2"/>
+                        <line x1="350" y1="250" x2="350" y2="50" stroke="#FFD700" stroke-width="2" stroke-dasharray="5,5"/>
+                        <circle cx="350" cy="250" r="8" fill="#FFD700"/>
+                        <text x="360" y="255" fill="#FFD700">release</text>
+                    </g>
+                </svg>
+            </div>
+
+            <h3>6.4 Forking 工作流</h3>
+            <p>常用于开源项目，每个开发者都有自己的远程仓库副本。</p>
+        </section>
+
+        <section id="advanced" class="content">
+            <h2>7. 高级技巧</h2>
+            <p>掌握以下高级技巧可以更有效地使用 Git。</p>
+
+            <h3>7.1 储藏（Stash）</h3>
+            <p>暂时保存修改而不提交：</p>
+            <pre><code>git stash
+git stash list
+git stash apply
+git stash pop
+git stash drop</code></pre>
+
+            <h3>7.2 Cherry-pick</h3>
+            <p>应用特定提交的更改：</p>
+            <pre><code>git cherry-pick commitID</code></pre>
+
+            <h3>7.3 交互式变基</h3>
+            <p>整理提交历史：</p>
+            <pre><code>git rebase -i HEAD~3</code></pre>
+
+            <h3>7.4 子模块</h3>
+            <p>在一个仓库中包含其他仓库：</p>
+            <pre><code>git submodule add https://github.com/username/library.git lib
+git submodule init
+git submodule update</code></pre>
+
+            <h3>7.5 Git Hooks</h3>
+            <p>自定义 Git 的行为：</p>
+            <pre><code>#!/bin/sh
+# pre-commit hook example
+if git diff --cached | grep -q "console.log"
+then
+  echo "Warning: You have console.log statements in your code."
+  exit 1
+fi</code></pre>
+        </section>
+
+        <section id="best-practices" class="content">
+            <h2>8. 最佳实践</h2>
+            <p>遵循这些最佳实践可以提高团队协作效率。</p>
+
+            <h3>8.1 提交规范</h3>
+            <p>编写明确的提交信息：</p>
+            <pre><code>feat: 添加新功能
+fix: 修复 bug
+docs: 更新文档
+style: 代码风格调整
+refactor: 重构代码
+test: 添加测试
+chore: 构建过程或辅助工具的变动</code></pre>
+
+            <h3>8.2 频繁提交</h3>
+            <p>小而频繁的提交比大而不频繁的提交更好，这样可以更容易追踪变更。</p>
+
+            <h3>8.3 保持主分支稳定</h3>
+            <p>确保主分支（如 master）始终可构建，可部署。</p>
+
+            <h3>8.4 使用 .gitignore</h3>
+            <p>忽略不应该提交的文件和目录：</p>
+            <pre><code># Node.js
+node_modules/
+npm-debug.log
+
+# IDE
+.idea/
+.vscode/
+
+# 构建输出
+dist/
+build/
+
+# 环境变量
+.env
+.env.local</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">团队协作提示</div>
+                <p>建立清晰的分支策略和合并流程，并确保团队成员都了解并遵循。使用 Pull Request 或 Merge Request 进行代码审查。</p>
+            </div>
+        </section>
+
+        <section id="troubleshooting" class="content">
+            <h2>9. 常见问题解决</h2>
+            <p>使用 Git 时可能遇到的问题及解决方案。</p>
+
+            <h3>9.1 撤销错误操作</h3>
+            <p>撤销合并：</p>
+            <pre><code>git merge --abort</code></pre>
+
+            <p>撤销提交：</p>
+            <pre><code>git reset --soft HEAD^   # 保留更改
+git reset --hard HEAD^   # 丢弃更改</code></pre>
+
+            <h3>9.2 找回丢失的提交</h3>
+            <p>使用 reflog 找回：</p>
+            <pre><code>git reflog
+git checkout commitID</code></pre>
+
+            <h3>9.3 解决合并冲突</h3>
+            <p>当发生合并冲突时，Git 会在文件中标记冲突区域：</p>
+            <pre><code><<<<<<< HEAD
+当前分支的内容
+=======
+要合并的分支的内容
+>>>>>>> feature</code></pre>
+            
+            <p>手动编辑文件解决冲突，然后：</p>
+            <pre><code>git add filename
+git commit</code></pre>
+
+            <h3>9.4 清理仓库</h3>
+            <p>删除未跟踪的文件：</p>
+            <pre><code>git clean -n  # 预览将被删除的文件
+git clean -f  # 删除文件</code></pre>
+
+            <p>压缩仓库：</p>
+            <pre><code>git gc</code></pre>
+        </section>
+    </main>
+
+    <script>
+        // 这里可以添加交互式示例的 JavaScript 代码
+        document.addEventListener('DOMContentLoaded', function() {
+            // 示例代码可以在这里添加
+        });
+    </script>
+</body>
+</html> 

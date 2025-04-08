@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #00758F;
+            --secondary-color: #005E73;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5F7;
+            --code-background: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .tip {
+            background-color: var(--hover-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents {
+            background-color: var(--code-background);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .query-example {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>MySQL 学习教程</h1>
+            <p class="subtitle">全面的 MySQL 数据库基础知识与性能优化指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="table-of-contents">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#introduction">1. MySQL 简介</a></li>
+                <li><a href="#installation">2. 安装与配置</a></li>
+                <li><a href="#basic-concepts">3. 基础概念</a></li>
+                <li><a href="#sql-basics">4. SQL 基础</a></li>
+                <li><a href="#data-types">5. 数据类型与设计</a></li>
+                <li><a href="#indexes">6. 索引优化</a></li>
+                <li><a href="#query-optimization">7. 查询优化</a></li>
+                <li><a href="#performance">8. 性能调优</a></li>
+                <li><a href="#backup-recovery">9. 备份与恢复</a></li>
+                <li><a href="#security">10. 安全管理</a></li>
+                <li><a href="#best-practices">11. 最佳实践</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="content">
+            <h2>1. MySQL 简介</h2>
+            <p>MySQL 是世界上最受欢迎的开源关系型数据库管理系统之一，由瑞典 MySQL AB 公司开发，现在属于 Oracle 公司。</p>
+
+            <h3>1.1 MySQL 的特点</h3>
+            <ul>
+                <li>开源免费：社区版完全免费</li>
+                <li>性能卓越：优秀的查询性能和并发处理能力</li>
+                <li>可靠性高：支持事务处理、外键、触发器等特性</li>
+                <li>跨平台：支持多种操作系统</li>
+                <li>易于使用：简单的安装和配置过程</li>
+            </ul>
+
+            <h3>1.2 应用场景</h3>
+            <ul>
+                <li>Web 应用数据存储</li>
+                <li>日志系统</li>
+                <li>电子商务平台</li>
+                <li>内容管理系统</li>
+                <li>分布式数据库系统</li>
+            </ul>
+        </section>
+
+        <section id="installation" class="content">
+            <h2>2. 安装与配置</h2>
+            
+            <h3>2.1 下载与安装</h3>
+            <p>从 MySQL 官网下载适合您操作系统的版本：</p>
+            <pre><code>// Windows
+下载 MySQL Installer 并按照向导安装
+
+// Linux (Ubuntu)
+sudo apt update
+sudo apt install mysql-server
+
+// macOS
+brew install mysql</code></pre>
+
+            <h3>2.2 基本配置</h3>
+            <p>配置文件位置：</p>
+            <ul>
+                <li>Windows: C:\ProgramData\MySQL\MySQL Server 8.0\my.ini</li>
+                <li>Linux: /etc/mysql/my.cnf</li>
+                <li>macOS: /usr/local/etc/my.cnf</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">安全提示</div>
+                <p>安装后请立即修改 root 密码，并删除测试数据库和匿名用户。</p>
+            </div>
+        </section>
+
+        <section id="basic-concepts" class="content">
+            <h2>3. 基础概念</h2>
+
+            <h3>3.1 数据库基础</h3>
+            <ul>
+                <li>数据库（Database）：相关数据的集合</li>
+                <li>表（Table）：数据的结构化存储单元</li>
+                <li>行（Row）：表中的一条记录</li>
+                <li>列（Column）：表中的一个字段</li>
+                <li>主键（Primary Key）：唯一标识表中每条记录的字段</li>
+                <li>外键（Foreign Key）：关联其他表的字段</li>
+            </ul>
+
+            <h3>3.2 MySQL 架构</h3>
+            <p>MySQL 采用客户端/服务器架构，主要组件包括：</p>
+            <ul>
+                <li>连接池：管理客户端连接</li>
+                <li>查询缓存：存储查询结果</li>
+                <li>解析器：解析 SQL 语句</li>
+                <li>优化器：生成执行计划</li>
+                <li>存储引擎：管理数据存储</li>
+            </ul>
+        </section>
+
+        <section id="sql-basics" class="content">
+            <h2>4. SQL 基础</h2>
+
+            <h3>4.1 数据定义语言（DDL）</h3>
+            <div class="query-example">
+                <pre><code>-- 创建数据库
+CREATE DATABASE mydb;
+
+-- 创建表
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 修改表结构
+ALTER TABLE users ADD COLUMN age INT;
+
+-- 删除表
+DROP TABLE users;</code></pre>
+            </div>
+
+            <h3>4.2 数据操作语言（DML）</h3>
+            <div class="query-example">
+                <pre><code>-- 插入数据
+INSERT INTO users (username, email) VALUES ('john', 'john@example.com');
+
+-- 更新数据
+UPDATE users SET age = 25 WHERE username = 'john';
+
+-- 删除数据
+DELETE FROM users WHERE id = 1;</code></pre>
+            </div>
+
+            <h3>4.3 数据查询语言（DQL）</h3>
+            <div class="query-example">
+                <pre><code>-- 基本查询
+SELECT * FROM users WHERE age > 18;
+
+-- 连接查询
+SELECT u.username, o.order_date
+FROM users u
+JOIN orders o ON u.id = o.user_id;
+
+-- 分组查询
+SELECT country, COUNT(*) as user_count
+FROM users
+GROUP BY country
+HAVING user_count > 100;</code></pre>
+            </div>
+        </section>
+
+        <section id="data-types" class="content">
+            <h2>5. 数据类型与设计</h2>
+
+            <h3>5.1 常用数据类型</h3>
+            <table>
+                <tr>
+                    <th>类型</th>
+                    <th>说明</th>
+                    <th>使用场景</th>
+                </tr>
+                <tr>
+                    <td>INT</td>
+                    <td>整数类型</td>
+                    <td>ID、年龄、数量等</td>
+                </tr>
+                <tr>
+                    <td>VARCHAR</td>
+                    <td>变长字符串</td>
+                    <td>用户名、标题等</td>
+                </tr>
+                <tr>
+                    <td>TEXT</td>
+                    <td>长文本</td>
+                    <td>文章内容、描述等</td>
+                </tr>
+                <tr>
+                    <td>DATETIME</td>
+                    <td>日期时间</td>
+                    <td>创建时间、更新时间等</td>
+                </tr>
+            </table>
+
+            <h3>5.2 数据库设计原则</h3>
+            <ul>
+                <li>遵循数据库范式（1NF、2NF、3NF）</li>
+                <li>适当冗余以提高查询效率</li>
+                <li>选择合适的主键</li>
+                <li>建立合理的索引</li>
+                <li>使用合适的字符集和排序规则</li>
+            </ul>
+        </section>
+
+        <section id="indexes" class="content">
+            <h2>6. 索引优化</h2>
+
+            <h3>6.1 索引类型</h3>
+            <ul>
+                <li>普通索引：最基本的索引类型</li>
+                <li>唯一索引：确保字段值唯一</li>
+                <li>主键索引：特殊的唯一索引</li>
+                <li>复合索引：多个字段组成的索引</li>
+                <li>全文索引：用于全文搜索</li>
+            </ul>
+
+            <h3>6.2 索引优化策略</h3>
+            <div class="tip">
+                <div class="tip-title">索引使用建议</div>
+                <ul>
+                    <li>频繁查询的字段建立索引</li>
+                    <li>避免过多索引（影响写入性能）</li>
+                    <li>选择区分度高的列建立索引</li>
+                    <li>考虑索引的选择性</li>
+                    <li>注意索引的维护成本</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="query-optimization" class="content">
+            <h2>7. 查询优化</h2>
+
+            <h3>7.1 EXPLAIN 分析</h3>
+            <div class="query-example">
+                <pre><code>EXPLAIN SELECT * FROM users WHERE age > 18;</code></pre>
+            </div>
+            <p>关注以下指标：</p>
+            <ul>
+                <li>type：访问类型（const, ref, range等）</li>
+                <li>key：使用的索引</li>
+                <li>rows：扫描的行数</li>
+                <li>Extra：额外信息</li>
+            </ul>
+
+            <h3>7.2 查询优化技巧</h3>
+            <ul>
+                <li>只查询需要的列（避免 SELECT *）</li>
+                <li>使用覆盖索引</li>
+                <li>避免全表扫描</li>
+                <li>合理使用子查询</li>
+                <li>优化 JOIN 语句</li>
+                <li>使用合适的 WHERE 条件</li>
+            </ul>
+        </section>
+
+        <section id="performance" class="content">
+            <h2>8. 性能调优</h2>
+
+            <h3>8.1 服务器参数优化</h3>
+            <ul>
+                <li>innodb_buffer_pool_size：InnoDB 缓冲池大小</li>
+                <li>max_connections：最大连接数</li>
+                <li>query_cache_size：查询缓存大小</li>
+                <li>tmp_table_size：临时表大小</li>
+            </ul>
+
+            <h3>8.2 性能监控</h3>
+            <div class="query-example">
+                <pre><code>-- 查看当前连接
+SHOW PROCESSLIST;
+
+-- 查看状态变量
+SHOW GLOBAL STATUS;
+
+-- 查看系统变量
+SHOW VARIABLES;</code></pre>
+            </div>
+        </section>
+
+        <section id="backup-recovery" class="content">
+            <h2>9. 备份与恢复</h2>
+
+            <h3>9.1 备份策略</h3>
+            <ul>
+                <li>物理备份：直接复制数据文件</li>
+                <li>逻辑备份：使用 mysqldump</li>
+                <li>热备份：在线备份</li>
+                <li>冷备份：离线备份</li>
+            </ul>
+
+            <h3>9.2 备份命令</h3>
+            <div class="query-example">
+                <pre><code>-- 使用 mysqldump 备份
+mysqldump -u root -p database_name > backup.sql
+
+-- 恢复数据库
+mysql -u root -p database_name < backup.sql</code></pre>
+            </div>
+        </section>
+
+        <section id="security" class="content">
+            <h2>10. 安全管理</h2>
+
+            <h3>10.1 用户管理</h3>
+            <div class="query-example">
+                <pre><code>-- 创建用户
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+
+-- 授权
+GRANT SELECT, INSERT ON database.* TO 'username'@'localhost';
+
+-- 撤销权限
+REVOKE SELECT ON database.* FROM 'username'@'localhost';</code></pre>
+            </div>
+
+            <h3>10.2 安全最佳实践</h3>
+            <ul>
+                <li>定期更新密码</li>
+                <li>限制远程访问</li>
+                <li>使用最小权限原则</li>
+                <li>启用 SSL 加密</li>
+                <li>定期安全审计</li>
+            </ul>
+        </section>
+
+        <section id="best-practices" class="content">
+            <h2>11. 最佳实践</h2>
+
+            <h3>11.1 开发规范</h3>
+            <ul>
+                <li>使用预处理语句防止 SQL 注入</li>
+                <li>合理使用事务</li>
+                <li>避免使用存储过程</li>
+                <li>规范的命名约定</li>
+                <li>编写清晰的注释</li>
+            </ul>
+
+            <h3>11.2 运维建议</h3>
+            <ul>
+                <li>定期维护和优化</li>
+                <li>监控系统性能</li>
+                <li>做好备份策略</li>
+                <li>及时更新版本</li>
+                <li>建立高可用方案</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">注意事项</div>
+                <p>在进行任何重要操作前，请确保已经做好备份，并在测试环境验证过。</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html> 
