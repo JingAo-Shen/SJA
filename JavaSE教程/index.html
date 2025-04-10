@@ -1,0 +1,5837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java SE 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #007396;
+            --secondary-color: #00537A;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5FC;
+            --code-background: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        h4 {
+            color: var(--secondary-color);
+            margin: 1.2rem 0 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+
+        .tip {
+            background-color: var(--hover-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning {
+            background-color: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #E65100;
+        }
+
+        .table-of-contents {
+            background-color: var(--code-background);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-of-contents a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--hover-color);
+            color: var(--primary-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Java SE 学习教程</h1>
+            <p class="subtitle">全面的 Java 标准版编程指南</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="table-of-contents">
+            <h2>目录</h2>
+            <ul>
+                <li><a href="#introduction">1. Java 简介</a></li>
+                <li><a href="#installation">2. 开发环境搭建</a></li>
+                <li><a href="#basics">3. Java 基础语法</a></li>
+                <li><a href="#datatypes">4. 数据类型与变量</a></li>
+                <li><a href="#operators">5. 运算符</a></li>
+                <li><a href="#controlflow">6. 控制流程</a></li>
+                <li><a href="#arrays">7. 数组</a></li>
+                <li><a href="#oop">8. 面向对象编程</a></li>
+                <li><a href="#inheritance">9. 继承与多态</a></li>
+                <li><a href="#interfaces">10. 接口与抽象类</a></li>
+                <li><a href="#exception">11. 异常处理</a></li>
+                <li><a href="#collections">12. 集合框架</a></li>
+                <li><a href="#io">13. I/O 操作</a></li>
+                <li><a href="#threads">14. 多线程编程</a></li>
+                <li><a href="#reflection">15. 反射与注解</a></li>
+                <li><a href="#lambda">16. Lambda 表达式与函数式编程</a></li>
+                <li><a href="#generics">17. 泛型</a></li>
+                <li><a href="#utils">18. 常用工具类</a></li>
+                <li><a href="#bestpractices">19. 最佳实践</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction" class="content">
+            <h2>1. Java 简介</h2>
+            <p>Java 是一种广泛使用的计算机编程语言，由 Sun Microsystems 公司于 1995 年发布，后被 Oracle 公司收购。Java 具有跨平台、面向对象、安全可靠等特点，是世界上最流行的编程语言之一。</p>
+
+            <h3>1.1 Java 的特点</h3>
+            <ul>
+                <li><strong>跨平台性</strong>：一次编写，到处运行（Write Once, Run Anywhere）</li>
+                <li><strong>面向对象</strong>：基于类和对象的概念设计</li>
+                <li><strong>简单性</strong>：去除了指针等复杂特性，自动内存管理</li>
+                <li><strong>健壮性</strong>：强类型机制、异常处理和自动内存管理</li>
+                <li><strong>安全性</strong>：提供安全的执行环境</li>
+                <li><strong>高性能</strong>：JIT (即时编译)技术提高运行速度</li>
+                <li><strong>多线程</strong>：内置多线程支持</li>
+                <li><strong>分布式</strong>：设计用于分布式环境</li>
+            </ul>
+
+            <h3>1.2 Java 技术体系</h3>
+            <p>Java 技术体系主要分为三个版本：</p>
+            <ul>
+                <li><strong>Java SE (Standard Edition)</strong>：标准版，用于桌面和简单服务器应用程序开发</li>
+                <li><strong>Java EE (Enterprise Edition)</strong>：企业版，用于开发企业级应用和基于互联网的应用程序</li>
+                <li><strong>Java ME (Micro Edition)</strong>：微型版，用于移动设备和嵌入式设备的应用开发</li>
+            </ul>
+
+            <h3>1.3 Java 运行机制</h3>
+            <p>Java 程序运行的基本流程：</p>
+            <ol>
+                <li>编写 Java 源代码（.java 文件）</li>
+                <li>使用 Java 编译器将源代码编译为字节码（.class 文件）</li>
+                <li>通过 Java 虚拟机（JVM）将字节码转换为机器码并执行</li>
+            </ol>
+
+            <div class="image-container">
+                <img src="https://www.oracle.com/a/tech/img/cb88-java-platform-3.jpg" alt="Java 运行机制">
+                <p class="caption">图 1-1: Java 程序运行机制示意图</p>
+            </div>
+
+            <div class="tip">
+                <div class="tip-title">Java 优势</div>
+                <p>Java 的 "一次编写，到处运行" 特性使得开发人员可以在一个平台上开发程序，然后在任何其他支持 Java 的平台上运行，无需修改代码或重新编译。</p>
+            </div>
+        </section>
+
+        <section id="installation" class="content">
+            <h2>2. 开发环境搭建</h2>
+            <p>在开始 Java 编程之前，需要安装 Java 开发工具包（JDK）并配置开发环境。</p>
+
+            <h3>2.1 安装 JDK</h3>
+            <p><strong>步骤 1：下载 JDK</strong></p>
+            <p>访问 <a href="https://www.oracle.com/java/technologies/downloads/" target="_blank">Oracle 官方网站</a> 或 <a href="https://adoptium.net/" target="_blank">Eclipse Adoptium</a> 下载适合您操作系统的 JDK。</p>
+
+            <p><strong>步骤 2：安装 JDK</strong></p>
+            <ul>
+                <li><strong>Windows</strong>：双击下载的安装文件，按照安装向导完成安装。</li>
+                <li><strong>macOS</strong>：双击下载的 .dmg 文件，按照安装向导完成安装。</li>
+                <li><strong>Linux</strong>：使用包管理器（如 apt、yum）或解压下载的压缩包安装。</li>
+            </ul>
+
+            <h3>2.2 配置环境变量</h3>
+            <p><strong>Windows 系统：</strong></p>
+            <ol>
+                <li>右键点击 "此电脑"，选择 "属性"</li>
+                <li>点击 "高级系统设置"</li>
+                <li>点击 "环境变量"</li>
+                <li>在 "系统变量" 区域，新建变量 JAVA_HOME，值为 JDK 安装路径（如 C:\Program Files\Java\jdk-17）</li>
+                <li>编辑 Path 变量，添加 %JAVA_HOME%\bin</li>
+                <li>确认保存所有设置</li>
+            </ol>
+
+            <p><strong>macOS/Linux 系统：</strong></p>
+            <pre><code># 编辑 ~/.bash_profile 或 ~/.zshrc 文件
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home
+export PATH=$JAVA_HOME/bin:$PATH
+
+# 使设置生效
+source ~/.bash_profile  # 或 source ~/.zshrc</code></pre>
+
+            <h3>2.3 验证安装</h3>
+            <p>打开命令行终端，输入以下命令：</p>
+            <pre><code>java -version
+javac -version</code></pre>
+            <p>如果显示 JDK 版本信息，说明安装和配置成功。</p>
+
+            <h3>2.4 集成开发环境 (IDE)</h3>
+            <p>虽然可以使用简单的文本编辑器和命令行工具进行 Java 开发，但使用集成开发环境可以提高开发效率。以下是几个流行的 Java IDE：</p>
+            <ul>
+                <li><strong>IntelliJ IDEA</strong>：功能强大，被广泛认为是最好的 Java IDE，有社区版和商业版</li>
+                <li><strong>Eclipse</strong>：开源免费，插件丰富，适合各种规模的项目</li>
+                <li><strong>NetBeans</strong>：免费的 IDE，用户界面友好，适合初学者</li>
+                <li><strong>Visual Studio Code</strong>：轻量级编辑器，安装 Java 扩展后可用于 Java 开发</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">IDE 选择建议</div>
+                <p>对于初学者，推荐使用 IntelliJ IDEA 社区版或 Eclipse，它们提供了丰富的功能和良好的社区支持。</p>
+            </div>
+
+            <h3>2.5 创建第一个 Java 程序</h3>
+            <p>创建一个名为 HelloWorld.java 的文件，输入以下代码：</p>
+            <pre><code>public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}</code></pre>
+
+            <p><strong>使用命令行编译和运行：</strong></p>
+            <pre><code>// 编译
+javac HelloWorld.java
+
+// 运行
+java HelloWorld</code></pre>
+
+            <p>如果一切正常，程序将输出 "Hello, World!"。</p>
+
+            <div class="warning">
+                <div class="warning-title">注意事项</div>
+                <p>在 Java 中，类名（如 HelloWorld）必须与文件名完全一致，包括大小写。否则，编译将失败。</p>
+            </div>
+        </section>
+
+        <section id="basics" class="content">
+            <h2>3. Java 基础语法</h2>
+            <p>学习 Java 编程的第一步是掌握其基本语法规则。</p>
+
+            <h3>3.1 基本语法结构</h3>
+            <p>Java 程序基本结构包括：</p>
+            <ul>
+                <li>类定义</li>
+                <li>方法</li>
+                <li>语句和表达式</li>
+                <li>注释</li>
+            </ul>
+
+            <pre><code>// 这是一个类定义
+public class Example {
+    // 这是主方法，程序从这里开始执行
+    public static void main(String[] args) {
+        // 这是一条语句
+        System.out.println("这是一个Java程序");
+    }
+}</code></pre>
+
+            <h3>3.2 标识符</h3>
+            <p>标识符是用于命名类、变量、方法等的名称。Java 标识符的命名规则：</p>
+            <ul>
+                <li>必须以字母、下划线(_)或美元符号($)开头</li>
+                <li>后续字符可以是字母、数字、下划线或美元符号</li>
+                <li>不能使用 Java 关键字作为标识符</li>
+                <li>区分大小写</li>
+            </ul>
+
+            <p><strong>命名规范：</strong></p>
+            <ul>
+                <li>类名：首字母大写，采用驼峰命名法，如 <code>MyFirstClass</code></li>
+                <li>方法名和变量名：首字母小写，采用驼峰命名法，如 <code>myMethod</code>, <code>studentName</code></li>
+                <li>常量名：全部大写，单词间用下划线分隔，如 <code>MAX_VALUE</code></li>
+                <li>包名：全部小写，如 <code>com.example.myapp</code></li>
+            </ul>
+
+            <h3>3.3 关键字</h3>
+            <p>关键字是 Java 语言预定义的具有特殊含义的标识符。以下是一些常用的 Java 关键字：</p>
+
+            <table>
+                <tr>
+                    <th>类型</th>
+                    <th>关键字</th>
+                </tr>
+                <tr>
+                    <td>访问修饰符</td>
+                    <td>public, private, protected, default</td>
+                </tr>
+                <tr>
+                    <td>类、方法和变量修饰符</td>
+                    <td>abstract, class, extends, final, implements, interface, native, new, static, strictfp, synchronized, transient, volatile</td>
+                </tr>
+                <tr>
+                    <td>程序控制语句</td>
+                    <td>break, case, continue, default, do, else, for, if, instance of, return, switch, while</td>
+                </tr>
+                <tr>
+                    <td>错误处理</td>
+                    <td>assert, catch, finally, throw, throws, try</td>
+                </tr>
+                <tr>
+                    <td>基本类型</td>
+                    <td>boolean, byte, char, double, float, int, long, short</td>
+                </tr>
+                <tr>
+                    <td>变量引用</td>
+                    <td>super, this, void</td>
+                </tr>
+                <tr>
+                    <td>保留字</td>
+                    <td>goto, const</td>
+                </tr>
+            </table>
+
+            <h3>3.4 注释</h3>
+            <p>Java 支持三种类型的注释：</p>
+
+            <pre><code>// 单行注释，从双斜杠开始到行尾
+
+/*
+ * 多行注释，从 /* 开始到 */ 结束
+ * 可以跨越多行
+ */
+
+/**
+ * 文档注释，用于生成 JavaDoc 文档
+ * @author 作者名
+ * @version 版本号
+ */</code></pre>
+
+            <h3>3.5 Java 程序的执行流程</h3>
+            <p>Java 程序执行的基本流程：</p>
+            <ol>
+                <li>JVM 加载类</li>
+                <li>执行 <code>main</code> 方法</li>
+                <li>按照代码顺序依次执行语句</li>
+                <li>程序结束</li>
+            </ol>
+
+            <div class="tip">
+                <div class="tip-title">代码风格提示</div>
+                <p>良好的代码风格可以提高代码的可读性和可维护性。建议遵循 <a href="https://google.github.io/styleguide/javaguide.html" target="_blank">Google Java 风格指南</a> 或其他主流风格指南。</p>
+            </div>
+        </section>
+
+        <section id="datatypes" class="content">
+            <h2>4. 数据类型与变量</h2>
+            <p>Java 是一种强类型语言，所有变量必须先声明后使用，且类型在声明后不能更改。</p>
+
+            <h3>4.1 数据类型概述</h3>
+            <p>Java 的数据类型分为两大类：</p>
+            <ul>
+                <li><strong>基本数据类型</strong>：直接存储数据值</li>
+                <li><strong>引用数据类型</strong>：存储对象的引用（内存地址）</li>
+            </ul>
+
+            <h3>4.2 基本数据类型</h3>
+            <p>Java 提供了 8 种基本数据类型：</p>
+
+            <table>
+                <tr>
+                    <th>类型</th>
+                    <th>大小</th>
+                    <th>范围</th>
+                    <th>默认值</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>byte</td>
+                    <td>8位</td>
+                    <td>-128 到 127</td>
+                    <td>0</td>
+                    <td><code>byte b = 100;</code></td>
+                </tr>
+                <tr>
+                    <td>short</td>
+                    <td>16位</td>
+                    <td>-32,768 到 32,767</td>
+                    <td>0</td>
+                    <td><code>short s = 1000;</code></td>
+                </tr>
+                <tr>
+                    <td>int</td>
+                    <td>32位</td>
+                    <td>-2^31 到 2^31-1</td>
+                    <td>0</td>
+                    <td><code>int i = 100000;</code></td>
+                </tr>
+                <tr>
+                    <td>long</td>
+                    <td>64位</td>
+                    <td>-2^63 到 2^63-1</td>
+                    <td>0L</td>
+                    <td><code>long l = 100000L;</code></td>
+                </tr>
+                <tr>
+                    <td>float</td>
+                    <td>32位</td>
+                    <td>IEEE 754 浮点数</td>
+                    <td>0.0f</td>
+                    <td><code>float f = 3.14f;</code></td>
+                </tr>
+                <tr>
+                    <td>double</td>
+                    <td>64位</td>
+                    <td>IEEE 754 浮点数</td>
+                    <td>0.0d</td>
+                    <td><code>double d = 3.14159;</code></td>
+                </tr>
+                <tr>
+                    <td>boolean</td>
+                    <td>1位</td>
+                    <td>true 或 false</td>
+                    <td>false</td>
+                    <td><code>boolean isDone = true;</code></td>
+                </tr>
+                <tr>
+                    <td>char</td>
+                    <td>16位</td>
+                    <td>0 到 65,535 (Unicode)</td>
+                    <td>'\u0000'</td>
+                    <td><code>char c = 'A';</code></td>
+                </tr>
+            </table>
+
+            <h3>4.3 引用数据类型</h3>
+            <p>引用数据类型包括：</p>
+            <ul>
+                <li><strong>类</strong>：如 String, Integer 等</li>
+                <li><strong>接口</strong>：定义方法但不实现的引用类型</li>
+                <li><strong>数组</strong>：存储相同类型数据的集合</li>
+            </ul>
+
+            <pre><code>// 引用类型示例
+String name = "Java学习";
+int[] numbers = {1, 2, 3, 4, 5};
+Student student = new Student();</code></pre>
+
+            <h3>4.4 变量声明与初始化</h3>
+            <p>变量声明的基本语法：</p>
+            <pre><code>数据类型 变量名 [= 初始值];</code></pre>
+
+            <p>变量初始化示例：</p>
+            <pre><code>// 声明并初始化
+int age = 25;
+
+// 先声明后初始化
+double salary;
+salary = 5000.0;</code></pre>
+
+            <h3>4.5 变量的作用域</h3>
+            <p>变量的作用域是指变量可被访问的代码区域：</p>
+            <ul>
+                <li><strong>成员变量（实例变量）</strong>：在类中定义，属于对象实例</li>
+                <li><strong>静态变量（类变量）</strong>：在类中定义并使用 static 修饰，属于类</li>
+                <li><strong>局部变量</strong>：在方法或代码块中定义，仅在定义它的方法或代码块中可见</li>
+                <li><strong>方法参数</strong>：方法定义中的参数，在方法内可见</li>
+            </ul>
+
+            <pre><code>public class VariableScope {
+    // 实例变量
+    private int instanceVar = 10;
+    
+    // 静态变量
+    private static int staticVar = 20;
+    
+    public void method(int param) {  // 方法参数
+        // 局部变量
+        int localVar = 30;
+        
+        // 局部变量作用域
+        if (true) {
+            int blockVar = 40;  // 仅在此代码块中可见
+            System.out.println(blockVar);
+        }
+        // 此处不能访问 blockVar
+        
+        System.out.println(instanceVar);  // 可访问实例变量
+        System.out.println(staticVar);    // 可访问静态变量
+        System.out.println(param);        // 可访问方法参数
+        System.out.println(localVar);     // 可访问局部变量
+    }
+}</code></pre>
+
+            <h3>4.6 类型转换</h3>
+            <p>Java 支持两种类型转换：</p>
+            <ul>
+                <li><strong>自动类型转换（隐式转换）</strong>：小范围类型自动转换为大范围类型</li>
+                <li><strong>强制类型转换（显式转换）</strong>：大范围类型转换为小范围类型，需要显式指定</li>
+            </ul>
+
+            <pre><code>// 自动类型转换
+byte b = 100;
+int i = b;  // byte 自动转换为 int
+
+// 强制类型转换
+int x = 130;
+byte y = (byte) x;  // int 强制转换为 byte，可能损失精度</code></pre>
+
+            <p>基本类型的转换顺序（从小到大）：</p>
+            <pre><code>byte → short → int → long → float → double</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">注意事项</div>
+                <p>强制类型转换可能导致数据溢出或精度丢失。例如，将 130 转换为 byte 类型会得到 -126，因为 byte 类型的范围是 -128 到 127。</p>
+            </div>
+
+            <h3>4.7 包装类</h3>
+            <p>每个基本数据类型都有对应的包装类：</p>
+            <ul>
+                <li>byte → Byte</li>
+                <li>short → Short</li>
+                <li>int → Integer</li>
+                <li>long → Long</li>
+                <li>float → Float</li>
+                <li>double → Double</li>
+                <li>boolean → Boolean</li>
+                <li>char → Character</li>
+            </ul>
+
+            <p>包装类的主要用途：</p>
+            <ul>
+                <li>在集合中存储基本类型</li>
+                <li>提供类型转换方法</li>
+                <li>提供常用常量，如 Integer.MAX_VALUE</li>
+            </ul>
+
+            <pre><code>// 自动装箱（基本类型 → 包装类）
+int num = 100;
+Integer numObject = num;
+
+// 自动拆箱（包装类 → 基本类型）
+Integer objValue = new Integer(200);
+int value = objValue;
+
+// 字符串转换为数值
+String numStr = "123";
+int parsedNum = Integer.parseInt(numStr);</code></pre>
+        </section>
+
+        <section id="operators" class="content">
+            <h2>5. 运算符</h2>
+            <p>运算符是用于对数据进行操作的特殊符号。Java 提供了多种运算符，用于执行不同类型的操作。</p>
+
+            <h3>5.1 算术运算符</h3>
+            <p>算术运算符用于执行基本的数学运算。</p>
+            <table>
+                <tr>
+                    <th>运算符</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>+</td>
+                    <td>加法</td>
+                    <td><code>int sum = a + b;</code></td>
+                </tr>
+                <tr>
+                    <td>-</td>
+                    <td>减法</td>
+                    <td><code>int diff = a - b;</code></td>
+                </tr>
+                <tr>
+                    <td>*</td>
+                    <td>乘法</td>
+                    <td><code>int product = a * b;</code></td>
+                </tr>
+                <tr>
+                    <td>/</td>
+                    <td>除法</td>
+                    <td><code>int quotient = a / b;</code></td>
+                </tr>
+                <tr>
+                    <td>%</td>
+                    <td>取余（模运算）</td>
+                    <td><code>int remainder = a % b;</code></td>
+                </tr>
+                <tr>
+                    <td>++</td>
+                    <td>自增（加1）</td>
+                    <td><code>a++; 或 ++a;</code></td>
+                </tr>
+                <tr>
+                    <td>--</td>
+                    <td>自减（减1）</td>
+                    <td><code>a--; 或 --a;</code></td>
+                </tr>
+            </table>
+
+            <p><strong>前缀和后缀自增/自减：</strong></p>
+            <pre><code>int a = 5;
+int b = ++a;  // 先自增，后赋值，b = 6, a = 6
+int c = 5;
+int d = c++;  // 先赋值，后自增，d = 5, c = 6</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">除法运算注意事项</div>
+                <p>当两个整数相除时，结果也是整数，小数部分会被舍弃。如果需要保留小数部分，至少有一个操作数应该是浮点类型。</p>
+                <pre><code>int a = 5;
+int b = 2;
+int c = a / b;      // c = 2（整数除法）
+double d = a / (double)b;  // d = 2.5（浮点除法）</code></pre>
+            </div>
+
+            <h3>5.2 关系运算符</h3>
+            <p>关系运算符用于比较两个值，结果为布尔类型（true 或 false）。</p>
+            <table>
+                <tr>
+                    <th>运算符</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>==</td>
+                    <td>等于</td>
+                    <td><code>a == b</code></td>
+                </tr>
+                <tr>
+                    <td>!=</td>
+                    <td>不等于</td>
+                    <td><code>a != b</code></td>
+                </tr>
+                <tr>
+                    <td>></td>
+                    <td>大于</td>
+                    <td><code>a > b</code></td>
+                </tr>
+                <tr>
+                    <td><</td>
+                    <td>小于</td>
+                    <td><code>a < b</code></td>
+                </tr>
+                <tr>
+                    <td>>=</td>
+                    <td>大于或等于</td>
+                    <td><code>a >= b</code></td>
+                </tr>
+                <tr>
+                    <td><=</td>
+                    <td>小于或等于</td>
+                    <td><code>a <= b</code></td>
+                </tr>
+            </table>
+
+            <pre><code>int a = 10;
+int b = 20;
+boolean result1 = (a == b);    // false
+boolean result2 = (a != b);    // true
+boolean result3 = (a > b);     // false
+boolean result4 = (a < b);     // true
+boolean result5 = (a >= b);    // false
+boolean result6 = (a <= b);    // true</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">引用类型比较</div>
+                <p>对于引用类型，== 和 != 比较的是对象的引用（内存地址），而不是对象的内容。如果要比较对象内容，应该使用 equals() 方法。</p>
+                <pre><code>String str1 = new String("Hello");
+String str2 = new String("Hello");
+boolean result1 = (str1 == str2);         // false，比较引用
+boolean result2 = str1.equals(str2);      // true，比较内容</code></pre>
+            </div>
+
+            <h3>5.3 逻辑运算符</h3>
+            <p>逻辑运算符用于组合布尔表达式。</p>
+            <table>
+                <tr>
+                    <th>运算符</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>&&</td>
+                    <td>逻辑与（短路）</td>
+                    <td><code>a && b</code></td>
+                </tr>
+                <tr>
+                    <td>||</td>
+                    <td>逻辑或（短路）</td>
+                    <td><code>a || b</code></td>
+                </tr>
+                <tr>
+                    <td>!</td>
+                    <td>逻辑非</td>
+                    <td><code>!a</code></td>
+                </tr>
+                <tr>
+                    <td>&</td>
+                    <td>逻辑与（非短路）</td>
+                    <td><code>a & b</code></td>
+                </tr>
+                <tr>
+                    <td>|</td>
+                    <td>逻辑或（非短路）</td>
+                    <td><code>a | b</code></td>
+                </tr>
+                <tr>
+                    <td>^</td>
+                    <td>逻辑异或</td>
+                    <td><code>a ^ b</code></td>
+                </tr>
+            </table>
+
+            <pre><code>boolean a = true;
+boolean b = false;
+boolean result1 = a && b;    // false
+boolean result2 = a || b;    // true
+boolean result3 = !a;        // false
+boolean result4 = a ^ b;     // true（一个为真一个为假时结果为真）</code></pre>
+
+            <p><strong>短路运算：</strong></p>
+            <ul>
+                <li><code>&&</code>：如果左侧为 false，则不会计算右侧表达式</li>
+                <li><code>||</code>：如果左侧为 true，则不会计算右侧表达式</li>
+            </ul>
+
+            <pre><code>// 短路运算示例
+int x = 10;
+boolean result = (x < 5) && (x++ > 0);  // 右侧不会执行，x 仍然为 10</code></pre>
+
+            <h3>5.4 位运算符</h3>
+            <p>位运算符对整数类型的操作数执行按位操作。</p>
+            <table>
+                <tr>
+                    <th>运算符</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>&</td>
+                    <td>按位与</td>
+                    <td><code>a & b</code></td>
+                </tr>
+                <tr>
+                    <td>|</td>
+                    <td>按位或</td>
+                    <td><code>a | b</code></td>
+                </tr>
+                <tr>
+                    <td>^</td>
+                    <td>按位异或</td>
+                    <td><code>a ^ b</code></td>
+                </tr>
+                <tr>
+                    <td>~</td>
+                    <td>按位取反</td>
+                    <td><code>~a</code></td>
+                </tr>
+                <tr>
+                    <td><<</td>
+                    <td>左移</td>
+                    <td><code>a << n</code></td>
+                </tr>
+                <tr>
+                    <td>>></td>
+                    <td>右移（有符号）</td>
+                    <td><code>a >> n</code></td>
+                </tr>
+                <tr>
+                    <td>>>></td>
+                    <td>右移（无符号）</td>
+                    <td><code>a >>> n</code></td>
+                </tr>
+            </table>
+
+            <pre><code>int a = 5;    // 二进制：0000 0101
+int b = 3;    // 二进制：0000 0011
+int c = a & b;    // 结果：0000 0001 = 1（按位与）
+int d = a | b;    // 结果：0000 0111 = 7（按位或）
+int e = a ^ b;    // 结果：0000 0110 = 6（按位异或）
+int f = ~a;       // 结果：1111 1010 = -6（按位取反）
+int g = a << 2;   // 结果：0001 0100 = 20（左移2位）
+int h = a >> 1;   // 结果：0000 0010 = 2（右移1位）</code></pre>
+
+            <h3>5.5 赋值运算符</h3>
+            <p>赋值运算符用于给变量赋值。</p>
+            <table>
+                <tr>
+                    <th>运算符</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                    <th>等价于</th>
+                </tr>
+                <tr>
+                    <td>=</td>
+                    <td>简单赋值</td>
+                    <td><code>a = b</code></td>
+                    <td><code>a = b</code></td>
+                </tr>
+                <tr>
+                    <td>+=</td>
+                    <td>加法赋值</td>
+                    <td><code>a += b</code></td>
+                    <td><code>a = a + b</code></td>
+                </tr>
+                <tr>
+                    <td>-=</td>
+                    <td>减法赋值</td>
+                    <td><code>a -= b</code></td>
+                    <td><code>a = a - b</code></td>
+                </tr>
+                <tr>
+                    <td>*=</td>
+                    <td>乘法赋值</td>
+                    <td><code>a *= b</code></td>
+                    <td><code>a = a * b</code></td>
+                </tr>
+                <tr>
+                    <td>/=</td>
+                    <td>除法赋值</td>
+                    <td><code>a /= b</code></td>
+                    <td><code>a = a / b</code></td>
+                </tr>
+                <tr>
+                    <td>%=</td>
+                    <td>取余赋值</td>
+                    <td><code>a %= b</code></td>
+                    <td><code>a = a % b</code></td>
+                </tr>
+                <tr>
+                    <td>&=</td>
+                    <td>按位与赋值</td>
+                    <td><code>a &= b</code></td>
+                    <td><code>a = a & b</code></td>
+                </tr>
+                <tr>
+                    <td>|=</td>
+                    <td>按位或赋值</td>
+                    <td><code>a |= b</code></td>
+                    <td><code>a = a | b</code></td>
+                </tr>
+                <tr>
+                    <td>^=</td>
+                    <td>按位异或赋值</td>
+                    <td><code>a ^= b</code></td>
+                    <td><code>a = a ^ b</code></td>
+                </tr>
+                <tr>
+                    <td><<=</td>
+                    <td>左移赋值</td>
+                    <td><code>a <<= b</code></td>
+                    <td><code>a = a << b</code></td>
+                </tr>
+                <tr>
+                    <td>>>=</td>
+                    <td>右移赋值（有符号）</td>
+                    <td><code>a >>= b</code></td>
+                    <td><code>a = a >> b</code></td>
+                </tr>
+                <tr>
+                    <td>>>>=</td>
+                    <td>右移赋值（无符号）</td>
+                    <td><code>a >>>= b</code></td>
+                    <td><code>a = a >>> b</code></td>
+                </tr>
+            </table>
+
+            <pre><code>int a = 10;
+a += 5;      // a = 15
+a -= 3;      // a = 12
+a *= 2;      // a = 24
+a /= 4;      // a = 6
+a %= 4;      // a = 2</code></pre>
+
+            <h3>5.6 条件（三元）运算符</h3>
+            <p>条件运算符是唯一的三元运算符，可以替代简单的 if-else 语句。</p>
+            <pre><code>// 语法：条件表达式 ? 表达式1 : 表达式2
+// 如果条件为真，返回表达式1的值；否则，返回表达式2的值
+
+int a = 10;
+int b = 20;
+int max = (a > b) ? a : b;    // max = 20
+String status = (a > 5) ? "Greater than 5" : "Less than or equal to 5";  // status = "Greater than 5"</code></pre>
+
+            <h3>5.7 instanceof 运算符</h3>
+            <p>instanceof 运算符用于测试对象是否为特定类的实例。</p>
+            <pre><code>String str = "Hello";
+boolean result1 = str instanceof String;    // true
+boolean result2 = str instanceof Object;    // true（所有类都继承自Object）</code></pre>
+
+            <h3>5.8 运算符优先级</h3>
+            <p>Java 运算符按照优先级从高到低的顺序如下：</p>
+            <table>
+                <tr>
+                    <th>优先级</th>
+                    <th>运算符</th>
+                    <th>结合性</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>() []</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>! ~ ++ -- + - (类型)</td>
+                    <td>从右到左</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>* / %</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>+ -</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><< >> >>></td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>< <= > >= instanceof</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>== !=</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>&</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>^</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>|</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>&&</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>||</td>
+                    <td>从左到右</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>? :</td>
+                    <td>从右到左</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>= += -= *= /= %= &= ^= |= <<= >>= >>>=</td>
+                    <td>从右到左</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <div class="tip-title">使用括号明确优先级</div>
+                <p>为了提高代码的可读性和避免优先级错误，建议使用括号明确表达式的计算顺序。</p>
+                <pre><code>int result = a + b * c;           // 先乘后加
+int resultWithParens = (a + b) * c;  // 先加后乘，更明确</code></pre>
+            </div>
+        </section>
+
+        <section id="controlflow" class="content">
+            <h2>6. 控制流程</h2>
+            <p>控制流程语句用于控制程序的执行顺序。Java 提供了各种控制流程语句，包括条件语句、循环语句和跳转语句。</p>
+
+            <h3>6.1 条件语句</h3>
+            <p>条件语句用于根据条件执行不同的代码块。</p>
+
+            <h4>6.1.1 if 语句</h4>
+            <p>if 语句用于根据条件执行代码块。</p>
+            <pre><code>// 简单 if 语句
+if (条件) {
+    // 条件为真时执行的代码
+}
+
+// if-else 语句
+if (条件) {
+    // 条件为真时执行的代码
+} else {
+    // 条件为假时执行的代码
+}
+
+// if-else if-else 语句
+if (条件1) {
+    // 条件1为真时执行的代码
+} else if (条件2) {
+    // 条件1为假且条件2为真时执行的代码
+} else {
+    // 所有条件都为假时执行的代码
+}</code></pre>
+
+            <p>示例：</p>
+            <pre><code>int score = 85;
+
+// 简单 if 语句
+if (score >= 60) {
+    System.out.println("及格");
+}
+
+// if-else 语句
+if (score >= 60) {
+    System.out.println("及格");
+} else {
+    System.out.println("不及格");
+}
+
+// if-else if-else 语句
+if (score >= 90) {
+    System.out.println("优秀");
+} else if (score >= 80) {
+    System.out.println("良好");
+} else if (score >= 60) {
+    System.out.println("及格");
+} else {
+    System.out.println("不及格");
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">嵌套的 if 语句</div>
+                <p>可以在 if 语句内部嵌套其他 if 语句，但过多的嵌套会导致代码难以理解，建议限制嵌套的层数。</p>
+            </div>
+
+            <h4>6.1.2 switch 语句</h4>
+            <p>switch 语句用于根据表达式的值执行不同的代码块。</p>
+            <pre><code>switch (表达式) {
+    case 值1:
+        // 表达式等于值1时执行的代码
+        break;
+    case 值2:
+        // 表达式等于值2时执行的代码
+        break;
+    // ...
+    default:
+        // 表达式不等于任何case值时执行的代码
+}</code></pre>
+
+            <p>支持的表达式类型：</p>
+            <ul>
+                <li>基本类型：byte, short, char, int</li>
+                <li>包装类：Byte, Short, Character, Integer</li>
+                <li>枚举类型（Enum）</li>
+                <li>字符串（String）- 从 Java 7 开始支持</li>
+            </ul>
+
+            <p>示例：</p>
+            <pre><code>int day = 3;
+String dayName;
+
+switch (day) {
+    case 1:
+        dayName = "星期一";
+        break;
+    case 2:
+        dayName = "星期二";
+        break;
+    case 3:
+        dayName = "星期三";
+        break;
+    case 4:
+        dayName = "星期四";
+        break;
+    case 5:
+        dayName = "星期五";
+        break;
+    case 6:
+        dayName = "星期六";
+        break;
+    case 7:
+        dayName = "星期日";
+        break;
+    default:
+        dayName = "无效的日期";
+}
+System.out.println(dayName);  // 输出：星期三</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">break 语句的重要性</div>
+                <p>在 switch 语句中，如果某个 case 匹配成功，执行完该 case 的代码后，会继续执行后面 case 的代码，直到遇到 break 语句或 switch 语句结束。这种特性称为"贯穿"（fall-through）。为了避免意外的贯穿，通常在每个 case 的末尾添加 break 语句。</p>
+            </div>
+
+            <p>Java 12+ 增强的 switch 表达式：</p>
+            <pre><code>// 使用 -> 语法简化 switch 语句
+String dayName = switch (day) {
+    case 1 -> "星期一";
+    case 2 -> "星期二";
+    case 3 -> "星期三";
+    case 4 -> "星期四";
+    case 5 -> "星期五";
+    case 6 -> "星期六";
+    case 7 -> "星期日";
+    default -> "无效的日期";
+};</code></pre>
+
+            <h3>6.2 循环语句</h3>
+            <p>循环语句用于重复执行代码块。</p>
+
+            <h4>6.2.1 while 循环</h4>
+            <p>while 循环在条件为真时重复执行代码块。</p>
+            <pre><code>while (条件) {
+    // 循环体
+}</code></pre>
+
+            <p>示例：</p>
+            <pre><code>int i = 1;
+while (i <= 5) {
+    System.out.println(i);
+    i++;
+}
+// 输出：1 2 3 4 5</code></pre>
+
+            <h4>6.2.2 do-while 循环</h4>
+            <p>do-while 循环与 while 循环类似，但它会先执行循环体，然后再检查条件。这意味着循环体至少会执行一次。</p>
+            <pre><code>int i = 1;
+do {
+    System.out.println(i);
+    i++;
+} while (i <= 5);
+// 输出：1 2 3 4 5</code></pre>
+
+            <h4>6.2.3 for 循环</h4>
+            <p>for 循环提供了一种紧凑的循环结构，包含初始化、条件和迭代表达式。</p>
+            <pre><code>for (初始化; 条件; 迭代) {
+    // 循环体
+}</code></pre>
+
+            <p>示例：</p>
+            <pre><code>for (int i = 1; i <= 5; i++) {
+    System.out.println(i);
+}
+// 输出：1 2 3 4 5</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">for 循环变量作用域</div>
+                <p>在 for 循环中声明的变量（如示例中的 i）只在循环内部可见。如果需要在循环外部使用该变量，应该在循环外部声明。</p>
+            </div>
+
+            <h4>6.2.4 增强 for 循环（for-each）</h4>
+            <p>增强 for 循环（也称为 for-each 循环）用于遍历数组或集合。</p>
+            <pre><code>for (元素类型 变量 : 数组或集合) {
+    // 循环体
+}</code></pre>
+
+            <p>示例：</p>
+            <pre><code>int[] numbers = {1, 2, 3, 4, 5};
+for (int num : numbers) {
+    System.out.println(num);
+}
+// 输出：1 2 3 4 5</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">增强 for 循环的限制</div>
+                <p>增强 for 循环无法获取元素的索引，也无法修改原始数组或集合中的元素。如果需要这些功能，应使用传统的 for 循环。</p>
+            </div>
+
+            <h3>6.3 跳转语句</h3>
+            <p>跳转语句用于改变程序的正常执行流程。</p>
+
+            <h4>6.3.1 break 语句</h4>
+            <p>break 语句用于终止最内层的循环或 switch 语句。</p>
+            <pre><code>for (int i = 1; i <= 10; i++) {
+    if (i == 5) {
+        break;  // 当 i 等于 5 时终止循环
+    }
+    System.out.println(i);
+}
+// 输出：1 2 3 4</code></pre>
+
+            <h4>6.3.2 continue 语句</h4>
+            <p>continue 语句用于跳过当前循环迭代的剩余部分，直接进入下一次迭代。</p>
+            <pre><code>for (int i = 1; i <= 10; i++) {
+    if (i % 2 == 0) {
+        continue;  // 跳过偶数
+    }
+    System.out.println(i);
+}
+// 输出：1 3 5 7 9</code></pre>
+
+            <h4>6.3.3 带标签的 break 和 continue</h4>
+            <p>在嵌套循环中，可以使用带标签的 break 和 continue 语句来控制外层循环。</p>
+            <pre><code>outer:  // 标签
+for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 3; j++) {
+        if (i * j > 4) {
+            break outer;  // 终止外层循环
+        }
+        System.out.println(i + " * " + j + " = " + (i * j));
+    }
+}
+/*
+输出：
+1 * 1 = 1
+1 * 2 = 2
+1 * 3 = 3
+2 * 1 = 2
+2 * 2 = 4
+*/</code></pre>
+
+            <h4>6.3.4 return 语句</h4>
+            <p>return 语句用于从方法中返回值，并终止方法的执行。</p>
+            <pre><code>public int max(int a, int b) {
+    if (a > b) {
+        return a;  // 返回 a 并终止方法
+    } else {
+        return b;  // 返回 b 并终止方法
+    }
+}
+
+// 使用示例
+int maximum = max(10, 20);  // maximum = 20</code></pre>
+
+            <h3>6.4 控制流程的实际应用</h3>
+            <p>下面是一个结合多种控制流程语句的实际应用示例：</p>
+            <pre><code>/**
+ * 打印指定范围内的所有素数
+ * @param start 起始值（包含）
+ * @param end 结束值（包含）
+ */
+public void printPrimes(int start, int end) {
+    if (start < 2) {
+        start = 2;  // 最小的素数是 2
+    }
+    
+    System.out.println("在 " + start + " 到 " + end + " 范围内的素数：");
+    
+    for (int num = start; num <= end; num++) {
+        boolean isPrime = true;
+        
+        // 检查 num 是否为素数
+        for (int i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i == 0) {
+                isPrime = false;
+                break;  // 不是素数，跳出循环
+            }
+        }
+        
+        if (isPrime) {
+            System.out.print(num + " ");
+        }
+    }
+    System.out.println();
+}
+
+// 使用示例
+printPrimes(10, 50);
+// 输出：在 10 到 50 范围内的素数：11 13 17 19 23 29 31 37 41 43 47</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">选择适当的控制流程</div>
+                <p>选择合适的控制流程语句可以提高代码的可读性和效率：</p>
+                <ul>
+                    <li>当需要根据多个条件选择时，使用 if-else if-else 或 switch</li>
+                    <li>当需要遍历集合或数组时，首选增强 for 循环</li>
+                    <li>当循环次数已知时，使用 for 循环</li>
+                    <li>当循环次数未知且可能为零时，使用 while 循环</li>
+                    <li>当循环至少需要执行一次时，使用 do-while 循环</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="arrays" class="content">
+            <h2>7. 数组</h2>
+            <p>数组是一种用于存储多个相同类型的数据的容器。Java 数组是一种引用类型，可以存储基本类型的数据或对象的引用。</p>
+
+            <h3>7.1 数组的声明与创建</h3>
+            <p>数组的声明与创建有多种方式：</p>
+
+            <h4>7.1.1 声明数组</h4>
+            <p>声明数组可以使用以下两种语法：</p>
+            <pre><code>// 方式一：类型后加方括号
+int[] numbers;
+
+// 方式二：变量名后加方括号（不推荐）
+int numbers[];</code></pre>
+
+            <p>推荐使用第一种方式（类型后加方括号），因为它更清晰地表明变量类型是数组。</p>
+
+            <h4>7.1.2 创建数组</h4>
+            <p>创建数组需要使用 new 关键字，并指定数组大小：</p>
+            <pre><code>// 创建一个包含 5 个整数的数组
+int[] numbers = new int[5];
+
+// 声明和创建分开进行
+int[] scores;
+scores = new int[10];</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">数组初始化值</div>
+                <p>创建数组时，其元素会自动初始化为默认值：</p>
+                <ul>
+                    <li>数值类型（byte, short, int, long, float, double）：0</li>
+                    <li>字符类型（char）：'\u0000'（空字符）</li>
+                    <li>布尔类型（boolean）：false</li>
+                    <li>引用类型：null</li>
+                </ul>
+            </div>
+
+            <h4>7.1.3 数组初始化</h4>
+            <p>可以在创建数组的同时初始化它的元素：</p>
+            <pre><code>// 静态初始化：创建数组的同时指定元素值
+int[] numbers = {1, 2, 3, 4, 5};
+
+// 等价于
+int[] numbers = new int[]{1, 2, 3, 4, 5};
+
+// 动态初始化：先创建数组，再逐个赋值
+int[] scores = new int[3];
+scores[0] = 85;
+scores[1] = 92;
+scores[2] = 78;</code></pre>
+
+            <h3>7.2 访问数组元素</h3>
+            <p>数组元素通过索引访问，索引从 0 开始。</p>
+            <pre><code>int[] numbers = {10, 20, 30, 40, 50};
+
+// 访问数组元素
+int firstElement = numbers[0];    // 10
+int thirdElement = numbers[2];    // 30
+
+// 修改数组元素
+numbers[1] = 25;                 // 数组变成 {10, 25, 30, 40, 50}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">数组索引越界</div>
+                <p>如果尝试访问超出数组范围的索引，会抛出 ArrayIndexOutOfBoundsException 异常。始终确保索引在有效范围内（0 到 length-1）。</p>
+                <pre><code>int[] numbers = {1, 2, 3};
+int value = numbers[3];  // 抛出 ArrayIndexOutOfBoundsException，因为最大索引是 2</code></pre>
+            </div>
+
+            <h3>7.3 数组的长度</h3>
+            <p>使用 length 属性可以获取数组的长度（元素个数）。</p>
+            <pre><code>int[] numbers = {10, 20, 30, 40, 50};
+int length = numbers.length;    // 5
+
+// 使用数组长度进行遍历
+for (int i = 0; i < numbers.length; i++) {
+    System.out.println("Element at index " + i + ": " + numbers[i]);
+}</code></pre>
+
+            <p><strong>注意：</strong>length 是一个属性，不是方法，因此不需要括号。</p>
+
+            <h3>7.4 数组的遍历</h3>
+            <p>遍历数组的常见方法：</p>
+
+            <h4>7.4.1 使用 for 循环</h4>
+            <pre><code>int[] numbers = {10, 20, 30, 40, 50};
+
+// 使用传统 for 循环
+for (int i = 0; i < numbers.length; i++) {
+    System.out.println(numbers[i]);
+}</code></pre>
+
+            <h4>7.4.2 使用增强 for 循环（for-each）</h4>
+            <pre><code>int[] numbers = {10, 20, 30, 40, 50};
+
+// 使用增强 for 循环
+for (int num : numbers) {
+    System.out.println(num);
+}</code></pre>
+
+            <h4>7.4.3 使用 Arrays.toString() 方法</h4>
+            <pre><code>import java.util.Arrays;
+
+int[] numbers = {10, 20, 30, 40, 50};
+
+// 将数组转换为字符串
+String arrayString = Arrays.toString(numbers);
+System.out.println(arrayString);  // 输出：[10, 20, 30, 40, 50]</code></pre>
+
+            <h3>7.5 多维数组</h3>
+            <p>Java 支持多维数组，可以看作是"数组的数组"。最常见的是二维数组。</p>
+
+            <h4>7.5.1 声明和创建多维数组</h4>
+            <pre><code>// 声明二维数组
+int[][] matrix;
+
+// 创建 3x4 的二维数组
+matrix = new int[3][4];
+
+// 声明并初始化二维数组
+int[][] grid = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};</code></pre>
+
+            <h4>7.5.2 访问多维数组元素</h4>
+            <pre><code>int[][] grid = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// 访问元素
+int element = grid[1][2];    // 行 1，列 2 的元素：6
+
+// 修改元素
+grid[0][1] = 10;             // 将行 0，列 1 的元素改为 10</code></pre>
+
+            <h4>7.5.3 遍历多维数组</h4>
+            <pre><code>int[][] grid = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// 使用嵌套 for 循环
+for (int i = 0; i < grid.length; i++) {
+    for (int j = 0; j < grid[i].length; j++) {
+        System.out.print(grid[i][j] + " ");
+    }
+    System.out.println();
+}
+
+// 使用增强 for 循环
+for (int[] row : grid) {
+    for (int element : row) {
+        System.out.print(element + " ");
+    }
+    System.out.println();
+}</code></pre>
+
+            <h4>7.5.4 不规则数组</h4>
+            <p>在 Java 中，多维数组的每一维长度可以不同，这种数组称为"不规则数组"（jagged array）。</p>
+            <pre><code>// 创建不规则数组
+int[][] jagged = new int[3][];
+jagged[0] = new int[2];  // 第一行有 2 列
+jagged[1] = new int[4];  // 第二行有 4 列
+jagged[2] = new int[3];  // 第三行有 3 列
+
+// 初始化值
+jagged[0][0] = 1; jagged[0][1] = 2;
+jagged[1][0] = 3; jagged[1][1] = 4; jagged[1][2] = 5; jagged[1][3] = 6;
+jagged[2][0] = 7; jagged[2][1] = 8; jagged[2][2] = 9;</code></pre>
+
+            <h3>7.6 数组工具类 (java.util.Arrays)</h3>
+            <p>Java 提供了 Arrays 类用于操作数组，其中包含许多有用的静态方法：</p>
+
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td>toString()</td>
+                    <td>将数组转换为字符串</td>
+                    <td><code>Arrays.toString(arr)</code></td>
+                </tr>
+                <tr>
+                    <td>sort()</td>
+                    <td>对数组进行排序</td>
+                    <td><code>Arrays.sort(arr)</code></td>
+                </tr>
+                <tr>
+                    <td>binarySearch()</td>
+                    <td>在有序数组中查找元素</td>
+                    <td><code>Arrays.binarySearch(arr, key)</code></td>
+                </tr>
+                <tr>
+                    <td>equals()</td>
+                    <td>比较两个数组是否相等</td>
+                    <td><code>Arrays.equals(arr1, arr2)</code></td>
+                </tr>
+                <tr>
+                    <td>fill()</td>
+                    <td>用指定值填充数组</td>
+                    <td><code>Arrays.fill(arr, value)</code></td>
+                </tr>
+                <tr>
+                    <td>copyOf()</td>
+                    <td>复制数组（可调整大小）</td>
+                    <td><code>Arrays.copyOf(arr, newLength)</code></td>
+                </tr>
+                <tr>
+                    <td>copyOfRange()</td>
+                    <td>复制数组的指定范围</td>
+                    <td><code>Arrays.copyOfRange(arr, from, to)</code></td>
+                </tr>
+            </table>
+
+            <p>使用示例：</p>
+            <pre><code>import java.util.Arrays;
+
+public class ArraysExample {
+    public static void main(String[] args) {
+        int[] numbers = {5, 2, 9, 1, 7};
+        
+        // 将数组转换为字符串
+        System.out.println("Original array: " + Arrays.toString(numbers));
+        
+        // 排序
+        Arrays.sort(numbers);
+        System.out.println("Sorted array: " + Arrays.toString(numbers));
+        
+        // 二分查找（数组必须先排序）
+        int index = Arrays.binarySearch(numbers, 7);
+        System.out.println("Index of 7: " + index);
+        
+        // 填充数组
+        int[] filledArray = new int[5];
+        Arrays.fill(filledArray, 10);
+        System.out.println("Filled array: " + Arrays.toString(filledArray));
+        
+        // 复制数组
+        int[] copy = Arrays.copyOf(numbers, numbers.length);
+        System.out.println("Copied array: " + Arrays.toString(copy));
+        
+        // 比较数组
+        boolean isEqual = Arrays.equals(numbers, copy);
+        System.out.println("Arrays are equal: " + isEqual);
+    }
+}</code></pre>
+
+            <h3>7.7 数组的常见问题与最佳实践</h3>
+
+            <h4>7.7.1 数组与集合的比较</h4>
+            <p>数组与集合（如 ArrayList）的主要区别：</p>
+            <ul>
+                <li>数组大小固定，创建后不能更改；集合大小可动态调整</li>
+                <li>数组可以存储基本类型和引用类型；集合只能存储引用类型（需要使用包装类）</li>
+                <li>数组不提供内置方法进行添加、删除等操作；集合提供丰富的操作方法</li>
+            </ul>
+
+            <h4>7.7.2 常见错误</h4>
+            <ul>
+                <li>数组索引越界（ArrayIndexOutOfBoundsException）</li>
+                <li>忘记数组索引从 0 开始</li>
+                <li>未初始化数组就访问其元素</li>
+                <li>忽略多维数组的嵌套结构</li>
+            </ul>
+
+            <h4>7.7.3 最佳实践</h4>
+            <ul>
+                <li>始终在访问数组元素前检查索引是否有效</li>
+                <li>使用增强 for 循环（for-each）遍历数组可以避免索引错误</li>
+                <li>使用 Arrays 类中的方法简化数组操作</li>
+                <li>对于动态大小的数据结构，考虑使用集合而非数组</li>
+                <li>在处理大量基本类型数据且大小固定时，优先使用数组</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">数组和内存</div>
+                <p>数组在内存中占用连续的空间，这使得访问元素非常快（时间复杂度为 O(1)）。但这也意味着数组大小一旦确定就不能更改。如果需要动态调整大小，必须创建新数组并复制元素。</p>
+            </div>
+
+            <h3>7.8 数组的实际应用示例</h3>
+            <pre><code>/**
+ * 计算学生成绩的各种统计数据
+ */
+public class StudentScores {
+    public static void main(String[] args) {
+        // 存储学生成绩
+        int[] scores = {85, 92, 78, 90, 88, 76, 95, 82};
+        
+        // 计算总分
+        int total = 0;
+        for (int score : scores) {
+            total += score;
+        }
+        
+        // 计算平均分
+        double average = (double) total / scores.length;
+        
+        // 找出最高分和最低分
+        int highest = scores[0];
+        int lowest = scores[0];
+        
+        for (int i = 1; i < scores.length; i++) {
+            if (scores[i] > highest) {
+                highest = scores[i];
+            }
+            if (scores[i] < lowest) {
+                lowest = scores[i];
+            }
+        }
+        
+        // 统计成绩分布
+        int[] distribution = new int[5];  // 0: 0-59, 1: 60-69, 2: 70-79, 3: 80-89, 4: 90-100
+        
+        for (int score : scores) {
+            if (score < 60) {
+                distribution[0]++;
+            } else if (score < 70) {
+                distribution[1]++;
+            } else if (score < 80) {
+                distribution[2]++;
+            } else if (score < 90) {
+                distribution[3]++;
+            } else {
+                distribution[4]++;
+            }
+        }
+        
+        // 输出结果
+        System.out.println("学生人数: " + scores.length);
+        System.out.println("总分: " + total);
+        System.out.println("平均分: " + average);
+        System.out.println("最高分: " + highest);
+        System.out.println("最低分: " + lowest);
+        System.out.println("成绩分布：");
+        System.out.println("0-59分: " + distribution[0] + "人");
+        System.out.println("60-69分: " + distribution[1] + "人");
+        System.out.println("70-79分: " + distribution[2] + "人");
+        System.out.println("80-89分: " + distribution[3] + "人");
+        System.out.println("90-100分: " + distribution[4] + "人");
+    }
+}</code></pre>
+        </section>
+
+        <section id="oop" class="content">
+            <h2>8. 面向对象编程</h2>
+            <p>面向对象编程（Object-Oriented Programming，简称 OOP）是 Java 的核心编程范式。它通过"类"和"对象"的概念组织代码，使程序更加模块化、灵活和可维护。</p>
+
+            <h3>8.1 类和对象</h3>
+            <p>类是对象的蓝图或模板，定义了对象的属性和行为。对象是类的具体实例。</p>
+
+            <h4>8.1.1 类的定义</h4>
+            <pre><code>public class Person {
+    // 属性（成员变量）
+    String name;
+    int age;
+    double height;
+    
+    // 方法
+    public void speak() {
+        System.out.println("My name is " + name + ", I am " + age + " years old.");
+    }
+    
+    public void walk() {
+        System.out.println(name + " is walking.");
+    }
+}</code></pre>
+
+            <h4>8.1.2 对象的创建和使用</h4>
+            <pre><code>// 创建对象
+Person person1 = new Person();
+
+// 设置属性
+person1.name = "张三";
+person1.age = 25;
+person1.height = 175.5;
+
+// 调用方法
+person1.speak();  // 输出: My name is 张三, I am 25 years old.
+person1.walk();   // 输出: 张三 is walking.</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">类和对象的理解</div>
+                <p>可以用蛋糕制作来理解类和对象：类就像蛋糕的配方，描述了制作蛋糕的一般步骤；而对象则是根据这个配方实际烘焙出的具体蛋糕。同一个配方可以烘焙出多个不同的蛋糕，每个蛋糕都有自己的特性（尺寸、装饰等）。</p>
+            </div>
+
+            <h3>8.2 属性和方法</h3>
+            
+            <h4>8.2.1 属性（成员变量）</h4>
+            <p>属性用于描述对象的状态，又称为成员变量或字段。</p>
+            <ul>
+                <li><strong>实例变量</strong>：每个对象都有自己的实例变量副本</li>
+                <li><strong>静态变量</strong>：所有对象共享的变量，使用 <code>static</code> 关键字声明</li>
+            </ul>
+
+            <pre><code>public class Student {
+    // 实例变量
+    String name;
+    int age;
+    double score;
+    
+    // 静态变量
+    static String schoolName = "ABC学校";
+    static int studentCount = 0;
+}</code></pre>
+
+            <h4>8.2.2 方法</h4>
+            <p>方法定义了对象的行为，用于执行操作或计算值。</p>
+            <ul>
+                <li><strong>实例方法</strong>：操作实例变量，通过对象调用</li>
+                <li><strong>静态方法</strong>：不依赖于特定对象，使用 <code>static</code> 关键字声明，通过类名调用</li>
+            </ul>
+
+            <pre><code>public class Calculator {
+    // 实例方法
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    // 静态方法
+    public static int multiply(int a, int b) {
+        return a * b;
+    }
+}
+
+// 调用方法
+Calculator calc = new Calculator();
+int sum = calc.add(5, 3);           // 调用实例方法
+int product = Calculator.multiply(5, 3);  // 调用静态方法</code></pre>
+
+            <h3>8.3 构造方法</h3>
+            <p>构造方法（构造函数）是一种特殊的方法，用于初始化对象。构造方法名与类名相同，没有返回类型。</p>
+
+            <h4>8.3.1 默认构造方法</h4>
+            <p>如果没有显式定义构造方法，Java 会提供一个无参的默认构造方法。</p>
+            <pre><code>public class Person {
+    String name;
+    int age;
+    
+    // 默认构造方法（由 Java 自动提供）
+    // public Person() { }
+}</code></pre>
+
+            <h4>8.3.2 自定义构造方法</h4>
+            <pre><code>public class Person {
+    String name;
+    int age;
+    
+    // 无参构造方法
+    public Person() {
+        name = "未知";
+        age = 0;
+    }
+    
+    // 有参构造方法
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+// 使用不同的构造方法创建对象
+Person person1 = new Person();           // 使用无参构造方法
+Person person2 = new Person("李四", 30);  // 使用有参构造方法</code></pre>
+
+            <h4>8.3.3 构造方法重载</h4>
+            <p>类可以有多个构造方法，只要参数列表不同（参数个数或类型不同）。这称为构造方法重载。</p>
+            <pre><code>public class Book {
+    String title;
+    String author;
+    int pages;
+    
+    // 无参构造方法
+    public Book() {
+        title = "未知";
+        author = "未知";
+        pages = 0;
+    }
+    
+    // 包含标题和作者的构造方法
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.pages = 0;
+    }
+    
+    // 包含所有属性的构造方法
+    public Book(String title, String author, int pages) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+    }
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">构造方法注意事项</div>
+                <p>一旦定义了自己的构造方法，Java 将不再提供默认构造方法。如果需要无参构造方法，必须显式定义。</p>
+            </div>
+
+            <h3>8.4 this 关键字</h3>
+            <p><code>this</code> 关键字指代当前对象，常用于以下场景：</p>
+            <ul>
+                <li>区分局部变量和实例变量</li>
+                <li>调用当前类的其他构造方法</li>
+                <li>引用当前实例本身</li>
+            </ul>
+
+            <pre><code>public class Employee {
+    String name;
+    double salary;
+    
+    // 使用 this 区分局部变量和实例变量
+    public Employee(String name, double salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+    
+    // 使用 this 调用其他构造方法
+    public Employee(String name) {
+        this(name, 5000.0);  // 调用带两个参数的构造方法
+    }
+    
+    // 使用 this 引用当前实例
+    public Employee getReference() {
+        return this;
+    }
+}</code></pre>
+
+            <h3>8.5 封装</h3>
+            <p>封装是面向对象编程的核心原则之一，它指的是隐藏对象的内部实现细节，只暴露必要的接口。Java 通过访问修饰符和 getter/setter 方法实现封装。</p>
+
+            <h4>8.5.1 访问修饰符</h4>
+            <p>Java 提供了四种访问修饰符：</p>
+            <table>
+                <tr>
+                    <th>修饰符</th>
+                    <th>同一个类</th>
+                    <th>同一个包</th>
+                    <th>子类</th>
+                    <th>任何地方</th>
+                </tr>
+                <tr>
+                    <td>private</td>
+                    <td>✓</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                </tr>
+                <tr>
+                    <td>default (无修饰符)</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                </tr>
+                <tr>
+                    <td>protected</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✗</td>
+                </tr>
+                <tr>
+                    <td>public</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+            </table>
+
+            <h4>8.5.2 Getter 和 Setter 方法</h4>
+            <p>通过使用私有属性和公共的 getter/setter 方法，可以控制对属性的访问和修改。</p>
+            <pre><code>public class Person {
+    // 私有属性
+    private String name;
+    private int age;
+    
+    // 构造方法
+    public Person(String name, int age) {
+        this.name = name;
+        setAge(age);  // 使用 setter 进行验证
+    }
+    
+    // Getter 方法
+    public String getName() {
+        return name;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    // Setter 方法
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setAge(int age) {
+        // 添加验证逻辑
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("Age must be between 0 and 150");
+        }
+        this.age = age;
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">封装的好处</div>
+                <p>封装使得代码更加模块化，并提供了以下优势：</p>
+                <ul>
+                    <li>可以修改内部实现而不影响外部代码</li>
+                    <li>可以在 setter 方法中添加验证逻辑</li>
+                    <li>可以控制属性的只读或只写访问</li>
+                    <li>隐藏内部复杂性，提供简单的接口</li>
+                </ul>
+            </div>
+
+            <h3>8.6 静态成员</h3>
+            <p>静态成员（使用 <code>static</code> 关键字声明的成员）属于类而不是对象，所有对象共享同一个静态成员。</p>
+
+            <h4>8.6.1 静态变量</h4>
+            <pre><code>public class Counter {
+    // 静态变量
+    private static int count = 0;
+    
+    // 实例变量
+    private String id;
+    
+    public Counter() {
+        count++;
+        id = "Counter-" + count;
+    }
+    
+    // 静态方法获取计数器的总数
+    public static int getCount() {
+        return count;
+    }
+    
+    public String getId() {
+        return id;
+    }
+}
+
+// 使用静态变量
+Counter c1 = new Counter();
+Counter c2 = new Counter();
+System.out.println(Counter.getCount());  // 输出: 2</code></pre>
+
+            <h4>8.6.2 静态方法</h4>
+            <p>静态方法不依赖于对象实例，可以直接通过类名调用。</p>
+            <pre><code>public class MathUtils {
+    // 静态常量
+    public static final double PI = 3.14159;
+    
+    // 静态方法
+    public static double calculateCircleArea(double radius) {
+        return PI * radius * radius;
+    }
+    
+    public static int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+}
+
+// 使用静态方法
+double area = MathUtils.calculateCircleArea(5.0);
+int maximum = MathUtils.max(10, 20);</code></pre>
+
+            <h4>8.6.3 静态初始化块</h4>
+            <p>静态初始化块用于初始化静态变量，在类加载时执行，只执行一次。</p>
+            <pre><code>public class Database {
+    private static Connection conn;
+    
+    // 静态初始化块
+    static {
+        try {
+            // 加载数据库驱动
+            Class.forName("com.mysql.jdbc.Driver");
+            // 建立连接
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "user", "password");
+            System.out.println("Database connection established");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // 其他方法...
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">静态成员的限制</div>
+                <p>静态方法不能直接访问实例变量和实例方法，因为它们不依赖于特定的对象实例。</p>
+                <pre><code>public class Example {
+    private int instanceVar = 10;
+    private static int staticVar = 20;
+    
+    public void instanceMethod() {
+        System.out.println(instanceVar);  // 正确
+        System.out.println(staticVar);    // 正确
+        staticMethod();                   // 正确
+    }
+    
+    public static void staticMethod() {
+        // System.out.println(instanceVar);  // 错误! 不能从静态方法访问实例变量
+        System.out.println(staticVar);      // 正确
+        // instanceMethod();                 // 错误! 不能从静态方法调用实例方法
+    }
+}</code></pre>
+            </div>
+
+            <h3>8.7 包</h3>
+            <p>包是 Java 中用于组织相关类的机制，类似于文件系统中的文件夹。包提供了命名空间隔离和访问控制。</p>
+
+            <h4>8.7.1 定义和使用包</h4>
+            <pre><code>// 声明包
+package com.example.myapp;
+
+public class MyClass {
+    // 类的内容
+}</code></pre>
+
+            <h4>8.7.2 导入类</h4>
+            <p>使用 <code>import</code> 语句导入其他包中的类。</p>
+            <pre><code>// 导入单个类
+import java.util.ArrayList;
+
+// 导入包中的所有类
+import java.util.*;
+
+// 静态导入（导入静态成员）
+import static java.lang.Math.PI;
+import static java.lang.Math.sqrt;</code></pre>
+
+            <h4>8.7.3 包命名约定</h4>
+            <p>Java 包的命名通常采用反向域名格式，以避免命名冲突。</p>
+            <ul>
+                <li>com.company.project.module</li>
+                <li>org.project.module</li>
+                <li>edu.university.department.course</li>
+            </ul>
+
+            <h3>8.8 Java 类库常用包</h3>
+            <p>Java 提供了丰富的标准类库，它们被组织在不同的包中：</p>
+            <ul>
+                <li><code>java.lang</code>：核心类，自动导入，包含 String, System, Object 等</li>
+                <li><code>java.util</code>：工具类，集合框架，日期时间等</li>
+                <li><code>java.io</code>：输入输出操作</li>
+                <li><code>java.net</code>：网络编程</li>
+                <li><code>java.sql</code>：数据库访问</li>
+                <li><code>java.text</code>：文本处理</li>
+                <li><code>java.math</code>：高精度数学计算</li>
+                <li><code>java.time</code>：日期时间 API（Java 8+）</li>
+            </ul>
+
+            <h3>8.9 面向对象编程的实际应用</h3>
+            <p>下面是一个简单的银行账户系统，展示了面向对象编程的实际应用：</p>
+
+            <pre><code>package com.example.bank;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Date;
+
+// 账户类
+class Account {
+    private String accountNumber;
+    private String owner;
+    private double balance;
+    private List<Transaction> transactions;
+    
+    public Account(String accountNumber, String owner) {
+        this.accountNumber = accountNumber;
+        this.owner = owner;
+        this.balance = 0.0;
+        this.transactions = new ArrayList<Transaction>();
+    }
+    
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    public String getOwner() {
+        return owner;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive");
+        }
+        
+        balance += amount;
+        transactions.add(new Transaction("Deposit", amount, new Date()));
+        System.out.println("Deposited: $" + amount + ", New balance: $" + balance);
+    }
+    
+    public void withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive");
+        }
+        
+        if (amount > balance) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+        
+        balance -= amount;
+        transactions.add(new Transaction("Withdrawal", -amount, new Date()));
+        System.out.println("Withdrawn: $" + amount + ", New balance: $" + balance);
+    }
+    
+    public void printStatement() {
+        System.out.println("Account Statement for: " + accountNumber);
+        System.out.println("Owner: " + owner);
+        System.out.println("Current Balance: $" + balance);
+        System.out.println("Transaction History:");
+        
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
+    }
+}
+
+// 交易类
+class Transaction {
+    private String type;
+    private double amount;
+    private Date date;
+    
+    public Transaction(String type, double amount, Date date) {
+        this.type = type;
+        this.amount = amount;
+        this.date = date;
+    }
+    
+    @Override
+    public String toString() {
+        return date + " - " + type + ": $" + Math.abs(amount);
+    }
+}
+
+// 银行类
+class Bank {
+    private String name;
+    private List<Account> accounts;
+    
+    public Bank(String name) {
+        this.name = name;
+        this.accounts = new ArrayList<Account>();
+    }
+    
+    public Account createAccount(String owner) {
+        String accountNumber = generateAccountNumber();
+        Account account = new Account(accountNumber, owner);
+        accounts.add(account);
+        System.out.println("Account created for " + owner + " with account number: " + accountNumber);
+        return account;
+    }
+    
+    private String generateAccountNumber() {
+        // 简化版，实际应生成唯一账号
+        return "ACC" + (10000 + accounts.size());
+    }
+    
+    public Account findAccount(String accountNumber) {
+        for (Account account : accounts) {
+            if (account.getAccountNumber().equals(accountNumber)) {
+                return account;
+            }
+        }
+        return null;
+    }
+}
+
+// 主类
+public class BankingSystem {
+    public static void main(String[] args) {
+        Bank bank = new Bank("MyBank");
+        
+        // 创建账户
+        Account account1 = bank.createAccount("张三");
+        Account account2 = bank.createAccount("李四");
+        
+        // 存款
+        account1.deposit(1000);
+        account1.deposit(500);
+        
+        // 取款
+        account1.withdraw(200);
+        
+        // 尝试超额取款
+        try {
+            account1.withdraw(2000);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        
+        // 打印账户对账单
+        account1.printStatement();
+        
+        // 查找账户
+        Account foundAccount = bank.findAccount("ACC10000");
+        if (foundAccount != null) {
+            System.out.println("Found account for: " + foundAccount.getOwner());
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">面向对象设计原则</div>
+                <p>在设计面向对象系统时，应遵循以下原则：</p>
+                <ul>
+                    <li><strong>单一责任原则 (SRP)</strong>：一个类应该只有一个改变的理由</li>
+                    <li><strong>开放-封闭原则 (OCP)</strong>：类应该对扩展开放，对修改封闭</li>
+                    <li><strong>里氏替换原则 (LSP)</strong>：子类对象应该能够替换父类对象</li>
+                    <li><strong>接口隔离原则 (ISP)</strong>：客户端不应依赖它不使用的接口</li>
+                    <li><strong>依赖倒置原则 (DIP)</strong>：高层模块不应依赖低层模块，两者都应依赖抽象</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="inheritance" class="content">
+            <h2>9. 继承</h2>
+            <p>继承是面向对象编程的三大特性之一，它允许创建一个新的类（子类）从另一个类（父类）继承属性和方法。继承提供了代码重用的机制，建立了类之间的层次关系。</p>
+
+            <h3>9.1 继承的基本概念</h3>
+            <p>在 Java 中，继承使用 <code>extends</code> 关键字实现。子类自动获得父类的所有公共和受保护成员（属性和方法）。</p>
+
+            <pre><code>// 父类
+public class Animal {
+    protected String name;
+    protected int age;
+    
+    public Animal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public void eat() {
+        System.out.println(name + " is eating.");
+    }
+    
+    public void sleep() {
+        System.out.println(name + " is sleeping.");
+    }
+}
+
+// 子类继承父类
+public class Dog extends Animal {
+    private String breed;
+    
+    public Dog(String name, int age, String breed) {
+        super(name, age);  // 调用父类构造方法
+        this.breed = breed;
+    }
+    
+    public void bark() {
+        System.out.println(name + " is barking.");
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">继承的优势</div>
+                <p>继承提供了以下优势：</p>
+                <ul>
+                    <li>代码重用 - 避免重复编写相同的代码</li>
+                    <li>建立类的层次结构 - 反映现实世界的关系</li>
+                    <li>多态性 - 使程序更灵活</li>
+                </ul>
+            </div>
+
+            <h3>9.2 方法重写</h3>
+            <p>方法重写（Override）是指子类提供与父类方法相同签名（方法名、参数列表相同）但实现不同的方法。方法重写是多态的基础。</p>
+
+            <pre><code>public class Animal {
+    protected String name;
+    
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    public void makeSound() {
+        System.out.println("Animal makes sound");
+    }
+}
+
+public class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+    
+    // 重写父类方法
+    @Override
+    public void makeSound() {
+        System.out.println(name + " barks: Woof! Woof!");
+    }
+}
+
+public class Cat extends Animal {
+    public Cat(String name) {
+        super(name);
+    }
+    
+    // 重写父类方法
+    @Override
+    public void makeSound() {
+        System.out.println(name + " meows: Meow! Meow!");
+    }
+}</code></pre>
+
+            <h4>9.2.1 @Override 注解</h4>
+            <p><code>@Override</code> 注解表明方法是对父类方法的重写。虽然不是必需的，但建议使用它，因为它提供了编译时检查，确保方法确实是重写了父类方法。</p>
+
+            <h4>9.2.2 重写规则</h4>
+            <ul>
+                <li>方法名和参数列表必须与父类方法相同</li>
+                <li>返回类型可以是父类方法返回类型的子类型</li>
+                <li>访问修饰符不能比父类方法更严格（例如，不能将 public 改为 protected 或 private）</li>
+                <li>不能抛出比父类方法更宽泛的检查异常</li>
+                <li>不能重写被 final 修饰的方法</li>
+                <li>不能重写被 static 修饰的方法（可以隐藏，但这不是重写）</li>
+            </ul>
+
+            <div class="warning">
+                <div class="warning-title">重写 vs 重载</div>
+                <p>不要将方法重写（Override）与方法重载（Overload）混淆：</p>
+                <ul>
+                    <li><strong>重写</strong>：子类与父类的方法具有相同的名称和参数列表</li>
+                    <li><strong>重载</strong>：同一个类中的方法具有相同的名称但不同的参数列表</li>
+                </ul>
+            </div>
+
+            <h3>9.3 super 关键字</h3>
+            <p><code>super</code> 关键字用于引用父类的成员（变量、方法和构造方法）。</p>
+
+            <h4>9.3.1 访问父类成员</h4>
+            <pre><code>public class Child extends Parent {
+    private int value = 200;
+    
+    public void printValues() {
+        System.out.println("Child value: " + value);
+        System.out.println("Parent value: " + super.value);  // 访问父类变量
+    }
+    
+    public void display() {
+        System.out.println("Child display");
+        super.display();  // 调用父类方法
+    }
+}</code></pre>
+
+            <h4>9.3.2 调用父类构造方法</h4>
+            <p>使用 <code>super()</code> 调用父类构造方法。这必须是子类构造方法的第一条语句。</p>
+            <pre><code>public class Parent {
+    protected String name;
+    
+    public Parent() {
+        name = "Unknown";
+        System.out.println("Parent default constructor");
+    }
+    
+    public Parent(String name) {
+        this.name = name;
+        System.out.println("Parent parameterized constructor");
+    }
+}
+
+public class Child extends Parent {
+    private int age;
+    
+    public Child() {
+        // super(); // 隐式调用父类的无参构造方法
+        System.out.println("Child default constructor");
+    }
+    
+    public Child(String name, int age) {
+        super(name);  // 显式调用父类的有参构造方法
+        this.age = age;
+        System.out.println("Child parameterized constructor");
+    }
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">构造方法链</div>
+                <p>在 Java 中，当创建子类对象时，会自动调用父类的构造方法。这种调用链一直延伸到 Object 类的构造方法，这是所有 Java 类的最终父类。如果没有显式调用 super()，编译器会自动插入对父类无参构造方法的调用。</p>
+            </div>
+
+            <h3>9.4 final 关键字</h3>
+            <p><code>final</code> 关键字可用于变量、方法和类，表示不可变、不可重写或不可继承。</p>
+
+            <h4>9.4.1 final 变量</h4>
+            <p>final 变量初始化后不能被修改（常量）。</p>
+            <pre><code>public class Constants {
+    // 编译时常量
+    public static final int MAX_VALUE = 100;
+    
+    // final 实例变量，必须在构造方法或初始化块中赋值
+    private final int id;
+    
+    public Constants(int id) {
+        this.id = id;  // 初始化 final 变量
+    }
+}</code></pre>
+
+            <h4>9.4.2 final 方法</h4>
+            <p>final 方法不能被子类重写。</p>
+            <pre><code>public class Parent {
+    // final 方法，不能被重写
+    public final void showInfo() {
+        System.out.println("This is a final method");
+    }
+}</code></pre>
+
+            <h4>9.4.3 final 类</h4>
+            <p>final 类不能被继承。</p>
+            <pre><code>// final 类，不能被继承
+public final class FinalClass {
+    // 类的成员
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">final 的使用场景</div>
+                <p>使用 final 关键字的场景：</p>
+                <ul>
+                    <li>表示常量，如 PI 值</li>
+                    <li>防止方法被重写，如关键算法</li>
+                    <li>防止类被继承，如 String 类</li>
+                    <li>提高性能（JVM 优化）</li>
+                </ul>
+            </div>
+
+            <h3>9.5 Object 类</h3>
+            <p>Object 类是 Java 中所有类的父类。如果一个类没有显式继承其他类，它默认继承 Object 类。Object 类提供了一些所有对象都有的基本方法。</p>
+
+            <h4>9.5.1 重要的 Object 类方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td><code>equals(Object obj)</code></td>
+                    <td>比较两个对象是否相等。默认实现比较引用（内存地址）。</td>
+                </tr>
+                <tr>
+                    <td><code>hashCode()</code></td>
+                    <td>返回对象的哈希码值，用于散列表。</td>
+                </tr>
+                <tr>
+                    <td><code>toString()</code></td>
+                    <td>返回对象的字符串表示。默认返回"类名@哈希码的十六进制"。</td>
+                </tr>
+                <tr>
+                    <td><code>clone()</code></td>
+                    <td>创建并返回对象的副本。</td>
+                </tr>
+                <tr>
+                    <td><code>finalize()</code></td>
+                    <td>对象被垃圾回收之前调用（不推荐使用）。</td>
+                </tr>
+                <tr>
+                    <td><code>getClass()</code></td>
+                    <td>返回对象的运行时类。</td>
+                </tr>
+            </table>
+
+            <h4>9.5.2 重写 equals 和 hashCode</h4>
+            <p>在实际开发中，经常需要重写 equals 和 hashCode 方法，特别是在使用集合类时。两者应该一起重写，以保持一致性。</p>
+            <pre><code>public class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    // 重写 equals 方法
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Person person = (Person) obj;
+        return age == person.age && 
+               (name == null ? person.name == null : name.equals(person.name));
+    }
+    
+    // 重写 hashCode 方法
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + age;
+        return result;
+    }
+    
+    // 重写 toString 方法
+    @Override
+    public String toString() {
+        return "Person{" +
+               "name='" + name + '\'' +
+               ", age=" + age +
+               '}';
+    }
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">equals 和 hashCode 契约</div>
+                <p>重写这两个方法时必须遵循以下规则：</p>
+                <ul>
+                    <li>如果两个对象根据 equals 方法比较是相等的，则它们的 hashCode 必须相等</li>
+                    <li>如果两个对象的 hashCode 相等，它们不一定相等（可能发生哈希碰撞）</li>
+                    <li>重写 equals 必须同时重写 hashCode</li>
+                </ul>
+            </div>
+
+            <h3>9.6 向上转型和向下转型</h3>
+            <p>类型转换允许在继承层次结构中的类之间转换对象引用。</p>
+
+            <h4>9.6.1 向上转型（Upcasting）</h4>
+            <p>将子类引用转换为父类引用。这是自动的，不需要显式转换。</p>
+            <pre><code>// 向上转型
+Dog dog = new Dog("Buddy", 3, "Golden Retriever");
+Animal animal = dog;  // 自动向上转型
+
+// 也可以在方法调用时隐式发生
+public void feedAnimal(Animal animal) {
+    animal.eat();
+}
+feedAnimal(dog);  // 将 Dog 对象传递给接受 Animal 的方法</code></pre>
+
+            <h4>9.6.2 向下转型（Downcasting）</h4>
+            <p>将父类引用转换为子类引用。这需要显式转换，并且原对象必须实际上是目标类型的实例，否则会抛出 ClassCastException。</p>
+            <pre><code>// 向下转型
+Animal animal = new Dog("Buddy", 3, "Golden Retriever");
+Dog dog = (Dog) animal;  // 显式向下转型
+dog.bark();  // 调用 Dog 类特有的方法
+
+// 安全的向下转型应该先使用 instanceof 检查
+if (animal instanceof Dog) {
+    Dog dog = (Dog) animal;
+    dog.bark();
+} else {
+    System.out.println("This animal is not a dog");
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">类型转换注意事项</div>
+                <p>向下转型可能导致 ClassCastException 异常，如果对象的实际类型与目标类型不兼容。始终使用 instanceof 运算符进行类型检查，以避免此类异常。</p>
+            </div>
+
+            <h3>9.7 继承的使用场景</h3>
+            <p>继承适用于"是一个"（is-a）关系。例如，"狗是一种动物"，"汽车是一种交通工具"。</p>
+            <p>但不要过度使用继承。有时候，组合（"有一个"关系）更为合适。例如，"汽车有一个发动机"，而不是"汽车是一种发动机"。</p>
+            <p>遵循"组合优于继承"的原则，可以创建更灵活、更可维护的代码。</p>
+
+            <h3>9.8 Java 中的继承限制</h3>
+            <ul>
+                <li><strong>单继承</strong>：Java 不支持多继承，一个类只能有一个直接父类</li>
+                <li><strong>构造方法不被继承</strong>：子类不会继承父类的构造方法</li>
+                <li><strong>私有成员不被继承</strong>：子类不能直接访问父类的私有成员</li>
+                <li><strong>跨包的限制</strong>：子类不能访问父类的默认（包级别）成员，如果不在同一包中</li>
+            </ul>
+
+            <h3>9.9 继承的实际应用</h3>
+            <p>下面是一个简单的银行系统，展示了继承在实际应用中的使用：</p>
+
+            <pre><code>// 账户基类
+public abstract class Account {
+    protected String accountNumber;
+    protected String owner;
+    protected double balance;
+    
+    public Account(String accountNumber, String owner, double initialDeposit) {
+        this.accountNumber = accountNumber;
+        this.owner = owner;
+        this.balance = initialDeposit;
+    }
+    
+    // 共同的方法
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("存款金额必须为正数");
+        }
+        balance += amount;
+        System.out.println("存入: " + amount + ", 新余额: " + balance);
+    }
+    
+    public void withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("取款金额必须为正数");
+        }
+        if (amount > balance) {
+            throw new IllegalArgumentException("余额不足");
+        }
+        balance -= amount;
+        System.out.println("取出: " + amount + ", 新余额: " + balance);
+    }
+    
+    // 抽象方法，由子类实现
+    public abstract void endOfMonth();
+    
+    // Getter 方法
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    public String getOwner() {
+        return owner;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    @Override
+    public String toString() {
+        return "账户类型: " + getClass().getSimpleName() +
+               ", 账号: " + accountNumber +
+               ", 所有者: " + owner +
+               ", 余额: " + balance;
+    }
+}
+
+// 储蓄账户子类
+public class SavingsAccount extends Account {
+    private double interestRate;  // 年利率
+    
+    public SavingsAccount(String accountNumber, String owner, double initialDeposit, double interestRate) {
+        super(accountNumber, owner, initialDeposit);
+        this.interestRate = interestRate;
+    }
+    
+    // 计算月利息
+    @Override
+    public void endOfMonth() {
+        double interest = balance * interestRate / 12;
+        deposit(interest);
+        System.out.println("利息已存入: " + interest);
+    }
+    
+    // 特有方法
+    public double getInterestRate() {
+        return interestRate;
+    }
+    
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
+}
+
+// 支票账户子类
+public class CheckingAccount extends Account {
+    private double overdraftLimit;  // 透支限额
+    
+    public CheckingAccount(String accountNumber, String owner, double initialDeposit, double overdraftLimit) {
+        super(accountNumber, owner, initialDeposit);
+        this.overdraftLimit = overdraftLimit;
+    }
+    
+    // 重写取款方法，允许透支
+    @Override
+    public void withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("取款金额必须为正数");
+        }
+        if (amount > balance + overdraftLimit) {
+            throw new IllegalArgumentException("超过透支限额");
+        }
+        balance -= amount;
+        System.out.println("取出: " + amount + ", 新余额: " + balance);
+    }
+    
+    // 月末收取手续费
+    @Override
+    public void endOfMonth() {
+        if (balance < 0) {
+            double fee = 10.0;  // 透支手续费
+            balance -= fee;
+            System.out.println("已收取透支手续费: " + fee);
+        }
+    }
+    
+    // 特有方法
+    public double getOverdraftLimit() {
+        return overdraftLimit;
+    }
+}
+
+// 信用卡账户子类
+public class CreditCardAccount extends Account {
+    private double creditLimit;
+    private double interestRate;
+    
+    public CreditCardAccount(String accountNumber, String owner, double creditLimit, double interestRate) {
+        super(accountNumber, owner, 0);  // 初始余额为0
+        this.creditLimit = creditLimit;
+        this.interestRate = interestRate;
+    }
+    
+    // 重写取款方法，实际是借款
+    @Override
+    public void withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("借款金额必须为正数");
+        }
+        if (balance - amount < -creditLimit) {
+            throw new IllegalArgumentException("超过信用额度");
+        }
+        balance -= amount;
+        System.out.println("借出: " + amount + ", 新余额: " + balance);
+    }
+    
+    // 月末计算利息
+    @Override
+    public void endOfMonth() {
+        if (balance < 0) {
+            double interest = -balance * interestRate / 12;
+            balance -= interest;
+            System.out.println("已收取利息: " + interest);
+        }
+    }
+    
+    // 特有方法
+    public double getCreditLimit() {
+        return creditLimit;
+    }
+    
+    public double getInterestRate() {
+        return interestRate;
+    }
+}
+
+// 银行系统类
+public class BankSystem {
+    public static void main(String[] args) {
+        // 创建不同类型的账户
+        SavingsAccount savings = new SavingsAccount("SA001", "张三", 1000.0, 0.05);
+        CheckingAccount checking = new CheckingAccount("CA001", "李四", 2000.0, 500.0);
+        CreditCardAccount credit = new CreditCardAccount("CC001", "王五", 5000.0, 0.18);
+        
+        // 使用多态
+        Account[] accounts = {savings, checking, credit};
+        
+        // 执行操作
+        savings.deposit(500.0);
+        checking.withdraw(2200.0);  // 透支
+        credit.withdraw(3000.0);    // 借款
+        
+        // 月末处理
+        System.out.println("\n执行月末操作:");
+        for (Account account : accounts) {
+            System.out.println(account);
+            account.endOfMonth();
+            System.out.println(account);
+            System.out.println();
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">设计建议</div>
+                <p>设计类层次结构时，考虑以下几点：</p>
+                <ul>
+                    <li>识别共同特性，将它们放在父类中</li>
+                    <li>使用抽象类表示不完整的概念</li>
+                    <li>只在"是一个"关系时使用继承</li>
+                    <li>优先使用组合而非继承</li>
+                    <li>保持类层次结构浅而宽，避免深层次结构</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="polymorphism" class="content">
+            <h2>10. 多态</h2>
+            <p>多态是面向对象编程的三大核心特性之一（其他两个是封装和继承）。多态允许以统一的方式处理不同类型的对象，使代码更加灵活、可扩展和可维护。</p>
+
+            <h3>10.1 多态的基本概念</h3>
+            <p>多态（Polymorphism）字面意思是"多种形态"，在 Java 中，它表示同一个操作可以作用于不同类型的对象，并且获得不同的结果。</p>
+            <p>多态主要分为两种形式：</p>
+            <ul>
+                <li><strong>编译时多态（静态绑定）</strong>：通过方法重载（Overloading）实现</li>
+                <li><strong>运行时多态（动态绑定）</strong>：通过方法重写（Overriding）和继承实现</li>
+            </ul>
+
+            <h3>10.2 编译时多态（方法重载）</h3>
+            <p>编译时多态通过方法重载实现，它允许在同一个类中定义多个同名方法，只要它们的参数列表不同（参数个数、类型或顺序不同）。</p>
+
+            <pre><code>public class Calculator {
+    // 方法重载 - 两个整数相加
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    // 方法重载 - 三个整数相加
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+    
+    // 方法重载 - 两个浮点数相加
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    // 方法重载 - 整数和浮点数相加
+    public double add(int a, double b) {
+        return a + b;
+    }
+}
+
+// 使用重载方法
+Calculator calc = new Calculator();
+int sum1 = calc.add(5, 3);           // 调用第一个方法
+int sum2 = calc.add(5, 3, 2);        // 调用第二个方法
+double sum3 = calc.add(5.5, 3.5);    // 调用第三个方法
+double sum4 = calc.add(5, 3.5);      // 调用第四个方法</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">编译时多态的特点</div>
+                <p>编译时多态的主要特点：</p>
+                <ul>
+                    <li>在<strong>编译时</strong>决定调用哪个方法</li>
+                    <li>基于方法名和参数列表（方法签名）</li>
+                    <li>返回类型不同<strong>不足以</strong>构成方法重载</li>
+                    <li>提高了代码的可读性和灵活性</li>
+                </ul>
+            </div>
+
+            <h3>10.3 运行时多态（方法重写）</h3>
+            <p>运行时多态是通过方法重写和继承实现的。当父类引用指向子类对象，并调用被子类重写的方法时，会执行子类中的方法实现，而不是父类中的方法。</p>
+
+            <pre><code>// 父类
+class Animal {
+    public void makeSound() {
+        System.out.println("动物发出声音");
+    }
+}
+
+// 子类
+class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("狗在汪汪叫");
+    }
+}
+
+// 子类
+class Cat extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("猫在喵喵叫");
+    }
+}
+
+// 使用多态
+public class Main {
+    public static void main(String[] args) {
+        // 父类引用指向子类对象
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+        
+        animal1.makeSound();  // 输出: 狗在汪汪叫
+        animal2.makeSound();  // 输出: 猫在喵喵叫
+        
+        // 动态分派的实际应用
+        Animal[] animals = {new Dog(), new Cat(), new Dog()};
+        for (Animal animal : animals) {
+            animal.makeSound();  // 根据实际对象类型调用相应的方法
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">运行时多态的特点</div>
+                <p>运行时多态的主要特点：</p>
+                <ul>
+                    <li>在<strong>运行时</strong>决定调用哪个方法</li>
+                    <li>基于对象的实际类型，而不是引用类型</li>
+                    <li>需要继承、重写和向上转型三个条件</li>
+                    <li>提高了代码的灵活性和可扩展性</li>
+                </ul>
+            </div>
+
+            <h3>10.4 多态的实现原理</h3>
+            <p>在 Java 中，多态是通过虚方法调用（Virtual Method Invocation）实现的。当调用一个方法时，JVM 会查找对象的实际类型，并在该类的方法表中找到相应的方法实现。</p>
+            <p>实现原理涉及以下概念：</p>
+            <ul>
+                <li><strong>动态绑定</strong>：在运行时确定方法调用的过程</li>
+                <li><strong>虚方法表（vtable）</strong>：每个类都有一个虚方法表，存储着方法的入口地址</li>
+                <li><strong>方法分派</strong>：JVM 根据对象的实际类型选择适当的方法实现</li>
+            </ul>
+
+            <h3>10.5 多态的优势</h3>
+            <p>多态提供了以下优势：</p>
+            <ul>
+                <li><strong>灵活性</strong>：可以编写处理父类类型的代码，但在运行时根据实际对象类型执行不同的行为</li>
+                <li><strong>可扩展性</strong>：添加新的子类不需要修改处理父类的代码</li>
+                <li><strong>可维护性</strong>：代码结构更清晰，易于理解和维护</li>
+                <li><strong>解耦</strong>：降低了代码的耦合度，提高了代码的抽象级别</li>
+            </ul>
+
+            <h3>10.6 抽象类</h3>
+            <p>抽象类是不能被实例化的类，它可以包含抽象方法（没有方法体的方法）。抽象类用于定义子类应该遵循的模板，是多态的重要实现机制之一。</p>
+
+            <h4>10.6.1 抽象类的定义</h4>
+            <pre><code>// 抽象类
+public abstract class Shape {
+    // 普通属性
+    protected String color;
+    
+    // 普通构造方法
+    public Shape(String color) {
+        this.color = color;
+    }
+    
+    // 普通方法
+    public String getColor() {
+        return color;
+    }
+    
+    // 抽象方法（没有方法体）
+    public abstract double area();
+    public abstract double perimeter();
+}</code></pre>
+
+            <h4>10.6.2 抽象类的使用</h4>
+            <pre><code>// 具体子类必须实现所有抽象方法
+public class Circle extends Shape {
+    private double radius;
+    
+    public Circle(String color, double radius) {
+        super(color);
+        this.radius = radius;
+    }
+    
+    @Override
+    public double area() {
+        return Math.PI * radius * radius;
+    }
+    
+    @Override
+    public double perimeter() {
+        return 2 * Math.PI * radius;
+    }
+}
+
+public class Rectangle extends Shape {
+    private double width;
+    private double height;
+    
+    public Rectangle(String color, double width, double height) {
+        super(color);
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public double area() {
+        return width * height;
+    }
+    
+    @Override
+    public double perimeter() {
+        return 2 * (width + height);
+    }
+}</code></pre>
+
+            <h4>10.6.3 抽象类的特性</h4>
+            <p>抽象类具有以下特性：</p>
+            <ul>
+                <li>不能被实例化（不能使用 new 操作符创建对象）</li>
+                <li>可以包含抽象方法和非抽象方法</li>
+                <li>可以包含构造方法、静态方法、实例变量等</li>
+                <li>子类必须实现所有抽象方法，除非子类也是抽象类</li>
+                <li>可以有构造方法，用于子类构造</li>
+            </ul>
+
+            <div class="warning">
+                <div class="warning-title">抽象类与多态</div>
+                <p>虽然抽象类不能被实例化，但可以创建指向具体子类对象的抽象类引用。这是多态的重要应用。</p>
+                <pre><code>// 使用抽象类引用指向具体子类对象
+Shape circle = new Circle("红色", 5.0);
+Shape rectangle = new Rectangle("蓝色", 4.0, 6.0);
+
+// 多态调用
+System.out.println("圆的面积: " + circle.area());
+System.out.println("矩形的面积: " + rectangle.area());</code></pre>
+            </div>
+
+            <h3>10.7 接口</h3>
+            <p>接口是 Java 中实现多态的另一种重要机制。接口定义了一组方法签名，但不提供实现。它们建立了一组行为规范，任何实现接口的类都必须提供这些行为的具体实现。</p>
+
+            <h4>10.7.1 接口的定义</h4>
+            <pre><code>// 接口定义
+public interface Drawable {
+    // 常量（隐式为 public static final）
+    String TOOL = "画笔";
+    
+    // 抽象方法（隐式为 public abstract）
+    void draw();
+    
+    // Java 8 新增：默认方法
+    default void display() {
+        System.out.println("显示图形");
+    }
+    
+    // Java 8 新增：静态方法
+    static void info() {
+        System.out.println("这是一个可绘制的对象");
+    }
+}</code></pre>
+
+            <h4>10.7.2 接口的实现</h4>
+            <pre><code>// 实现接口
+public class Circle implements Drawable {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("绘制半径为 " + radius + " 的圆");
+    }
+}
+
+// 一个类可以实现多个接口
+public class Rectangle implements Drawable, Printable {
+    private double width;
+    private double height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("绘制宽为 " + width + "，高为 " + height + " 的矩形");
+    }
+    
+    @Override
+    public void print() {
+        System.out.println("打印矩形");
+    }
+}</code></pre>
+
+            <h4>10.7.3 接口的多态使用</h4>
+            <pre><code>// 通过接口引用实现多态
+public class GraphicsEditor {
+    public static void main(String[] args) {
+        // 创建不同的对象
+        Drawable circle = new Circle(5.0);
+        Drawable rectangle = new Rectangle(4.0, 6.0);
+        
+        // 使用接口多态
+        drawShape(circle);      // 绘制半径为 5.0 的圆
+        drawShape(rectangle);   // 绘制宽为 4.0，高为 6.0 的矩形
+        
+        // 使用默认方法
+        circle.display();       // 显示图形
+        
+        // 使用静态方法
+        Drawable.info();        // 这是一个可绘制的对象
+    }
+    
+    // 接受任何实现了 Drawable 接口的对象
+    public static void drawShape(Drawable drawable) {
+        drawable.draw();
+    }
+}</code></pre>
+
+            <h4>10.7.4 接口的特性</h4>
+            <p>接口具有以下特性：</p>
+            <ul>
+                <li>不能被实例化</li>
+                <li>可以包含常量（默认为 public static final）</li>
+                <li>可以包含抽象方法（默认为 public abstract）</li>
+                <li>可以包含默认方法（使用 default 关键字，Java 8+）</li>
+                <li>可以包含静态方法（使用 static 关键字，Java 8+）</li>
+                <li>可以包含私有方法（使用 private 关键字，Java 9+）</li>
+                <li>一个类可以实现多个接口</li>
+                <li>接口可以继承其他接口</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">抽象类 vs 接口</div>
+                <p>抽象类和接口都是实现多态的重要机制，但它们有不同的适用场景：</p>
+                <table>
+                    <tr>
+                        <th>特性</th>
+                        <th>抽象类</th>
+                        <th>接口</th>
+                    </tr>
+                    <tr>
+                        <td>继承</td>
+                        <td>单继承</td>
+                        <td>可以实现多个接口</td>
+                    </tr>
+                    <tr>
+                        <td>状态</td>
+                        <td>可以有实例变量</td>
+                        <td>只能有常量</td>
+                    </tr>
+                    <tr>
+                        <td>方法实现</td>
+                        <td>可以有抽象方法和非抽象方法</td>
+                        <td>主要是抽象方法（Java 8+ 可以有默认方法和静态方法）</td>
+                    </tr>
+                    <tr>
+                        <td>构造方法</td>
+                        <td>可以有构造方法</td>
+                        <td>不能有构造方法</td>
+                    </tr>
+                    <tr>
+                        <td>访问修饰符</td>
+                        <td>可以有任何访问修饰符</td>
+                        <td>方法隐式为 public</td>
+                    </tr>
+                    <tr>
+                        <td>适用场景</td>
+                        <td>是否关系（is-a）、共享代码</td>
+                        <td>能力关系（can-do）、多重能力</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>10.8 接口的默认方法</h3>
+            <p>从 Java 8 开始，接口可以包含带有实现的默认方法（default methods）。这一特性允许向接口添加新功能，而不会破坏实现该接口的现有类。</p>
+
+            <pre><code>public interface Vehicle {
+    // 抽象方法
+    void start();
+    
+    // 默认方法
+    default void honk() {
+        System.out.println("嘟嘟！");
+    }
+    
+    // 另一个默认方法
+    default void stop() {
+        System.out.println("车辆停止");
+    }
+}
+
+// 实现类可以直接使用默认方法
+public class Car implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("汽车启动");
+    }
+    
+    // 可以选择性地重写默认方法
+    @Override
+    public void honk() {
+        System.out.println("汽车喇叭：嘟嘟！");
+    }
+}
+
+// 使用默认方法
+Car car = new Car();
+car.start();  // 汽车启动
+car.honk();   // 汽车喇叭：嘟嘟！
+car.stop();   // 使用接口的默认实现：车辆停止</code></pre>
+
+            <h4>10.8.1 默认方法冲突</h4>
+            <p>当一个类实现多个接口，并且这些接口包含同名的默认方法时，会产生冲突。Java 采用以下规则解决冲突：</p>
+            <ol>
+                <li>类中的显式实现优先于接口的默认方法</li>
+                <li>子接口的默认方法优先于父接口的默认方法</li>
+                <li>如果冲突无法通过上述规则解决，必须显式指定使用哪个默认方法</li>
+            </ol>
+
+            <pre><code>public interface A {
+    default void show() {
+        System.out.println("A 的 show 方法");
+    }
+}
+
+public interface B {
+    default void show() {
+        System.out.println("B 的 show 方法");
+    }
+}
+
+// 冲突解决
+public class C implements A, B {
+    // 必须显式重写冲突的方法
+    @Override
+    public void show() {
+        // 可以选择调用某个接口的默认实现
+        A.super.show();  // 调用 A 接口的 show 方法
+        // 或者
+        // B.super.show();  // 调用 B 接口的 show 方法
+        // 或者
+        // 提供完全不同的实现
+    }
+}</code></pre>
+
+            <h3>10.9 函数式接口与 Lambda 表达式</h3>
+            <p>Java 8 引入了函数式接口和 Lambda 表达式，这是多态的另一种现代表现形式。函数式接口是只有一个抽象方法的接口，可以使用 Lambda 表达式来创建它们的实例。</p>
+
+            <h4>10.9.1 函数式接口</h4>
+            <pre><code>// 函数式接口（使用 @FunctionalInterface 注解）
+@FunctionalInterface
+public interface Calculator {
+    // 只有一个抽象方法
+    int calculate(int a, int b);
+    
+    // 可以有默认方法
+    default void info() {
+        System.out.println("这是一个计算器接口");
+    }
+}</code></pre>
+
+            <h4>10.9.2 使用 Lambda 表达式</h4>
+            <pre><code>public class LambdaDemo {
+    public static void main(String[] args) {
+        // 使用匿名内部类（传统方式）
+        Calculator addition = new Calculator() {
+            @Override
+            public int calculate(int a, int b) {
+                return a + b;
+            }
+        };
+        
+        // 使用 Lambda 表达式（现代方式）
+        Calculator subtraction = (a, b) -> a - b;
+        Calculator multiplication = (a, b) -> a * b;
+        Calculator division = (a, b) -> b != 0 ? a / b : 0;
+        
+        // 使用函数式接口
+        System.out.println("加法: " + addition.calculate(10, 5));        // 15
+        System.out.println("减法: " + subtraction.calculate(10, 5));     // 5
+        System.out.println("乘法: " + multiplication.calculate(10, 5));  // 50
+        System.out.println("除法: " + division.calculate(10, 5));        // 2
+        
+        // 将 Lambda 表达式作为参数传递
+        operate(10, 5, (a, b) -> a + b);  // 输出: 10 + 5 = 15
+        operate(10, 5, (a, b) -> a * b);  // 输出: 10 * 5 = 50
+    }
+    
+    // 接受函数式接口作为参数
+    public static void operate(int a, int b, Calculator calculator) {
+        int result = calculator.calculate(a, b);
+        System.out.println(a + " 操作 " + b + " = " + result);
+    }
+}</code></pre>
+
+            <h4>10.9.3 Java 标准函数式接口</h4>
+            <p>Java 提供了一系列标准的函数式接口，位于 java.util.function 包中：</p>
+            <table>
+                <tr>
+                    <th>接口</th>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>Predicate&lt;T&gt;</td>
+                    <td>boolean test(T t)</td>
+                    <td>接受一个参数，返回布尔值</td>
+                </tr>
+                <tr>
+                    <td>Consumer&lt;T&gt;</td>
+                    <td>void accept(T t)</td>
+                    <td>接受一个参数，不返回结果</td>
+                </tr>
+                <tr>
+                    <td>Function&lt;T, R&gt;</td>
+                    <td>R apply(T t)</td>
+                    <td>接受一个参数，返回一个结果</td>
+                </tr>
+                <tr>
+                    <td>Supplier&lt;T&gt;</td>
+                    <td>T get()</td>
+                    <td>不接受参数，返回一个结果</td>
+                </tr>
+                <tr>
+                    <td>BinaryOperator&lt;T&gt;</td>
+                    <td>T apply(T t1, T t2)</td>
+                    <td>接受两个相同类型的参数，返回一个相同类型的结果</td>
+                </tr>
+            </table>
+
+            <pre><code>import java.util.function.*;
+import java.util.Arrays;
+import java.util.List;
+
+public class FunctionalInterfaceDemo {
+    public static void main(String[] args) {
+        // Predicate - 判断条件
+        Predicate<Integer> isPositive = n -> n > 0;
+        System.out.println(isPositive.test(5));   // true
+        System.out.println(isPositive.test(-2));  // false
+        
+        // Consumer - 消费数据
+        Consumer<String> printer = s -> System.out.println("消费: " + s);
+        printer.accept("Hello");  // 消费: Hello
+        
+        // Function - 转换数据
+        Function<String, Integer> toLength = s -> s.length();
+        System.out.println(toLength.apply("Java"));  // 4
+        
+        // Supplier - 提供数据
+        Supplier<Double> randomValue = () -> Math.random();
+        System.out.println(randomValue.get());  // 随机数
+        
+        // 实际应用示例
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave");
+        
+        // 使用 Predicate 过滤
+        names.stream()
+             .filter(name -> name.length() > 4)
+             .forEach(System.out::println);  // Alice, Charlie
+        
+        // 使用 Function 转换
+        names.stream()
+             .map(name -> name.toUpperCase())
+             .forEach(System.out::println);  // ALICE, BOB, CHARLIE, DAVE
+    }
+}</code></pre>
+
+            <h3>10.10 多态性的实际应用</h3>
+            <p>以下是一个使用多态实现的点餐系统，展示了多态在实际应用中的重要性：</p>
+
+            <pre><code>// 食品抽象类
+abstract class Food {
+    protected String name;
+    protected double price;
+    
+    public Food(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public double getPrice() {
+        return price;
+    }
+    
+    // 抽象方法
+    public abstract void prepare();
+    public abstract void cook();
+    public abstract void serve();
+    
+    // 模板方法模式
+    public final void orderProcess() {
+        prepare();
+        cook();
+        serve();
+        System.out.println("价格: " + price + " 元\n");
+    }
+}
+
+// 主食类
+class MainCourse extends Food {
+    private String protein;
+    
+    public MainCourse(String name, double price, String protein) {
+        super(name, price);
+        this.protein = protein;
+    }
+    
+    @Override
+    public void prepare() {
+        System.out.println("准备主食 " + name + "，主要食材：" + protein);
+    }
+    
+    @Override
+    public void cook() {
+        System.out.println("烹饪主食，需要较长时间");
+    }
+    
+    @Override
+    public void serve() {
+        System.out.println("主食上桌，享用" + name);
+    }
+}
+
+// 甜点类
+class Dessert extends Food {
+    private boolean isSweet;
+    
+    public Dessert(String name, double price, boolean isSweet) {
+        super(name, price);
+        this.isSweet = isSweet;
+    }
+    
+    @Override
+    public void prepare() {
+        System.out.println("准备甜点 " + name + "，甜度：" + (isSweet ? "高" : "低"));
+    }
+    
+    @Override
+    public void cook() {
+        System.out.println("制作甜点，可能需要烘焙或冷藏");
+    }
+    
+    @Override
+    public void serve() {
+        System.out.println("甜点上桌，享用" + name);
+    }
+}
+
+// 饮料类
+class Beverage extends Food {
+    private boolean isHot;
+    
+    public Beverage(String name, double price, boolean isHot) {
+        super(name, price);
+        this.isHot = isHot;
+    }
+    
+    @Override
+    public void prepare() {
+        System.out.println("准备饮料 " + name + "，温度：" + (isHot ? "热" : "冷"));
+    }
+    
+    @Override
+    public void cook() {
+        if (isHot) {
+            System.out.println("加热饮料");
+        } else {
+            System.out.println("冰镇饮料");
+        }
+    }
+    
+    @Override
+    public void serve() {
+        System.out.println("饮料上桌，享用" + name);
+    }
+}
+
+// 订单处理接口
+interface OrderProcessor {
+    void processOrder(Food[] items);
+}
+
+// 订单处理实现
+class RestaurantOrderProcessor implements OrderProcessor {
+    @Override
+    public void processOrder(Food[] items) {
+        System.out.println("=== 开始处理订单 ===");
+        double totalPrice = 0;
+        
+        for (Food item : items) {
+            System.out.println("处理: " + item.getName());
+            item.orderProcess();
+            totalPrice += item.getPrice();
+        }
+        
+        System.out.println("=== 订单完成 ===");
+        System.out.println("总价: " + totalPrice + " 元");
+    }
+}
+
+// 订单系统演示
+public class RestaurantOrderSystem {
+    public static void main(String[] args) {
+        // 创建不同类型的食品
+        Food beefNoodle = new MainCourse("牛肉面", 35.0, "牛肉");
+        Food iceCream = new Dessert("冰淇淋", 12.0, true);
+        Food coffee = new Beverage("咖啡", 18.0, true);
+        
+        // 使用多态创建订单
+        Food[] order = {beefNoodle, coffee, iceCream};
+        
+        // 处理订单
+        OrderProcessor processor = new RestaurantOrderProcessor();
+        processor.processOrder(order);
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">多态的最佳实践</div>
+                <p>在实际应用中使用多态时，请遵循以下最佳实践：</p>
+                <ul>
+                    <li>依赖抽象，而不是具体实现</li>
+                    <li>通过接口或抽象类定义契约</li>
+                    <li>将共同行为提取到父类</li>
+                    <li>针对接口编程，而不是实现</li>
+                    <li>合理使用向上转型和向下转型</li>
+                    <li>区分"是一个"关系（继承）和"能做"关系（接口）</li>
+                    <li>避免过度使用继承，考虑组合或接口实现</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="exception-handling" class="content">
+            <h2>11. 异常处理</h2>
+            <p>异常处理是 Java 程序中处理错误和异常情况的机制。良好的异常处理能够增强程序的健壮性、可靠性，并提供更好的用户体验。</p>
+
+            <h3>11.1 异常的基本概念</h3>
+            <p>异常是程序执行过程中出现的意外情况，如果不妥善处理，可能导致程序终止。Java 的异常处理机制允许程序捕获并处理这些异常，使程序能够继续执行或优雅地终止。</p>
+            
+            <h4>11.1.1 异常的作用</h4>
+            <ul>
+                <li>将错误处理代码与正常业务逻辑分离</li>
+                <li>集中管理错误处理</li>
+                <li>区分不同类型的错误</li>
+                <li>传播错误信息</li>
+            </ul>
+
+            <h3>11.2 Java 异常层次结构</h3>
+            <p>Java 中的所有异常都是 <code>Throwable</code> 类的子类，它主要分为两个分支：</p>
+            <ul>
+                <li><strong>Error</strong>：表示严重的问题，通常无法在程序中恢复，如 <code>OutOfMemoryError</code></li>
+                <li><strong>Exception</strong>：表示可以处理的问题，又分为两类：
+                    <ul>
+                        <li><strong>检查型异常（Checked Exception）</strong>：必须显式声明或处理的异常</li>
+                        <li><strong>非检查型异常（Unchecked Exception）</strong>：运行时异常，不强制处理</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">异常层次结构图</div>
+                <pre>
+                Throwable
+                ├── Error
+                │   ├── OutOfMemoryError
+                │   ├── StackOverflowError
+                │   └── ...
+                └── Exception
+                    ├── IOException (Checked)
+                    ├── SQLException (Checked)
+                    ├── ClassNotFoundException (Checked)
+                    ├── RuntimeException (Unchecked)
+                    │   ├── NullPointerException
+                    │   ├── ArrayIndexOutOfBoundsException
+                    │   ├── ArithmeticException
+                    │   ├── IllegalArgumentException
+                    │   └── ...
+                    └── ...
+                </pre>
+            </div>
+
+            <h4>11.2.1 常见的检查型异常</h4>
+            <table>
+                <tr>
+                    <th>异常类</th>
+                    <th>描述</th>
+                    <th>常见场景</th>
+                </tr>
+                <tr>
+                    <td>IOException</td>
+                    <td>输入输出异常</td>
+                    <td>文件读写、网络通信</td>
+                </tr>
+                <tr>
+                    <td>SQLException</td>
+                    <td>数据库访问异常</td>
+                    <td>数据库连接、查询执行</td>
+                </tr>
+                <tr>
+                    <td>ClassNotFoundException</td>
+                    <td>找不到类异常</td>
+                    <td>动态加载类</td>
+                </tr>
+                <tr>
+                    <td>InterruptedException</td>
+                    <td>线程中断异常</td>
+                    <td>线程休眠、等待被中断</td>
+                </tr>
+            </table>
+
+            <h4>11.2.2 常见的非检查型异常（运行时异常）</h4>
+            <table>
+                <tr>
+                    <th>异常类</th>
+                    <th>描述</th>
+                    <th>常见场景</th>
+                </tr>
+                <tr>
+                    <td>NullPointerException</td>
+                    <td>空指针异常</td>
+                    <td>访问 null 对象的方法或属性</td>
+                </tr>
+                <tr>
+                    <td>ArrayIndexOutOfBoundsException</td>
+                    <td>数组索引越界异常</td>
+                    <td>访问数组中不存在的索引</td>
+                </tr>
+                <tr>
+                    <td>ArithmeticException</td>
+                    <td>算术异常</td>
+                    <td>除以零、无效的数学运算</td>
+                </tr>
+                <tr>
+                    <td>IllegalArgumentException</td>
+                    <td>非法参数异常</td>
+                    <td>方法参数值不合法</td>
+                </tr>
+                <tr>
+                    <td>ClassCastException</td>
+                    <td>类型转换异常</td>
+                    <td>不兼容的类型转换</td>
+                </tr>
+            </table>
+
+            <h3>11.3 try-catch-finally 语句</h3>
+            <p>Java 使用 try-catch-finally 结构来捕获和处理异常。这三个块分别有不同的作用：</p>
+            <ul>
+                <li><strong>try 块</strong>：包含可能抛出异常的代码</li>
+                <li><strong>catch 块</strong>：处理在 try 块中抛出的特定类型的异常</li>
+                <li><strong>finally 块</strong>：包含无论是否发生异常都会执行的代码，通常用于资源清理</li>
+            </ul>
+
+            <h4>11.3.1 基本语法</h4>
+            <pre><code>try {
+    // 可能抛出异常的代码
+} catch (ExceptionType1 e1) {
+    // 处理 ExceptionType1 类型的异常
+} catch (ExceptionType2 e2) {
+    // 处理 ExceptionType2 类型的异常
+} finally {
+    // 无论是否发生异常都会执行的代码
+}</code></pre>
+
+            <h4>11.3.2 示例</h4>
+            <pre><code>public class ExceptionHandlingDemo {
+    public static void main(String[] args) {
+        int[] numbers = {1, 2, 3};
+        
+        try {
+            System.out.println("Trying to access an element...");
+            int value = numbers[5];  // 抛出 ArrayIndexOutOfBoundsException
+            System.out.println("Value: " + value);  // 这行不会执行
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Caught exception: " + e.getMessage());
+            System.out.println("Array index out of bounds!");
+        } finally {
+            System.out.println("This always executes, exception or not.");
+        }
+        
+        System.out.println("Program continues execution...");
+    }
+}</code></pre>
+
+            <h4>11.3.3 多个 catch 块</h4>
+            <p>可以使用多个 catch 块来处理不同类型的异常。异常匹配遵循从具体到一般的原则，子类异常必须在父类异常之前捕获。</p>
+            <pre><code>try {
+    int result = divide(10, 0);
+    int[] array = null;
+    array[0] = 1;  // 不会执行到这里
+} catch (ArithmeticException e) {
+    System.out.println("Arithmetic exception: " + e.getMessage());
+} catch (NullPointerException e) {
+    System.out.println("Null pointer exception: " + e.getMessage());
+} catch (RuntimeException e) {
+    System.out.println("Runtime exception: " + e.getMessage());
+} catch (Exception e) {
+    System.out.println("General exception: " + e.getMessage());
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">catch 块顺序的重要性</div>
+                <p>多个 catch 块的顺序很重要。异常的捕获遵循"从子类到父类"的规则。如果将父类异常的 catch 块放在子类异常之前，子类异常的 catch 块将永远不会被执行，并且编译器会报错。</p>
+                <pre><code>// 错误的顺序
+try {
+    // 代码
+} catch (Exception e) {
+    // 处理所有异常
+} catch (NullPointerException e) {  // 编译错误：已经被前面的 catch 块处理
+    // 这个块永远不会执行
+}</code></pre>
+            </div>
+
+            <h4>11.3.4 Java 7+ 的多重捕获</h4>
+            <p>从 Java 7 开始，可以在一个 catch 块中捕获多种类型的异常，使用 | 分隔。</p>
+            <pre><code>try {
+    // 可能抛出多种异常的代码
+} catch (IOException | SQLException e) {
+    // 同时处理 IOException 和 SQLException
+    System.out.println("Error: " + e.getMessage());
+}</code></pre>
+
+            <h4>11.3.5 finally 块</h4>
+            <p>finally 块无论是否发生异常都会执行，通常用于清理资源，如关闭文件或数据库连接。</p>
+            <pre><code>FileInputStream fis = null;
+try {
+    fis = new FileInputStream("file.txt");
+    // 处理文件
+} catch (IOException e) {
+    System.out.println("Error reading file: " + e.getMessage());
+} finally {
+    // 关闭文件输入流
+    if (fis != null) {
+        try {
+            fis.close();
+        } catch (IOException e) {
+            System.out.println("Error closing file: " + e.getMessage());
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">finally 块的执行时机</div>
+                <p>finally 块几乎在所有情况下都会执行，包括:</p>
+                <ul>
+                    <li>正常执行完 try 块</li>
+                    <li>执行 try 块时抛出异常</li>
+                    <li>执行 try 块时遇到 return 语句</li>
+                </ul>
+                <p>但有两种情况 finally 块不会执行：</p>
+                <ul>
+                    <li>程序在 try 或 catch 块中调用 System.exit()</li>
+                    <li>JVM 崩溃</li>
+                </ul>
+            </div>
+
+            <h3>11.4 try-with-resources 语句</h3>
+            <p>Java 7 引入了 try-with-resources 语句，它是一种处理资源关闭的更简洁方式。任何实现了 <code>AutoCloseable</code> 或 <code>Closeable</code> 接口的对象都可以使用这种语法。</p>
+
+            <h4>11.4.1 基本语法</h4>
+            <pre><code>try (Resource resource = new Resource()) {
+    // 使用资源的代码
+} catch (Exception e) {
+    // 异常处理
+}</code></pre>
+
+            <h4>11.4.2 示例</h4>
+            <pre><code>// 使用传统方式
+FileInputStream fis = null;
+BufferedReader br = null;
+try {
+    fis = new FileInputStream("file.txt");
+    br = new BufferedReader(new InputStreamReader(fis));
+    String line = br.readLine();
+    System.out.println(line);
+} catch (IOException e) {
+    System.out.println("Error: " + e.getMessage());
+} finally {
+    try {
+        if (br != null) br.close();
+        if (fis != null) fis.close();
+    } catch (IOException e) {
+        System.out.println("Error closing resources: " + e.getMessage());
+    }
+}
+
+// 使用 try-with-resources
+try (FileInputStream fis = new FileInputStream("file.txt");
+     BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
+    String line = br.readLine();
+    System.out.println(line);
+} catch (IOException e) {
+    System.out.println("Error: " + e.getMessage());
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">try-with-resources 的优势</div>
+                <p>try-with-resources 的主要优点：</p>
+                <ul>
+                    <li>代码更简洁</li>
+                    <li>自动关闭资源，无需手动 close()</li>
+                    <li>更好地处理多个资源</li>
+                    <li>资源关闭顺序是创建的相反顺序</li>
+                </ul>
+            </div>
+
+            <h3>11.5 抛出异常</h3>
+            <p>除了捕获异常，Java 也允许程序显式抛出异常。使用 <code>throw</code> 关键字可以抛出异常对象，使用 <code>throws</code> 关键字声明方法可能抛出的异常。</p>
+
+            <h4>11.5.1 使用 throw</h4>
+            <pre><code>public double divide(int numerator, int denominator) {
+    if (denominator == 0) {
+        throw new ArithmeticException("Division by zero is not allowed");
+    }
+    return (double) numerator / denominator;
+}</code></pre>
+
+            <h4>11.5.2 使用 throws</h4>
+            <pre><code>public void readFile(String fileName) throws IOException {
+    FileReader reader = new FileReader(fileName);
+    BufferedReader bufferedReader = new BufferedReader(reader);
+    String line;
+    while ((line = bufferedReader.readLine()) != null) {
+        System.out.println(line);
+    }
+    bufferedReader.close();
+}</code></pre>
+
+            <h4>11.5.3 throws 声明多个异常</h4>
+            <pre><code>public void processDatabaseFile(String fileName) throws IOException, SQLException {
+    // 读取文件和访问数据库的代码
+}</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">throw 和 throws 的区别</div>
+                <table>
+                    <tr>
+                        <th>throw</th>
+                        <th>throws</th>
+                    </tr>
+                    <tr>
+                        <td>用于显式抛出异常对象</td>
+                        <td>用于声明方法可能抛出的异常类型</td>
+                    </tr>
+                    <tr>
+                        <td>后跟异常对象</td>
+                        <td>后跟异常类型</td>
+                    </tr>
+                    <tr>
+                        <td>在方法内部使用</td>
+                        <td>在方法签名中使用</td>
+                    </tr>
+                    <tr>
+                        <td>每次只能抛出一个异常对象</td>
+                        <td>可以声明多个异常类型</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>11.6 自定义异常</h3>
+            <p>Java 允许创建自定义异常类，通常通过继承 <code>Exception</code>（检查型异常）或 <code>RuntimeException</code>（非检查型异常）来实现。</p>
+
+            <h4>11.6.1 创建自定义异常</h4>
+            <pre><code>// 检查型异常
+public class InsufficientFundsException extends Exception {
+    private double amount;
+    
+    public InsufficientFundsException(String message, double amount) {
+        super(message);
+        this.amount = amount;
+    }
+    
+    public double getAmount() {
+        return amount;
+    }
+}
+
+// 非检查型异常
+public class InvalidDataException extends RuntimeException {
+    public InvalidDataException() {
+        super();
+    }
+    
+    public InvalidDataException(String message) {
+        super(message);
+    }
+    
+    public InvalidDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}</code></pre>
+
+            <h4>11.6.2 使用自定义异常</h4>
+            <pre><code>public class BankAccount {
+    private String accountNumber;
+    private double balance;
+    
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+    
+    public void withdraw(double amount) throws InsufficientFundsException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        
+        if (amount > balance) {
+            throw new InsufficientFundsException(
+                "Insufficient funds for account " + accountNumber 
+                + ". Requested: " + amount + ", Available: " + balance, 
+                amount - balance);
+        }
+        
+        balance -= amount;
+        System.out.println("Withdrew: " + amount + ", New balance: " + balance);
+    }
+    
+    // 使用自定义异常
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("123456", 1000);
+        
+        try {
+            account.withdraw(1500);
+        } catch (InsufficientFundsException e) {
+            System.out.println(e.getMessage());
+            System.out.println("You need an additional " + e.getAmount() 
+                             + " to complete this transaction");
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">设计自定义异常的建议</div>
+                <ul>
+                    <li>为异常类提供有意义的名称</li>
+                    <li>包含足够的上下文信息</li>
+                    <li>重用已有的异常类型（如果适合）</li>
+                    <li>考虑是创建检查型还是非检查型异常</li>
+                    <li>提供多个构造方法</li>
+                </ul>
+            </div>
+
+            <h3>11.7 异常链</h3>
+            <p>异常链允许一个异常封装另一个异常，有助于保留原始异常信息。</p>
+
+            <pre><code>public void processFile(String fileName) throws ServiceException {
+    try {
+        // 尝试读取文件
+        File file = new File(fileName);
+        if (!file.exists()) {
+            throw new FileNotFoundException("File not found: " + fileName);
+        }
+        
+        // 处理文件内容
+        // ...
+    } catch (FileNotFoundException e) {
+        // 将原始异常封装在新异常中
+        throw new ServiceException("Error processing file", e);
+    }
+}
+
+// 使用异常链
+try {
+    processFile("data.txt");
+} catch (ServiceException e) {
+    System.out.println("Service error: " + e.getMessage());
+    
+    // 获取原始异常
+    Throwable cause = e.getCause();
+    if (cause != null) {
+        System.out.println("Original cause: " + cause.getMessage());
+    }
+    
+    // 打印完整的堆栈轨迹
+    e.printStackTrace();
+}</code></pre>
+
+            <h3>11.8 异常处理的最佳实践</h3>
+            <ol>
+                <li><strong>只捕获能够处理的异常</strong>
+                    <p>不要捕获不知道如何处理的异常，可以让它传播到能够处理的地方。</p>
+                </li>
+                
+                <li><strong>使用特定的异常类型</strong>
+                    <p>捕获特定类型的异常，而不是通用的 Exception，除非确实需要处理所有异常。</p>
+                </li>
+                
+                <li><strong>不要忽略异常</strong>
+                    <p>不要使用空的 catch 块。如果无法处理异常，至少记录它。</p>
+                    <pre><code>// 错误示范
+try {
+    // 代码
+} catch (Exception e) {
+    // 什么都不做
+}
+
+// 正确做法
+try {
+    // 代码
+} catch (Exception e) {
+    logger.error("Error occurred", e);
+    // 或者重新抛出
+    throw e;
+}</code></pre>
+                </li>
+                
+                <li><strong>始终清理资源</strong>
+                    <p>使用 finally 块或 try-with-resources 确保资源被正确关闭。</p>
+                </li>
+                
+                <li><strong>提供有意义的错误消息</strong>
+                    <p>异常消息应该提供足够的上下文信息，帮助诊断问题。</p>
+                </li>
+                
+                <li><strong>合理选择检查型和非检查型异常</strong>
+                    <p>检查型异常用于可恢复的错误，非检查型异常用于编程错误。</p>
+                    <ul>
+                        <li>检查型异常：用户输入错误、文件未找到等可恢复情况</li>
+                        <li>非检查型异常：空指针、非法参数等编程错误</li>
+                    </ul>
+                </li>
+                
+                <li><strong>不要过度使用异常</strong>
+                    <p>异常不应用于正常的控制流程，它们应该用于异常情况。</p>
+                </li>
+                
+                <li><strong>记录异常</strong>
+                    <p>使用日志框架记录异常，包括堆栈跟踪信息。</p>
+                </li>
+                
+                <li><strong>优先使用标准异常</strong>
+                    <p>如果标准异常满足需求，优先使用它们，而不是创建新的异常类。</p>
+                    <ul>
+                        <li>IllegalArgumentException：参数值无效</li>
+                        <li>IllegalStateException：对象状态无效</li>
+                        <li>NullPointerException：参数不应为 null</li>
+                        <li>UnsupportedOperationException：操作不支持</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>11.9 异常处理的实际应用</h3>
+            <p>下面是一个综合示例，展示了异常处理在实际应用中的使用：</p>
+
+            <pre><code>package com.example.fileprocessor;
+
+import java.io.*;
+import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+/**
+ * 一个演示异常处理的文件处理应用
+ */
+public class FileProcessor {
+    private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
+    
+    // 自定义异常
+    public static class FileProcessingException extends Exception {
+        public FileProcessingException(String message) {
+            super(message);
+        }
+        
+        public FileProcessingException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    // 表示用户记录的类
+    public static class UserRecord {
+        private String id;
+        private String name;
+        private Date birthDate;
+        
+        public UserRecord(String id, String name, Date birthDate) {
+            this.id = id;
+            this.name = name;
+            this.birthDate = birthDate;
+        }
+        
+        @Override
+        public String toString() {
+            return "UserRecord{id='" + id + "', name='" + name + 
+                   "', birthDate=" + birthDate + '}';
+        }
+    }
+    
+    /**
+     * 处理包含用户数据的文件
+     * @param filePath 文件路径
+     * @return 处理的用户记录列表
+     * @throws FileProcessingException 如果处理过程中出现错误
+     */
+    public List<UserRecord> processUserFile(String filePath) throws FileProcessingException {
+        logger.info("开始处理文件: " + filePath);
+        List<UserRecord> users = new ArrayList<>();
+        
+        // 使用 try-with-resources 处理文件
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int lineNumber = 0;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                
+                // 跳过空行
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                
+                try {
+                    // 解析用户数据行（格式: ID,姓名,出生日期）
+                    String[] parts = line.split(",");
+                    if (parts.length != 3) {
+                        throw new IllegalArgumentException("Invalid format. Expected: ID,Name,BirthDate");
+                    }
+                    
+                    String id = parts[0].trim();
+                    String name = parts[1].trim();
+                    Date birthDate = dateFormat.parse(parts[2].trim());
+                    
+                    UserRecord user = new UserRecord(id, name, birthDate);
+                    users.add(user);
+                    logger.fine("处理用户: " + user);
+                    
+                } catch (IllegalArgumentException | ParseException e) {
+                    // 记录错误但继续处理其他行
+                    logger.warning("第 " + lineNumber + " 行数据格式错误: " + e.getMessage());
+                }
+            }
+            
+            logger.info("文件处理完成，共处理 " + users.size() + " 条记录");
+            return users;
+            
+        } catch (FileNotFoundException e) {
+            // 文件不存在，抛出自定义异常
+            throw new FileProcessingException("找不到文件: " + filePath, e);
+            
+        } catch (IOException e) {
+            // 读取过程中出错，抛出自定义异常
+            throw new FileProcessingException("读取文件时发生错误: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 主方法，演示异常处理
+     */
+    public static void main(String[] args) {
+        FileProcessor processor = new FileProcessor();
+        
+        try {
+            // 处理正常文件
+            List<UserRecord> users = processor.processUserFile("users.txt");
+            System.out.println("成功处理 " + users.size() + " 条用户记录");
+            
+            // 尝试处理不存在的文件
+            processor.processUserFile("nonexistent.txt");
+            
+        } catch (FileProcessingException e) {
+            System.err.println("文件处理错误: " + e.getMessage());
+            
+            // 获取原始异常
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("原始错误: " + cause.getMessage());
+            }
+            
+            // 在开发环境打印堆栈跟踪
+            logger.log(Level.SEVERE, "处理文件时出错", e);
+            
+        } finally {
+            System.out.println("程序执行完毕");
+        }
+    }
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">异常处理小结</div>
+                <p>有效的异常处理是编写健壮 Java 程序的关键。请记住：</p>
+                <ul>
+                    <li>异常用于处理异常情况，不是正常的控制流</li>
+                    <li>合理选择检查型和非检查型异常</li>
+                    <li>提供有用的错误信息</li>
+                    <li>正确清理资源</li>
+                    <li>只捕获能够处理的异常</li>
+                    <li>使用异常链保留原始错误信息</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="collections-framework" class="content">
+            <h2>12. 集合框架</h2>
+            <p>Java 集合框架（Collections Framework）是Java提供的一套用于存储和操作对象组的统一架构。集合框架包含接口、实现类以及一些用于操作集合的算法。</p>
+
+            <h3>12.1 集合框架概述</h3>
+            <p>Java集合框架提供了一系列标准的接口和类，使得对各种数据结构的操作变得统一和便捷。使用集合框架可以极大地提高编程效率、代码质量和重用性。</p>
+
+            <h4>12.1.1 集合框架的主要组成部分</h4>
+            <ul>
+                <li><strong>接口（Interfaces）</strong>：定义集合的抽象数据类型，如List、Set、Map等</li>
+                <li><strong>实现类（Implementations）</strong>：接口的具体实现，如ArrayList、LinkedList、HashSet、HashMap等</li>
+                <li><strong>算法（Algorithms）</strong>：对集合执行各种操作的方法，如排序、搜索等</li>
+            </ul>
+
+            <h4>12.1.2 集合框架体系结构</h4>
+            <p>Java集合框架的核心接口层次结构如下：</p>
+            <ul>
+                <li><strong>Collection</strong>：集合层次结构的根接口，一个Collection代表一组对象，称为元素</li>
+                <ul>
+                    <li><strong>List</strong>：有序集合，允许重复元素</li>
+                    <li><strong>Set</strong>：不允许重复元素的集合</li>
+                    <ul>
+                        <li><strong>SortedSet</strong>：有序的Set</li>
+                    </ul>
+                    <li><strong>Queue</strong>：表示队列，通常以先进先出（FIFO）方式排序元素</li>
+                    <ul>
+                        <li><strong>Deque</strong>：双端队列，支持两端插入和移除元素</li>
+                    </ul>
+                </ul>
+                <li><strong>Map</strong>：键值对映射，不是Collection的子接口</li>
+                <ul>
+                    <li><strong>SortedMap</strong>：键按照某种顺序排列的Map</li>
+                </ul>
+            </ul>
+
+            <h3>12.2 Collection接口</h3>
+            <p>Collection接口是集合层次结构的根接口，定义了所有集合都通用的方法。</p>
+
+            <h4>12.2.1 Collection接口的主要方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>boolean add(E e)</td>
+                    <td>添加元素到集合中</td>
+                </tr>
+                <tr>
+                    <td>boolean addAll(Collection&lt;? extends E&gt; c)</td>
+                    <td>将指定集合中的所有元素添加到此集合</td>
+                </tr>
+                <tr>
+                    <td>void clear()</td>
+                    <td>删除集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean contains(Object o)</td>
+                    <td>判断集合是否包含指定元素</td>
+                </tr>
+                <tr>
+                    <td>boolean containsAll(Collection&lt;?&gt; c)</td>
+                    <td>判断集合是否包含指定集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean equals(Object o)</td>
+                    <td>比较此集合与指定对象是否相等</td>
+                </tr>
+                <tr>
+                    <td>int hashCode()</td>
+                    <td>返回集合的哈希码值</td>
+                </tr>
+                <tr>
+                    <td>boolean isEmpty()</td>
+                    <td>判断集合是否为空</td>
+                </tr>
+                <tr>
+                    <td>Iterator&lt;E&gt; iterator()</td>
+                    <td>返回集合的迭代器</td>
+                </tr>
+                <tr>
+                    <td>boolean remove(Object o)</td>
+                    <td>从集合中移除指定元素</td>
+                </tr>
+                <tr>
+                    <td>boolean removeAll(Collection&lt;?&gt; c)</td>
+                    <td>移除此集合中包含在指定集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean retainAll(Collection&lt;?&gt; c)</td>
+                    <td>仅保留此集合中包含在指定集合中的元素</td>
+                </tr>
+                <tr>
+                    <td>int size()</td>
+                    <td>返回集合中的元素数量</td>
+                </tr>
+                <tr>
+                    <td>Object[] toArray()</td>
+                    <td>返回包含集合所有元素的数组</td>
+                </tr>
+                <tr>
+                    <td>&lt;T&gt; T[] toArray(T[] a)</td>
+                    <td>返回包含集合所有元素的特定类型数组</td>
+                </tr>
+            </table>
+
+            <h3>12.3 List接口</h3>
+            <p>List是一个有序集合（也称为序列），允许重复元素。用户可以通过整数索引访问List中的元素，并搜索列表中的元素。</p>
+
+            <h4>12.3.1 List的特点</h4>
+            <ul>
+                <li>有序（按插入顺序保存元素）</li>
+                <li>允许重复元素</li>
+                <li>允许使用索引访问元素</li>
+                <li>常用实现类：ArrayList、LinkedList、Vector</li>
+            </ul>
+
+            <h4>12.3.2 List接口的特有方法</h4>
+            <p>除了继承自Collection的方法外，List接口还定义了一些特有的方法：</p>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>void add(int index, E element)</td>
+                    <td>在指定位置插入元素</td>
+                </tr>
+                <tr>
+                    <td>E get(int index)</td>
+                    <td>返回指定位置的元素</td>
+                </tr>
+                <tr>
+                    <td>E set(int index, E element)</td>
+                    <td>替换指定位置的元素</td>
+                </tr>
+                <tr>
+                    <td>E remove(int index)</td>
+                    <td>移除指定位置的元素</td>
+                </tr>
+                <tr>
+                    <td>int indexOf(Object o)</td>
+                    <td>返回指定元素在列表中第一次出现的位置</td>
+                </tr>
+                <tr>
+                    <td>int lastIndexOf(Object o)</td>
+                    <td>返回指定元素在列表中最后一次出现的位置</td>
+                </tr>
+                <tr>
+                    <td>List&lt;E&gt; subList(int fromIndex, int toIndex)</td>
+                    <td>返回列表中指定范围的视图</td>
+                </tr>
+                <tr>
+                    <td>ListIterator&lt;E&gt; listIterator()</td>
+                    <td>返回列表的列表迭代器</td>
+                </tr>
+            </table>
+
+            <h4>12.3.3 ArrayList</h4>
+            <p>ArrayList是List接口最常用的实现类之一，它基于数组实现，支持动态扩容。</p>
+
+            <p><strong>主要特点：</strong></p>
+            <ul>
+                <li>基于动态数组实现</li>
+                <li>随机访问效率高（时间复杂度为O(1)）</li>
+                <li>插入和删除操作可能需要移动元素，效率较低</li>
+                <li>非同步（线程不安全）</li>
+            </ul>
+
+            <pre><code>// 创建ArrayList
+ArrayList<String> names = new ArrayList<>();
+
+// 添加元素
+names.add("张三");
+names.add("李四");
+names.add("王五");
+
+// 使用索引访问
+System.out.println("第二个名字: " + names.get(1));  // 输出: 李四
+
+// 修改元素
+names.set(1, "赵六");
+System.out.println("修改后的列表: " + names);  // [张三, 赵六, 王五]
+
+// 插入元素
+names.add(1, "李四");
+System.out.println("插入后的列表: " + names);  // [张三, 李四, 赵六, 王五]
+
+// 删除元素
+names.remove(2);
+System.out.println("删除后的列表: " + names);  // [张三, 李四, 王五]
+
+// 查找元素
+int index = names.indexOf("王五");
+System.out.println("王五的索引: " + index);  // 2
+
+// 遍历列表
+for (String name : names) {
+    System.out.println(name);
+}
+
+// 使用迭代器遍历
+Iterator<String> iterator = names.iterator();
+while (iterator.hasNext()) {
+    String name = iterator.next();
+    System.out.println(name);
+}
+
+// 使用索引遍历
+for (int i = 0; i < names.size(); i++) {
+    System.out.println(names.get(i));
+}
+
+// 使用Lambda表达式遍历（Java 8+）
+names.forEach(name -> System.out.println(name));</code></pre>
+
+            <h4>12.3.4 LinkedList</h4>
+            <p>LinkedList是List接口的另一个重要实现，它基于双向链表实现，支持高效的插入和删除操作。</p>
+
+            <p><strong>主要特点：</strong></p>
+            <ul>
+                <li>基于双向链表实现</li>
+                <li>插入和删除操作效率高（时间复杂度为O(1)）</li>
+                <li>随机访问效率低（时间复杂度为O(n)）</li>
+                <li>同时实现了List和Deque接口</li>
+                <li>非同步（线程不安全）</li>
+            </ul>
+
+            <pre><code>// 创建LinkedList
+LinkedList<String> colors = new LinkedList<>();
+
+// 添加元素
+colors.add("红色");
+colors.add("绿色");
+colors.add("蓝色");
+
+// 在链表两端添加元素
+colors.addFirst("黑色");  // 在链表开头添加
+colors.addLast("白色");   // 在链表末尾添加
+System.out.println(colors);  // [黑色, 红色, 绿色, 蓝色, 白色]
+
+// 获取链表两端元素
+String firstColor = colors.getFirst();
+String lastColor = colors.getLast();
+System.out.println("第一个颜色: " + firstColor);  // 黑色
+System.out.println("最后一个颜色: " + lastColor);  // 白色
+
+// 删除链表两端元素
+colors.removeFirst();
+colors.removeLast();
+System.out.println(colors);  // [红色, 绿色, 蓝色]
+
+// 作为队列使用
+colors.offer("橙色");  // 在尾部添加元素
+String poll = colors.poll();  // 移除并返回头部元素
+System.out.println("出队的颜色: " + poll);  // 红色
+System.out.println(colors);  // [绿色, 蓝色, 橙色]
+
+// 作为栈使用
+colors.push("紫色");  // 在头部添加元素
+String pop = colors.pop();  // 移除并返回头部元素
+System.out.println("弹出的颜色: " + pop);  // 紫色
+System.out.println(colors);  // [绿色, 蓝色, 橙色]</code></pre>
+
+            <h4>12.3.5 ArrayList vs LinkedList</h4>
+            <table>
+                <tr>
+                    <th>操作/特性</th>
+                    <th>ArrayList</th>
+                    <th>LinkedList</th>
+                </tr>
+                <tr>
+                    <td>内部实现</td>
+                    <td>动态数组</td>
+                    <td>双向链表</td>
+                </tr>
+                <tr>
+                    <td>随机访问</td>
+                    <td>O(1)，高效</td>
+                    <td>O(n)，低效</td>
+                </tr>
+                <tr>
+                    <td>插入/删除</td>
+                    <td>O(n)，需要移动元素</td>
+                    <td>O(1)，只需调整指针</td>
+                </tr>
+                <tr>
+                    <td>内存开销</td>
+                    <td>较低</td>
+                    <td>较高（需额外存储指针）</td>
+                </tr>
+                <tr>
+                    <td>适用场景</td>
+                    <td>频繁随机访问，较少插入删除</td>
+                    <td>频繁插入删除，较少随机访问</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <div class="tip-title">选择指南</div>
+                <p>在实际应用中，如何选择ArrayList和LinkedList：</p>
+                <ul>
+                    <li>如果需要频繁的随机访问，选择 ArrayList</li>
+                    <li>如果需要频繁在两端插入/删除元素，选择 LinkedList</li>
+                    <li>如果不确定，通常优先选择 ArrayList，因为大多数情况下它的性能表现更好</li>
+                </ul>
+            </div>
+
+            <h4>12.3.6 Vector和Stack</h4>
+            <p>Vector和Stack是Java早期提供的线程安全的集合类，现在已不推荐使用。</p>
+
+            <p><strong>Vector：</strong></p>
+            <ul>
+                <li>线程安全的动态数组实现</li>
+                <li>所有方法都是同步的，性能较低</li>
+                <li>现代Java建议使用ArrayList加同步包装器，或者使用CopyOnWriteArrayList</li>
+            </ul>
+
+            <p><strong>Stack：</strong></p>
+            <ul>
+                <li>继承自Vector，表示"后进先出"（LIFO）的栈</li>
+                <li>现代Java建议使用Deque的实现类代替Stack，如ArrayDeque</li>
+            </ul>
+
+            <pre><code>// 不推荐使用的Vector
+Vector<String> vector = new Vector<>();
+vector.add("元素1");
+vector.add("元素2");
+
+// 不推荐使用的Stack
+Stack<String> stack = new Stack<>();
+stack.push("栈顶");
+stack.push("新栈顶");
+String top = stack.pop();  // 移除并返回"新栈顶"
+
+// 推荐方案1：同步包装器
+List<String> synchronizedList = Collections.synchronizedList(new ArrayList<>());
+
+// 推荐方案2：并发包中的类
+CopyOnWriteArrayList<String> cowList = new CopyOnWriteArrayList<>();
+
+// 推荐的栈替代方案
+Deque<String> stack2 = new ArrayDeque<>();
+stack2.push("栈顶");
+stack2.push("新栈顶");
+String top2 = stack2.pop();  // 移除并返回"新栈顶"</code></pre>
+
+            <h3>12.4 Set接口</h3>
+            <p>Set接口是Collection接口的子接口，表示一组不重复的元素。Set接口的主要实现类有HashSet、LinkedHashSet和TreeSet。</p>
+
+            <h4>12.4.1 Set接口的主要方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>boolean add(E e)</td>
+                    <td>添加元素到集合中</td>
+                </tr>
+                <tr>
+                    <td>boolean addAll(Collection&lt;? extends E&gt; c)</td>
+                    <td>将指定集合中的所有元素添加到此集合</td>
+                </tr>
+                <tr>
+                    <td>void clear()</td>
+                    <td>删除集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean contains(Object o)</td>
+                    <td>判断集合是否包含指定元素</td>
+                </tr>
+                <tr>
+                    <td>boolean containsAll(Collection&lt;?&gt; c)</td>
+                    <td>判断集合是否包含指定集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean equals(Object o)</td>
+                    <td>比较此集合与指定对象是否相等</td>
+                </tr>
+                <tr>
+                    <td>int hashCode()</td>
+                    <td>返回集合的哈希码值</td>
+                </tr>
+                <tr>
+                    <td>boolean isEmpty()</td>
+                    <td>判断集合是否为空</td>
+                </tr>
+                <tr>
+                    <td>Iterator&lt;E&gt; iterator()</td>
+                    <td>返回集合的迭代器</td>
+                </tr>
+                <tr>
+                    <td>boolean remove(Object o)</td>
+                    <td>从集合中移除指定元素</td>
+                </tr>
+                <tr>
+                    <td>boolean removeAll(Collection&lt;?&gt; c)</td>
+                    <td>移除此集合中包含在指定集合中的所有元素</td>
+                </tr>
+                <tr>
+                    <td>boolean retainAll(Collection&lt;?&gt; c)</td>
+                    <td>仅保留此集合中包含在指定集合中的元素</td>
+                </tr>
+                <tr>
+                    <td>int size()</td>
+                    <td>返回集合中的元素数量</td>
+                </tr>
+                <tr>
+                    <td>Object[] toArray()</td>
+                    <td>返回包含集合所有元素的数组</td>
+                </tr>
+                <tr>
+                    <td>&lt;T&gt; T[] toArray(T[] a)</td>
+                    <td>返回包含集合所有元素的特定类型数组</td>
+                </tr>
+            </table>
+
+            <h3>12.5 Map接口</h3>
+            <p>Map接口是键值对映射的接口，它提供了一些常用的方法。</p>
+
+            <h4>12.5.1 Map接口的主要方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>void clear()</td>
+                    <td>删除所有键值对</td>
+                </tr>
+                <tr>
+                    <td>boolean containsKey(Object key)</td>
+                    <td>判断是否包含指定键</td>
+                </tr>
+                <tr>
+                    <td>boolean containsValue(Object value)</td>
+                    <td>判断是否包含指定值</td>
+                </tr>
+                <tr>
+                    <td>boolean equals(Object o)</td>
+                    <td>比较此映射与指定对象是否相等</td>
+                </tr>
+                <tr>
+                    <td>V get(Object key)</td>
+                    <td>返回指定键对应的值</td>
+                </tr>
+                <tr>
+                    <td>int hashCode()</td>
+                    <td>返回映射的哈希码值</td>
+                </tr>
+                <tr>
+                    <td>boolean isEmpty()</td>
+                    <td>判断映射是否为空</td>
+                </tr>
+                <tr>
+                    <td>Set&lt;K&gt; keySet()</td>
+                    <td>返回所有键的集合</td>
+                </tr>
+                <tr>
+                    <td>V put(K key, V value)</td>
+                    <td>将指定键值对添加到映射中</td>
+                </tr>
+                <tr>
+                    <td>void putAll(Map&lt;? extends K, ? extends V&gt; m)</td>
+                    <td>将指定映射中的所有键值对添加到此映射中</td>
+                </tr>
+                <tr>
+                    <td>V remove(Object key)</td>
+                    <td>删除指定键对应的键值对</td>
+                </tr>
+                <tr>
+                    <td>int size()</td>
+                    <td>返回映射中的键值对数量</td>
+                </tr>
+                <tr>
+                    <td>Collection&lt;V&gt; values()</td>
+                    <td>返回所有值的集合</td>
+                </tr>
+            </table>
+
+            <h3>12.6 Deque接口</h3>
+            <p>Deque接口是Queue接口的子接口，表示双端队列。它允许在两端插入和删除元素。</p>
+
+            <h4>12.6.1 Deque接口的主要方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>void addFirst(E e)</td>
+                    <td>在队列头部添加元素</td>
+                </tr>
+                <tr>
+                    <td>void addLast(E e)</td>
+                    <td>在队列尾部添加元素</td>
+                </tr>
+                <tr>
+                    <td>E getFirst()</td>
+                    <td>返回队列头部的元素</td>
+                </tr>
+                <tr>
+                    <td>E getLast()</td>
+                    <td>返回队列尾部的元素</td>
+                </tr>
+                <tr>
+                    <td>boolean offerFirst(E e)</td>
+                    <td>在队列头部添加元素，成功返回true，失败返回false</td>
+                </tr>
+                <tr>
+                    <td>boolean offerLast(E e)</td>
+                    <td>在队列尾部添加元素，成功返回true，失败返回false</td>
+                </tr>
+                <tr>
+                    <td>E peekFirst()</td>
+                    <td>返回队列头部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>E peekLast()</td>
+                    <td>返回队列尾部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>E pollFirst()</td>
+                    <td>移除并返回队列头部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>E pollLast()</td>
+                    <td>移除并返回队列尾部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>void push(E e)</td>
+                    <td>在队列头部添加元素</td>
+                </tr>
+                <tr>
+                    <td>void add(E e)</td>
+                    <td>在队列尾部添加元素</td>
+                </tr>
+                <tr>
+                    <td>boolean offer(E e)</td>
+                    <td>在队列尾部添加元素，成功返回true，失败返回false</td>
+                </tr>
+                <tr>
+                    <td>E peek()</td>
+                    <td>返回队列头部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>E poll()</td>
+                    <td>移除并返回队列头部的元素，如果队列为空则返回null</td>
+                </tr>
+                <tr>
+                    <td>E remove()</td>
+                    <td>移除并返回队列头部的元素</td>
+                </tr>
+            </table>
+
+            <h3>12.7 Collections工具类</h3>
+            <p>Collections类提供了一系列静态方法，用于对集合进行操作，如排序、搜索、同步化等。</p>
+
+            <h4>12.7.1 常用方法</h4>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>sort(List&lt;T&gt; list)</td>
+                    <td>对列表进行排序（元素必须实现Comparable接口）</td>
+                </tr>
+                <tr>
+                    <td>sort(List&lt;T&gt; list, Comparator&lt;T&gt; c)</td>
+                    <td>使用指定的比较器对列表排序</td>
+                </tr>
+                <tr>
+                    <td>shuffle(List&lt;?&gt; list)</td>
+                    <td>随机打乱列表元素的顺序</td>
+                </tr>
+                <tr>
+                    <td>reverse(List&lt;?&gt; list)</td>
+                    <td>反转列表中元素的顺序</td>
+                </tr>
+                <tr>
+                    <td>swap(List&lt;?&gt; list, int i, int j)</td>
+                    <td>交换列表中指定位置的元素</td>
+                </tr>
+                <tr>
+                    <td>binarySearch(List&lt;?&gt; list, T key)</td>
+                    <td>使用二分查找算法查找元素</td>
+                </tr>
+                <tr>
+                    <td>max(Collection&lt;?&gt; coll)</td>
+                    <td>返回集合中的最大元素</td>
+                </tr>
+                <tr>
+                    <td>min(Collection&lt;?&gt; coll)</td>
+                    <td>返回集合中的最小元素</td>
+                </tr>
+                <tr>
+                    <td>frequency(Collection&lt;?&gt; c, Object o)</td>
+                    <td>返回指定元素在集合中出现的次数</td>
+                </tr>
+                <tr>
+                    <td>synchronizedCollection(Collection&lt;T&gt; c)</td>
+                    <td>返回线程安全的集合</td>
+                </tr>
+                <tr>
+                    <td>unmodifiableCollection(Collection&lt;?&gt; c)</td>
+                    <td>返回不可修改的集合视图</td>
+                </tr>
+                <tr>
+                    <td>emptyList()</td>
+                    <td>返回空的不可变List</td>
+                </tr>
+                <tr>
+                    <td>singletonList(T o)</td>
+                    <td>返回只包含指定对象的不可变List</td>
+                </tr>
+            </table>
+
+            <pre><code>import java.util.*;
+
+public class CollectionsDemo {
+    public static void main(String[] args) {
+        // 创建并初始化列表
+        List<String> fruits = new ArrayList<>();
+        fruits.add("苹果");
+        fruits.add("香蕉");
+        fruits.add("橙子");
+        fruits.add("葡萄");
+        fruits.add("西瓜");
+        
+        System.out.println("原始列表: " + fruits);
+        
+        // 排序
+        Collections.sort(fruits);
+        System.out.println("排序后: " + fruits);
+        
+        // 二分查找
+        int pos = Collections.binarySearch(fruits, "橙子");
+        System.out.println("橙子的位置: " + pos);
+        
+        // 打乱顺序
+        Collections.shuffle(fruits);
+        System.out.println("打乱后: " + fruits);
+        
+        // 反转
+        Collections.reverse(fruits);
+        System.out.println("反转后: " + fruits);
+        
+        // 获取最大和最小元素
+        String max = Collections.max(fruits);
+        String min = Collections.min(fruits);
+        System.out.println("最大元素: " + max);
+        System.out.println("最小元素: " + min);
+        
+        // 替换所有元素
+        Collections.fill(fruits, "樱桃");
+        System.out.println("替换后: " + fruits);
+        
+        // 创建不可修改的集合
+        List<String> vegetables = Arrays.asList("土豆", "胡萝卜", "白菜");
+        List<String> unmodifiableList = Collections.unmodifiableList(vegetables);
+        
+        try {
+            unmodifiableList.add("茄子");  // 将抛出UnsupportedOperationException
+        } catch (UnsupportedOperationException e) {
+            System.out.println("无法修改不可变集合");
+        }
+        
+        // 创建同步集合
+        List<String> syncList = Collections.synchronizedList(new ArrayList<>());
+        
+        // 创建空列表和单例列表
+        List<String> emptyList = Collections.emptyList();
+        List<String> singletonList = Collections.singletonList("单例元素");
+        
+        System.out.println("空列表: " + emptyList);
+        System.out.println("单例列表: " + singletonList);
+    }
+}</code></pre>
+
+            <h3>12.8 集合框架的最佳实践</h3>
+            <p>在使用Java集合框架时，以下是一些最佳实践建议：</p>
+            
+            <ol>
+                <li><strong>使用接口类型声明变量</strong>：例如使用<code>List&lt;String&gt;</code>而非<code>ArrayList&lt;String&gt;</code>来提高代码灵活性</li>
+                <li><strong>合理选择集合类型</strong>：根据操作需求选择合适的集合实现类</li>
+                <li><strong>使用泛型</strong>：提高类型安全性，避免类型转换错误</li>
+                <li><strong>注意线程安全</strong>：在多线程环境中使用线程安全的集合或进行同步处理</li>
+                <li><strong>避免修改遍历中的集合</strong>：使用迭代器的remove方法或使用CopyOnWriteArrayList等特殊集合</li>
+                <li><strong>使用Collections工具类</strong>：利用其提供的便捷方法</li>
+                <li><strong>注意equals和hashCode</strong>：对于用作Set元素或Map键的类，确保正确实现这两个方法</li>
+                <li><strong>使用适当的初始容量</strong>：如果知道集合大小，设置适当的初始容量可以减少重新分配的次数</li>
+                <li><strong>使用Stream API</strong>：Java 8及以上版本可以使用Stream API简化集合操作</li>
+                <li><strong>考虑不可变集合</strong>：对于不需要修改的集合，考虑使用不可变集合防止意外修改</li>
+            </ol>
+
+            <pre><code>// 最佳实践示例
+
+// 使用接口类型声明
+List<String> names = new ArrayList<>();
+
+// 使用泛型
+Map<Integer, Student> studentMap = new HashMap<>();
+
+// 使用初始容量
+List<Integer> numbers = new ArrayList<>(1000);
+
+// 使用Stream API
+List<Integer> evenNumbers = numbers.stream()
+                                  .filter(n -> n % 2 == 0)
+                                  .collect(Collectors.toList());
+
+// 线程安全集合
+List<String> syncList = Collections.synchronizedList(new ArrayList<>());
+Map<String, Integer> concurrentMap = new ConcurrentHashMap<>();
+
+// 使用不可变集合
+List<String> immutableList = Collections.unmodifiableList(names);</code></pre>
+
+            <div class="warning">
+                <div class="warning-title">集合使用注意事项</div>
+                <p>使用集合时需要注意以下问题：</p>
+                <ul>
+                    <li><strong>ConcurrentModificationException</strong>：在遍历集合时进行修改可能导致此异常</li>
+                    <li><strong>性能考虑</strong>：不同集合实现在不同操作上有不同的性能特性</li>
+                    <li><strong>内存占用</strong>：集合会占用额外内存，特别是大型集合</li>
+                    <li><strong>空集合与null</strong>：返回空集合比返回null更好，避免空指针异常</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="threads" class="content">
+            <h2 id="多线程">13. 多线程</h2>
+            <p>在Java中，多线程编程是一个重要的特性，它允许程序同时执行多个任务，提高程序的性能和响应能力。本章将介绍Java中的线程概念、创建和管理线程的方法、线程同步、线程通信以及并发编程的高级特性。</p>
+
+            <h3 id="线程基础">13.1 线程基础</h3>
+            <p>线程是程序执行的最小单位，一个程序可以包含多个线程，每个线程执行不同的任务。在Java中，线程的基本特性包括：</p>
+            <ul>
+                <li>每个线程都有自己的执行栈和程序计数器</li>
+                <li>多个线程共享堆内存和方法区</li>
+                <li>线程的创建和切换有开销，但比进程小得多</li>
+                <li>线程之间的通信比进程间通信更容易</li>
+            </ul>
+
+            <h3 id="创建线程">13.2 创建线程</h3>
+            <p>在Java中，有以下几种创建线程的方式：</p>
+
+            <h4 id="继承Thread类">13.2.1 继承Thread类</h4>
+            <p>通过继承Thread类并重写run()方法来创建线程：</p>
+            <pre><code class="language-java">public class MyThread extends Thread {
+    @Override
+    public void run() {
+        // 线程执行的代码
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+        }
+    }
+}
+
+// 使用示例
+public class ThreadExample {
+    public static void main(String[] args) {
+        MyThread thread1 = new MyThread();
+        MyThread thread2 = new MyThread();
+        
+        thread1.setName("Thread-1");
+        thread2.setName("Thread-2");
+        
+        thread1.start(); // 启动线程
+        thread2.start();
+    }
+}</code></pre>
+
+            <h4 id="实现Runnable接口">13.2.2 实现Runnable接口</h4>
+            <p>通过实现Runnable接口来创建线程，这是推荐的方式，因为Java不支持多重继承，而Runnable接口提供了更好的扩展性：</p>
+            <pre><code class="language-java">public class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        // 线程执行的代码
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+        }
+    }
+}
+
+// 使用示例
+public class RunnableExample {
+    public static void main(String[] args) {
+        MyRunnable runnable = new MyRunnable();
+        
+        Thread thread1 = new Thread(runnable, "Thread-1");
+        Thread thread2 = new Thread(runnable, "Thread-2");
+        
+        thread1.start();
+        thread2.start();
+    }
+}</code></pre>
+
+            <h4 id="使用Callable和Future">13.2.3 使用Callable和Future</h4>
+            <p>Callable接口类似于Runnable，但它可以返回结果并抛出异常：</p>
+            <pre><code class="language-java">import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+public class CallableExample {
+    public static void main(String[] args) {
+        // 创建Callable对象
+        Callable&lt;Integer&gt; callable = new Callable&lt;Integer&gt;() {
+            @Override
+            public Integer call() throws Exception {
+                int sum = 0;
+                for (int i = 1; i <= 100; i++) {
+                    sum += i;
+                }
+                return sum;
+            }
+        };
+        
+        // 创建FutureTask对象
+        FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;&gt;(callable);
+        
+        // 创建Thread对象
+        Thread thread = new Thread(futureTask);
+        thread.start();
+        
+        try {
+            // 获取线程执行结果
+            Integer result = futureTask.get();
+            System.out.println("计算结果：" + result);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+
+            <h4 id="使用线程池">13.2.4 使用线程池</h4>
+            <p>通过Executor框架创建线程池，这是推荐的生产环境方式：</p>
+            <pre><code class="language-java">import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadPoolExample {
+    public static void main(String[] args) {
+        // 创建线程池
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        
+        // 提交任务
+        for (int i = 0; i < 5; i++) {
+            final int taskId = i;
+            executor.execute(() -> {
+                System.out.println(Thread.currentThread().getName() + " 执行任务 " + taskId);
+            });
+        }
+        
+        // 关闭线程池
+        executor.shutdown();
+    }
+}</code></pre>
+
+            <h3 id="线程的生命周期">13.3 线程的生命周期</h3>
+            <p>Java线程在其生命周期中有六种状态，可以通过Thread.State枚举来访问：</p>
+            <ol>
+                <li><strong>NEW</strong>：线程被创建但尚未启动</li>
+                <li><strong>RUNNABLE</strong>：线程正在JVM中执行，但可能正在等待操作系统资源</li>
+                <li><strong>BLOCKED</strong>：线程被阻塞，等待监视器锁</li>
+                <li><strong>WAITING</strong>：线程处于等待状态，无限期等待另一个线程执行特定操作</li>
+                <li><strong>TIMED_WAITING</strong>：线程处于等待状态，但有指定的等待时间</li>
+                <li><strong>TERMINATED</strong>：线程已执行完成</li>
+            </ol>
+
+            <h4 id="线程状态转换图">13.3.1 线程状态转换图</h4>
+            <pre><code>
+    +-------+       start()       +-----------+
+    |  NEW  |------------------>  | RUNNABLE  |
+    +-------+                     +-----------+
+                                    |    ^
+                                    |    |
+          获取锁     +--------+      |    |  释放锁
+          +------->  | BLOCKED |  <--+    |
+          |         +--------+           |
+          |                              |
+    +------------+                       |
+    |  RUNNABLE  | <---------------------+
+    +------------+      sleep()超时
+          |  ^           wait()超时
+          |  |         join()超时
+          |  |       LockSupport.unpark()
+          |  |
+          |  |
+          v  |
+    +---------------+
+    | TIMED_WAITING |
+    +---------------+
+          |
+          |    线程执行完毕
+          v
+    +------------+
+    | TERMINATED |
+    +------------+
+</code></pre>
+
+            <h3 id="线程的常用方法">13.4 线程的常用方法</h3>
+            <p>Thread类提供了许多控制线程的方法：</p>
+
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>描述</th>
+                </tr>
+                <tr>
+                    <td>start()</td>
+                    <td>启动线程，使线程进入就绪状态</td>
+                </tr>
+                <tr>
+                    <td>run()</td>
+                    <td>线程的执行体，包含线程要执行的代码</td>
+                </tr>
+                <tr>
+                    <td>sleep(long millis)</td>
+                    <td>使当前线程暂停执行指定的毫秒数</td>
+                </tr>
+                <tr>
+                    <td>join()</td>
+                    <td>等待线程终止</td>
+                </tr>
+                <tr>
+                    <td>yield()</td>
+                    <td>暂停当前线程，让出CPU时间给其他线程</td>
+                </tr>
+                <tr>
+                    <td>interrupt()</td>
+                    <td>中断线程</td>
+                </tr>
+                <tr>
+                    <td>isAlive()</td>
+                    <td>判断线程是否处于活动状态</td>
+                </tr>
+                <tr>
+                    <td>setName()/getName()</td>
+                    <td>设置/获取线程名称</td>
+                </tr>
+                <tr>
+                    <td>setPriority()/getPriority()</td>
+                    <td>设置/获取线程优先级</td>
+                </tr>
+                <tr>
+                    <td>setDaemon()/isDaemon()</td>
+                    <td>设置/判断是否为守护线程</td>
+                </tr>
+            </table>
+
+            <h4 id="示例：join方法">13.4.1 示例：join方法</h4>
+            <p>join()方法用于等待线程结束：</p>
+            <pre><code class="language-java">public class JoinExample {
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("Thread-1: " + i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        
+        Thread thread2 = new Thread(() -> {
+            try {
+                thread1.join(); // 等待thread1结束
+                System.out.println("Thread-1已结束，Thread-2开始执行");
+                for (int i = 0; i < 5; i++) {
+                    System.out.println("Thread-2: " + i);
+                    Thread.sleep(500);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        thread1.start();
+        thread2.start();
+    }
+}</code></pre>
+
+            <h3 id="线程同步">13.5 线程同步</h3>
+            <p>当多个线程同时访问共享资源时，可能会导致数据不一致的问题。Java提供了多种同步机制来解决这个问题。</p>
+
+            <h4 id="synchronized关键字">13.5.1 synchronized关键字</h4>
+            <p>Java中最基本的同步方式是使用synchronized关键字，它可以用于方法或代码块：</p>
+            <pre><code class="language-java">public class Counter {
+    private int count = 0;
+    
+    // 同步方法
+    public synchronized void increment() {
+        count++;
+    }
+    
+    // 同步代码块
+    public void incrementBlock() {
+        synchronized(this) {
+            count++;
+        }
+    }
+    
+    public int getCount() {
+        return count;
+    }
+}
+
+// 使用示例
+public class SynchronizedExample {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+        
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        
+        t1.join();
+        t2.join();
+        
+        System.out.println("计数结果: " + counter.getCount()); // 预期输出：2000
+    }
+}</code></pre>
+
+            <h4 id="Lock接口">13.5.2 Lock接口</h4>
+            <p>java.util.concurrent.locks包提供了更灵活的锁机制，如ReentrantLock：</p>
+            <pre><code class="language-java">import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class LockCounter {
+    private int count = 0;
+    private final Lock lock = new ReentrantLock();
+    
+    public void increment() {
+        lock.lock(); // 获取锁
+        try {
+            count++;
+        } finally {
+            lock.unlock(); // 释放锁，放在finally块中确保锁被释放
+        }
+    }
+    
+    public int getCount() {
+        return count;
+    }
+}
+
+// 使用示例与synchronized类似
+</code></pre>
+
+            <h4 id="volatile关键字">13.5.3 volatile关键字</h4>
+            <p>volatile关键字用于声明变量的值可能随时被其他线程修改，确保变量的可见性：</p>
+            <pre><code class="language-java">public class VolatileExample {
+    private static volatile boolean flag = false;
+    
+    public static void main(String[] args) throws InterruptedException {
+        Thread writerThread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                flag = true; // 修改flag的值
+                System.out.println("flag已被修改为true");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        Thread readerThread = new Thread(() -> {
+            while (!flag) {
+                // 等待flag变为true
+            }
+            System.out.println("检测到flag为true，退出循环");
+        });
+        
+        readerThread.start();
+        writerThread.start();
+    }
+}</code></pre>
+<p>注意：volatile仅保证可见性，不保证原子性。对于需要原子操作的场景，应使用synchronized或Lock。</p>
+
+            <h4 id="原子类">13.5.4 原子类</h4>
+            <p>java.util.concurrent.atomic包提供了原子操作的类，如AtomicInteger：</p>
+            <pre><code class="language-java">import java.util.concurrent.atomic.AtomicInteger;
+
+public class AtomicCounter {
+    private AtomicInteger count = new AtomicInteger(0);
+    
+    public void increment() {
+        count.incrementAndGet(); // 原子操作
+    }
+    
+    public int getCount() {
+        return count.get();
+    }
+}
+
+// 使用示例
+public class AtomicExample {
+    public static void main(String[] args) throws InterruptedException {
+        AtomicCounter counter = new AtomicCounter();
+        
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        
+        t1.join();
+        t2.join();
+        
+        System.out.println("计数结果: " + counter.getCount()); // 预期输出：2000
+    }
+}</code></pre>
+
+            <h3 id="线程通信">13.6 线程通信</h3>
+            <p>线程之间需要相互协作完成任务时，Java提供了多种线程通信的机制。</p>
+
+            <h4 id="wait和notify">13.6.1 wait(), notify()和notifyAll()</h4>
+            <p>这些方法属于Object类，用于线程间的等待/通知机制：</p>
+            <pre><code class="language-java">public class MessageQueue {
+    private final LinkedList&lt;String&gt; queue = new LinkedList&lt;&gt;();
+    private final int capacity;
+    
+    public MessageQueue(int capacity) {
+        this.capacity = capacity;
+    }
+    
+    public synchronized void put(String message) throws InterruptedException {
+        while (queue.size() == capacity) {
+            // 队列已满，等待消费者取出消息
+            wait();
+        }
+        
+        queue.add(message);
+        System.out.println("生产消息: " + message + ", 队列大小: " + queue.size());
+        
+        // 通知等待的消费者
+        notify();
+    }
+    
+    public synchronized String take() throws InterruptedException {
+        while (queue.isEmpty()) {
+            // 队列为空，等待生产者放入消息
+            wait();
+        }
+        
+        String message = queue.remove();
+        System.out.println("消费消息: " + message + ", 队列大小: " + queue.size());
+        
+        // 通知等待的生产者
+        notify();
+        
+        return message;
+    }
+}
+
+// 使用示例
+public class ProducerConsumerExample {
+    public static void main(String[] args) {
+        MessageQueue queue = new MessageQueue(5);
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    queue.put("消息" + i);
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String message = queue.take();
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+    }
+}</code></pre>
+
+            <h4 id="Condition">13.6.2 Condition</h4>
+            <p>Condition接口提供了类似于wait/notify的功能，但与Lock接口配合使用，提供更精细的控制：</p>
+            <pre><code class="language-java">import java.util.LinkedList;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class MessageQueueWithCondition {
+    private final LinkedList&lt;String&gt; queue = new LinkedList&lt;&gt;();
+    private final int capacity;
+    private final Lock lock = new ReentrantLock();
+    private final Condition notFull = lock.newCondition();
+    private final Condition notEmpty = lock.newCondition();
+    
+    public MessageQueueWithCondition(int capacity) {
+        this.capacity = capacity;
+    }
+    
+    public void put(String message) throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.size() == capacity) {
+                // 队列已满，等待消费者取出消息
+                notFull.await();
+            }
+            
+            queue.add(message);
+            System.out.println("生产消息: " + message + ", 队列大小: " + queue.size());
+            
+            // 通知等待的消费者
+            notEmpty.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public String take() throws InterruptedException {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) {
+                // 队列为空，等待生产者放入消息
+                notEmpty.await();
+            }
+            
+            String message = queue.remove();
+            System.out.println("消费消息: " + message + ", 队列大小: " + queue.size());
+            
+            // 通知等待的生产者
+            notFull.signal();
+            
+            return message;
+        } finally {
+            lock.unlock();
+        }
+    }
+}</code></pre>
+
+            <h3 id="线程池">13.7 线程池</h3>
+            <p>线程池是Java并发编程中的重要组件，它可以重用线程，减少线程创建和销毁的开销。</p>
+
+            <h4 id="线程池的主要类型">13.7.1 线程池的主要类型</h4>
+            <p>Executors工厂类提供了几种常用的线程池：</p>
+            <ul>
+                <li><strong>FixedThreadPool</strong>：固定大小的线程池</li>
+                <li><strong>CachedThreadPool</strong>：可缓存的线程池，适合执行大量短期异步任务</li>
+                <li><strong>SingleThreadExecutor</strong>：单线程的线程池，确保任务顺序执行</li>
+                <li><strong>ScheduledThreadPool</strong>：支持定时和周期性任务的线程池</li>
+            </ul>
+
+            <h4 id="线程池示例">13.7.2 线程池示例</h4>
+            <pre><code class="language-java">import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class ThreadPoolExample {
+    public static void main(String[] args) {
+        // 固定大小的线程池
+        ExecutorService fixedPool = Executors.newFixedThreadPool(3);
+        for (int i = 0; i < 10; i++) {
+            final int taskId = i;
+            fixedPool.execute(() -> {
+                System.out.println(Thread.currentThread().getName() + " 执行任务 " + taskId);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        
+        // 优雅关闭线程池
+        fixedPool.shutdown();
+        
+        // 支持定时和周期性任务的线程池
+        ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(2);
+        
+        // 延迟2秒后执行
+        scheduledPool.schedule(() -> {
+            System.out.println("延迟任务执行");
+        }, 2, TimeUnit.SECONDS);
+        
+        // 延迟1秒后，每3秒执行一次
+        scheduledPool.scheduleAtFixedRate(() -> {
+            System.out.println("周期任务执行，时间: " + System.currentTimeMillis());
+        }, 1, 3, TimeUnit.SECONDS);
+        
+        // 注意：这个示例中没有关闭scheduledPool，因为它有周期性任务
+    }
+}</code></pre>
+
+            <h4 id="自定义线程池">13.7.3 自定义线程池</h4>
+            <p>使用ThreadPoolExecutor类创建自定义线程池：</p>
+            <pre><code class="language-java">import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class CustomThreadPoolExample {
+    public static void main(String[] args) {
+        // 创建自定义线程工厂
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private final AtomicInteger threadNumber = new AtomicInteger(1);
+            
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, "custom-thread-" + threadNumber.getAndIncrement());
+                // 设置为守护线程
+                if (thread.isDaemon()) {
+                    thread.setDaemon(false);
+                }
+                // 设置线程优先级
+                if (thread.getPriority() != Thread.NORM_PRIORITY) {
+                    thread.setPriority(Thread.NORM_PRIORITY);
+                }
+                return thread;
+            }
+        };
+        
+        // 创建自定义线程池
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2,                          // 核心线程数
+            5,                          // 最大线程数
+            60, TimeUnit.SECONDS,       // 空闲线程存活时间
+            new ArrayBlockingQueue<>(10), // 工作队列
+            threadFactory,              // 线程工厂
+            new ThreadPoolExecutor.CallerRunsPolicy() // 拒绝策略
+        );
+        
+        // 提交任务
+        for (int i = 0; i < 15; i++) {
+            final int taskId = i;
+            executor.execute(() -> {
+                System.out.println(Thread.currentThread().getName() + " 执行任务 " + taskId);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        
+        // 关闭线程池
+        executor.shutdown();
+    }
+}</code></pre>
+
+            <h3 id="线程安全的集合">13.8 线程安全的集合</h3>
+            <p>Java提供了多种线程安全的集合类，用于并发环境下的数据存储和访问。</p>
+
+            <h4 id="常用的线程安全集合">13.8.1 常用的线程安全集合</h4>
+            <ul>
+                <li><strong>ConcurrentHashMap</strong>：线程安全的HashMap</li>
+                <li><strong>CopyOnWriteArrayList</strong>：线程安全的ArrayList，适用于读多写少的场景</li>
+                <li><strong>CopyOnWriteArraySet</strong>：线程安全的Set，基于CopyOnWriteArrayList实现</li>
+                <li><strong>ConcurrentLinkedQueue</strong>：线程安全的无界队列</li>
+                <li><strong>BlockingQueue</strong>：支持阻塞操作的队列，常用实现有ArrayBlockingQueue、LinkedBlockingQueue等</li>
+            </ul>
+
+            <h4 id="示例：ConcurrentHashMap">13.8.2 示例：ConcurrentHashMap</h4>
+            <pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+
+public class ConcurrentMapExample {
+    public static void main(String[] args) throws InterruptedException {
+        // 测试HashMap
+        final Map&lt;String, Integer&gt; hashMap = new HashMap&lt;&gt;();
+        testMap(hashMap, "HashMap");
+        
+        // 测试ConcurrentHashMap
+        final Map&lt;String, Integer&gt; concurrentMap = new ConcurrentHashMap&lt;&gt;();
+        testMap(concurrentMap, "ConcurrentHashMap");
+    }
+    
+    private static void testMap(final Map&lt;String, Integer&gt; map, String mapName) throws InterruptedException {
+        System.out.println("测试: " + mapName);
+        final int threadCount = 10;
+        final int entryCount = 100;
+        final CountDownLatch latch = new CountDownLatch(threadCount);
+        
+        long startTime = System.currentTimeMillis();
+        
+        for (int i = 0; i < threadCount; i++) {
+            final int threadNum = i;
+            new Thread(() -> {
+                for (int j = 0; j < entryCount; j++) {
+                    String key = "key-" + threadNum + "-" + j;
+                    map.put(key, j);
+                }
+                latch.countDown();
+            }).start();
+        }
+        
+        latch.await();
+        long endTime = System.currentTimeMillis();
+        
+        System.out.println(mapName + " 操作完成，大小: " + map.size() + ", 耗时: " + (endTime - startTime) + "ms");
+        System.out.println();
+    }
+}</code></pre>
+
+            <h4 id="示例：阻塞队列">13.8.3 示例：阻塞队列</h4>
+            <pre><code class="language-java">import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+public class BlockingQueueExample {
+    public static void main(String[] args) {
+        // 创建容量为5的阻塞队列
+        BlockingQueue&lt;String&gt; queue = new ArrayBlockingQueue&lt;&gt;(5);
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String item = "Item-" + i;
+                    System.out.println("生产: " + item);
+                    queue.put(item); // 如果队列已满，将阻塞
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String item = queue.take(); // 如果队列为空，将阻塞
+                    System.out.println("消费: " + item);
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+    }
+}</code></pre>
+
+            <h3 id="并发编程的实际应用">13.9 并发编程的实际应用</h3>
+            <p>下面是一个结合多线程、线程池和线程安全集合的实际应用示例，模拟一个简单的Web服务器请求处理系统。</p>
+
+            <pre><code class="language-java">import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class WebServerSimulation {
+    // 请求统计
+    private static final AtomicInteger totalRequests = new AtomicInteger(0);
+    private static final AtomicInteger successfulRequests = new AtomicInteger(0);
+    private static final AtomicInteger failedRequests = new AtomicInteger(0);
+    
+    // 缓存用户会话，模拟会话存储
+    private static final ConcurrentHashMap&lt;String, UserSession&gt; sessions = new ConcurrentHashMap&lt;&gt;();
+    
+    public static void main(String[] args) throws InterruptedException {
+        // 创建线程池处理请求
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            5, 10, 60, TimeUnit.SECONDS,
+            new ArrayBlockingQueue&lt;&gt;(100),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+        
+        // 模拟接收100个请求
+        for (int i = 0; i < 100; i++) {
+            final int requestId = i;
+            executor.execute(() -> processRequest(requestId));
+            Thread.sleep(10); // 模拟请求到达的时间间隔
+        }
+        
+        // 等待所有请求处理完毕
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+        
+        // 输出统计信息
+        System.out.println("请求处理完成！");
+        System.out.println("总请求数: " + totalRequests.get());
+        System.out.println("成功请求数: " + successfulRequests.get());
+        System.out.println("失败请求数: " + failedRequests.get());
+        System.out.println("会话数: " + sessions.size());
+    }
+    
+    // 处理请求
+    private static void processRequest(int requestId) {
+        totalRequests.incrementAndGet();
+        
+        try {
+            System.out.println(Thread.currentThread().getName() + " 正在处理请求 " + requestId);
+            
+            // 模拟请求处理耗时
+            Thread.sleep((long) (Math.random() * 200));
+            
+            // 模拟用户登录，创建会话
+            if (requestId % 5 == 0) {
+                String sessionId = UUID.randomUUID().toString();
+                UserSession session = new UserSession("user" + requestId, System.currentTimeMillis());
+                sessions.put(sessionId, session);
+                System.out.println("创建会话: " + sessionId + " 用户: " + session.getUsername());
+            }
+            
+            // 模拟随机失败
+            if (Math.random() < 0.1) {
+                throw new RuntimeException("请求处理失败");
+            }
+            
+            successfulRequests.incrementAndGet();
+        } catch (Exception e) {
+            System.out.println("请求 " + requestId + " 失败: " + e.getMessage());
+            failedRequests.incrementAndGet();
+        }
+    }
+    
+    // 用户会话类
+    static class UserSession {
+        private final String username;
+        private final long creationTime;
+        
+        public UserSession(String username, long creationTime) {
+            this.username = username;
+            this.creationTime = creationTime;
+        }
+        
+        public String getUsername() {
+            return username;
+        }
+        
+        public long getCreationTime() {
+            return creationTime;
+        }
+    }
+}</code></pre>
+
+            <h3 id="多线程编程最佳实践">13.10 多线程编程最佳实践</h3>
+            <p>在Java多线程编程中，以下是一些值得遵循的最佳实践：</p>
+            <ol>
+                <li><strong>优先使用线程池</strong>：避免直接创建线程，使用Executors或ThreadPoolExecutor创建线程池。</li>
+                <li><strong>避免过度同步</strong>：只在必要的时候使用同步，过度同步会降低性能。</li>
+                <li><strong>使用并发集合</strong>：在并发环境中，优先使用java.util.concurrent包中的集合类。</li>
+                <li><strong>防止死锁</strong>：注意锁的获取顺序，避免循环依赖。</li>
+                <li><strong>注意线程安全</strong>：在设计类时，要考虑线程安全性，尤其是在共享状态的情况下。</li>
+                <li><strong>合理使用volatile</strong>：仅用于保证变量的可见性，不能保证原子性。</li>
+                <li><strong>考虑使用原子类</strong>：对于计数器等简单场景，使用AtomicInteger等原子类比synchronized更高效。</li>
+                <li><strong>避免使用Thread.stop()</strong>：该方法已被废弃，使用中断机制代替。</li>
+                <li><strong>正确关闭线程池</strong>：使用shutdown()或shutdownNow()方法关闭线程池。</li>
+                <li><strong>测试多线程代码</strong>：多线程问题通常难以重现，需要进行充分的测试。</li>
+            </ol>
+
+            <blockquote class="tip">
+                <p><strong>提示</strong>：多线程编程是Java中较为复杂的部分，需要理解并发原理、同步机制和线程安全等概念。推荐阅读《Java并发编程实战》深入学习。</p>
+            </blockquote>
+
+            <p>本章介绍了Java多线程编程的基础知识和常用技术，包括线程的创建、生命周期、同步机制、线程通信、线程池等内容。掌握这些概念和技术，可以帮助你开发高效、稳定的多线程应用程序。</p>
+        </section>
+    </main>
+</body>
+</html> 
