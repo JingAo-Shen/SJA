@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiddler 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --code-background: #f0f0f0;
+            --link-color: #0366d6;
+            --border-color: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background-color: var(--code-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            background-color: #e8f4f8;
+            border-left: 4px solid #5bc0de;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .tip {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        .toc {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .toc ul {
+            list-style-type: none;
+        }
+
+        .toc ul ul {
+            padding-left: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fiddler 学习教程</h1>
+            <p>全面掌握 Fiddler 抓包工具，提升开发、测试与调试效率</p>
+        </header>
+
+        <div class="toc">
+            <h3>目录</h3>
+            <ul>
+                <li><a href="#introduction">1. Fiddler 简介</a></li>
+                <li><a href="#installation">2. 安装与配置</a></li>
+                <li><a href="#basic-usage">3. 基本使用</a></li>
+                <li><a href="#http-capture">4. HTTP/HTTPS 请求捕获与分析</a></li>
+                <li><a href="#request-manipulation">5. 请求拦截与修改</a></li>
+                <li><a href="#performance">6. 性能分析</a></li>
+                <li><a href="#common-scenarios">7. 常见应用场景</a></li>
+                <li><a href="#advanced-features">8. 高级功能</a></li>
+                <li><a href="#troubleshooting">9. 常见问题与解决方案</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Fiddler 简介</h2>
+            <p>Fiddler 是一个强大的 HTTP 调试代理工具，允许开发人员捕获、检查、监视所有 HTTP(S) 流量，并且可以分析、修改请求和响应。本节将介绍 Fiddler 的基本概念、特点和使用场景。</p>
+            
+            <h3>1.1 什么是 Fiddler</h3>
+            <p>Fiddler 是由 Telerik 开发的一款免费的 Web 调试代理工具，它能够记录计算机和互联网之间的所有 HTTP(S) 通信。通过 Fiddler，你可以监控、检查和修改进出你电脑的 HTTP 请求和响应，使其成为开发和测试 Web 应用程序的理想工具。</p>
+            
+            <h3>1.2 主要功能</h3>
+            <ul>
+                <li>捕获和检查所有 HTTP(S) 流量</li>
+                <li>拦截和修改请求与响应</li>
+                <li>设置断点，模拟网络延迟</li>
+                <li>自动响应特定请求</li>
+                <li>性能分析和网络故障排查</li>
+                <li>安全测试与调试</li>
+                <li>支持扩展的插件系统</li>
+            </ul>
+            
+            <h3>1.3 使用场景</h3>
+            <p>Fiddler 在以下场景中特别有用：</p>
+            <ul>
+                <li><strong>Web 开发与调试</strong>：分析前端请求，追踪 API 调用，调试 AJAX 请求</li>
+                <li><strong>移动应用测试</strong>：捕获移动设备的网络流量</li>
+                <li><strong>安全测试</strong>：检查敏感数据传输，修改请求进行安全测试</li>
+                <li><strong>性能优化</strong>：分析网络请求的加载时间与性能瓶颈</li>
+                <li><strong>接口测试</strong>：验证 API 返回的数据格式与内容</li>
+                <li><strong>网络故障排查</strong>：定位和解决网络通信问题</li>
+            </ul>
+        </section>
+
+        <section id="http-analysis">
+            <h2>4. HTTP/HTTPS 请求分析</h2>
+            <p>本节将详细介绍如何使用 Fiddler 分析 HTTP 和 HTTPS 请求与响应。</p>
+            
+            <h3>4.1 检查器面板</h3>
+            <p>选择一个会话后，右侧的检查器面板提供了多种查看请求和响应的方式：</p>
+            <ul>
+                <li><strong>Statistics</strong>：显示性能统计信息，如时间轴、速度等</li>
+                <li><strong>Inspectors</strong>：提供多种格式查看请求和响应</li>
+                <li><strong>AutoResponder</strong>：配置自动响应规则</li>
+                <li><strong>Composer</strong>：创建和发送自定义请求</li>
+            </ul>
+            
+            <h3>4.2 常用检查器标签</h3>
+            <h4>4.2.1 Headers 标签</h4>
+            <p>显示 HTTP 请求和响应的所有头信息：</p>
+            <ul>
+                <li>请求方法、URL、HTTP 版本</li>
+                <li>状态码和原因短语</li>
+                <li>所有请求和响应头</li>
+                <li>可查看原始格式或分类格式</li>
+            </ul>
+            
+            <h4>4.2.2 WebForms/JSON/XML 标签</h4>
+            <p>根据内容类型自动格式化请求或响应体：</p>
+            <ul>
+                <li>WebForms：显示表单数据，如 POST 参数</li>
+                <li>JSON：格式化并语法高亮 JSON 数据</li>
+                <li>XML：格式化并语法高亮 XML 数据</li>
+            </ul>
+            
+            <h4>4.2.3 Raw 标签</h4>
+            <p>显示原始的请求或响应数据，包括头和体，不进行格式化。</p>
+            
+            <h4>4.2.4 HexView 标签</h4>
+            <p>以十六进制格式显示请求或响应，对于分析二进制数据很有用。</p>
+            
+            <h3>4.3 性能分析</h3>
+            <p>Fiddler 提供多种方式分析请求性能：</p>
+            <ul>
+                <li><strong>Timeline</strong>：查看会话列表中的时间轴栏</li>
+                <li><strong>Statistics 标签</strong>：详细查看单个请求的时间分配</li>
+                <li><strong>Web Sessions 面板</strong>：查看每个请求的持续时间</li>
+            </ul>
+            
+            <div class="tip">
+                <p><strong>提示</strong>：使用 Statistics 标签可以查看详细的时间分解，如 DNS 解析时间、连接时间、发送时间、服务器处理时间和接收时间等。</p>
+            </div>
+            
+            <h3>4.4 查看 HTTPS 解密内容</h3>
+            <p>在配置了 HTTPS 解密后，Fiddler 会显示解密的内容：</p>
+            <ol>
+                <li>确认 HTTPS 流量在会话列表中显示为 HTTPS 而非 CONNECT 隧道</li>
+                <li>选择 HTTPS 会话，在检查器面板中查看解密的内容</li>
+                <li>查看 Headers 标签可以看到加密前的实际 HTTP 头</li>
+                <li>查看适当的标签（JSON、WebForms、Images 等）可以看到解密的内容</li>
+            </ol>
+            
+            <div class="warning">
+                <p><strong>警告</strong>：解密 HTTPS 流量可能违反某些应用程序的使用条款。在生产环境或处理敏感数据时要特别谨慎。</p>
+            </div>
+        </section>
+
+        <section id="request-modification">
+            <h2>5. 请求拦截与修改</h2>
+            <p>本节将介绍如何使用 Fiddler 拦截和修改 HTTP/HTTPS 请求和响应，这是 Fiddler 最强大的功能之一。</p>
+            
+            <h3>5.1 使用 AutoResponder</h3>
+            <p>AutoResponder 允许您定义规则来拦截特定请求并返回自定义响应：</p>
+            <ol>
+                <li>切换到右侧的 AutoResponder 标签</li>
+                <li>勾选 "Enable rules" 和 "Unmatched requests pass through"</li>
+                <li>点击 "Add Rule" 或将会话从列表拖到 AutoResponder 区域</li>
+                <li>定义匹配规则（可以使用精确匹配或正则表达式）</li>
+                <li>指定响应动作（如本地文件、内置响应或保存的会话）</li>
+            </ol>
+            
+            <h4>5.1.1 常用匹配规则</h4>
+            <ul>
+                <li><code>exact:http://example.com/path</code>：精确匹配 URL</li>
+                <li><code>regex:\.jpg$</code>：匹配所有 .jpg 文件</li>
+                <li><code>*example.com*</code>：使用通配符匹配包含 example.com 的 URL</li>
+            </ul>
+            
+            <h4>5.1.2 响应动作</h4>
+            <ul>
+                <li><code>http://otherdomain.com</code>：重定向到其他 URL</li>
+                <li><code>C:\path\to\local\file.json</code>：使用本地文件响应</li>
+                <li><code>*delay:1000</code>：延迟响应 1000 毫秒</li>
+                <li><code>*reset</code>：重置连接</li>
+                <li><code>*dropout</code>：丢弃连接</li>
+            </ul>
+            
+            <h3>5.2 使用 Composer</h3>
+            <p>Composer 允许您创建和发送自定义 HTTP 请求：</p>
+            <ol>
+                <li>切换到右侧的 Composer 标签</li>
+                <li>选择请求方法（GET、POST 等）</li>
+                <li>输入完整的 URL</li>
+                <li>添加或修改 HTTP 头</li>
+                <li>对于 POST/PUT 请求，添加请求体</li>
+                <li>点击 "Execute" 发送请求</li>
+            </ol>
+            
+            <div class="tip">
+                <p><strong>提示</strong>：您可以从会话列表中拖动现有会话到 Composer，以快速创建基于现有请求的新请求。</p>
+            </div>
+            
+            <h3>5.3 使用断点 (Breakpoints)</h3>
+            <p>断点允许您在请求被发送前或响应被接收后暂停并修改它们：</p>
+            
+            <h4>5.3.1 设置全局断点</h4>
+            <ul>
+                <li>按 F11：设置请求前断点（所有请求）</li>
+                <li>按 Alt+F11：设置响应前断点（所有响应）</li>
+                <li>在状态栏上点击相应按钮启用/禁用断点</li>
+            </ul>
+            
+            <h4>5.3.2 设置条件断点</h4>
+            <p>使用 FiddlerScript 可以设置仅适用于特定请求的条件断点：</p>
+            <ol>
+                <li>点击 Rules > Customize Rules</li>
+                <li>找到 OnBeforeRequest 或 OnBeforeResponse 函数</li>
+                <li>添加条件代码，如：</li>
+            </ol>
+            <pre><code>if (oSession.HostnameIs("example.com") && oSession.PathAndQuery.Contains("/api/")) {
+    oSession["x-breakrequest"] = "before";
+}</code></pre>
+            
+            <h4>5.3.3 使用断点修改内容</h4>
+            <p>触发断点后，您可以：</p>
+            <ul>
+                <li>修改 HTTP 头或 URL</li>
+                <li>编辑请求或响应体</li>
+                <li>点击 "Run to Completion" 继续处理</li>
+                <li>点击 "Break on Response" 在响应前再次暂停</li>
+            </ul>
+            
+            <div class="warning">
+                <p><strong>警告</strong>：在使用断点时，浏览器会一直等待，直到您在 Fiddler 中继续处理。长时间不处理可能导致浏览器超时。</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Copyright © 2023 Java 学习教程 | 更多教程请访问 <a href="../index.html">首页</a></p>
+        </footer>
+    </div>
+</body>
+</html> 
