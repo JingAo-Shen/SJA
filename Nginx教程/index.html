@@ -503,7 +503,20 @@
 
         <section id="introduction">
             <h2>1. Nginx 简介</h2>
-            <p>Nginx（发音为"engine-x"）是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。Nginx 由 Igor Sysoev 于 2004 年创建，最初是为解决 C10K 问题（同时处理 10,000 个客户端连接）而设计的。本章将介绍 Nginx 的基本概念、特点和应用场景。</p>
+            
+            <div style="background-color: #f5f5f5; border-left: 4px solid #009639; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4 style="color: #009639; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>您对Web服务器的工作原理有哪些了解？Web服务器在网络架构中起什么作用？</li>
+                    <li>传统的Web服务器（如Apache）可能面临哪些性能挑战？</li>
+                    <li>您认为一个理想的Web服务器应该具备哪些特性？</li>
+                    <li>反向代理和负载均衡对于Web应用有什么重要性？</li>
+                    <li>您了解Nginx与其他Web服务器的主要区别吗？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>Nginx（发音为"engine x"）是一个高性能的HTTP和反向代理服务器，也是一个IMAP/POP3/SMTP代理服务器。本章将介绍Nginx的基本概念、特点和应用场景。</p>
             
             <h3>1.1 什么是 Nginx</h3>
             <p>Nginx 是一个开源的 Web 服务器，以其高性能、稳定性、丰富的功能集、简单的配置和低资源消耗而闻名。它可以用作 Web 服务器、反向代理服务器、负载均衡器、邮件代理和 HTTP 缓存。</p>
@@ -594,7 +607,20 @@
 
         <section id="installation">
             <h2>2. 安装与基本配置</h2>
-            <p>Nginx 可以在各种操作系统上安装，包括 Linux、Windows、macOS 和 FreeBSD 等。本章将介绍不同平台上的安装方法以及基本配置文件结构。</p>
+            
+            <div style="background-color: #f5f5f5; border-left: 4px solid #009639; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4 style="color: #009639; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>您在选择软件安装方式时通常考虑哪些因素（包管理器vs.源码编译）？</li>
+                    <li>在生产环境中安装服务器软件时，应该注意哪些安全和稳定性问题？</li>
+                    <li>配置文件的组织结构对于系统维护有什么重要性？</li>
+                    <li>如何判断一个服务器配置是否合理且安全？</li>
+                    <li>您如何计划对服务器软件进行版本升级和维护？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>本章将介绍如何在不同操作系统上安装 Nginx，并了解其基本配置文件结构和常用命令。</p>
             
             <h3 id="install-methods">2.1 安装方法</h3>
             
@@ -796,6 +822,19 @@ nginx -s reopen       # 重新打开日志</code></pre>
 
         <section id="core-concepts">
             <h2>3. 核心概念</h2>
+            
+            <div style="background-color: #f5f5f5; border-left: 4px solid #009639; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4 style="color: #009639; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>服务器软件的架构设计如何影响其性能和可扩展性？</li>
+                    <li>为什么理解主-工作进程模型对于配置和调优Nginx很重要？</li>
+                    <li>配置文件的结构和语法规则如何影响服务器管理的难易程度？</li>
+                    <li>在设计服务器路由规则时，应该考虑哪些因素？</li>
+                    <li>变量在Web服务器配置中有哪些用途？它们如何增强服务器的灵活性？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
             <p>要熟练使用 Nginx，需要了解其核心概念和架构设计。本章将深入探讨 Nginx 的工作原理以及关键配置元素。</p>
             
             <h3 id="architecture">3.1 Nginx 架构</h3>
