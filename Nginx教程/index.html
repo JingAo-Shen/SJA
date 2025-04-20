@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nginx 教程 - 从入门到精通</title>
+    <style>
+        :root {
+            --primary-color: #009639;
+            --secondary-color: #007934;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --code-background: #f0f0f0;
+            --link-color: #0366d6;
+            --border-color: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+        }
+
+        h4 {
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background-color: var(--code-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            background-color: #e8f4f8;
+            border-left: 4px solid #5bc0de;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .tip {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .example {
+            background-color: #e9ecef;
+            border-left: 4px solid #6c757d;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .best-practice {
+            background-color: #e9f5ff;
+            border-left: 4px solid #0079d3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        .toc {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .toc ul {
+            list-style-type: none;
+        }
+
+        .toc ul ul {
+            padding-left: 20px;
+        }
+
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .code-block {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Diagram Styles */
+        .svg-diagram {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin: 20px auto;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: white;
+            padding: 15px;
+        }
+
+        /* Nginx Architecture Diagram */
+        .nginx-arch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .nginx-master {
+            width: 180px;
+            height: 70px;
+            border: 2px solid #009639;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: #e3f5eb;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .nginx-workers-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .nginx-worker {
+            width: 120px;
+            height: 60px;
+            border: 2px solid #009639;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e3f5eb;
+            position: relative;
+            font-weight: bold;
+        }
+
+        .nginx-connector {
+            width: 2px;
+            height: 20px;
+            background-color: #009639;
+            margin-bottom: -2px;
+        }
+
+        /* Request Flow Diagram */
+        .request-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+            position: relative;
+        }
+
+        .request-box {
+            width: 120px;
+            height: 70px;
+            border: 2px solid #0366d6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 10px;
+            position: relative;
+            background-color: #eef8ff;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .request-arrow {
+            width: 60px;
+            height: 2px;
+            background-color: #666;
+            position: relative;
+        }
+
+        .request-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            border-width: 5px 0 5px 10px;
+            border-style: solid;
+            border-color: transparent transparent transparent #666;
+        }
+
+        /* Load Balancing Diagram */
+        .load-balancing {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            grid-template-rows: auto;
+            gap: 20px;
+            padding: 20px;
+            align-items: center;
+        }
+
+        .lb-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lb-box {
+            width: 140px;
+            height: 70px;
+            border: 2px solid #009639;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            background-color: #e3f5eb;
+            text-align: center;
+        }
+
+        .lb-servers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .lb-server {
+            width: 100px;
+            height: 50px;
+            border: 2px solid #0366d6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: #eef8ff;
+            font-size: 14px;
+        }
+
+        .lb-clients {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .lb-client {
+            width: 90px;
+            height: 40px;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            font-size: 12px;
+        }
+
+        .lb-arrows {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .lb-arrow {
+            width: 60px;
+            height: 2px;
+            background-color: #666;
+            position: relative;
+        }
+
+        .lb-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            border-width: 5px 0 5px 10px;
+            border-style: solid;
+            border-color: transparent transparent transparent #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            pre {
+                padding: 10px;
+            }
+
+            .load-balancing {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                justify-items: center;
+            }
+
+            .lb-arrows {
+                flex-direction: row;
+                margin: 10px 0;
+            }
+
+            .lb-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nginx 教程</h1>
+            <p>高性能的 HTTP 和反向代理服务器详解</p>
+        </header>
+
+        <div class="toc">
+            <h3>目录</h3>
+            <ul>
+                <li><a href="#introduction">1. Nginx 简介</a></li>
+                <li><a href="#installation">2. 安装与基本配置</a>
+                    <ul>
+                        <li><a href="#install-methods">2.1 安装方法</a></li>
+                        <li><a href="#basic-config">2.2 基本配置文件结构</a></li>
+                        <li><a href="#commands">2.3 常用命令</a></li>
+                    </ul>
+                </li>
+                <li><a href="#core-concepts">3. 核心概念</a>
+                    <ul>
+                        <li><a href="#architecture">3.1 Nginx 架构</a></li>
+                        <li><a href="#config-structure">3.2 配置结构与语法</a></li>
+                        <li><a href="#server-blocks">3.3 Server 块</a></li>
+                        <li><a href="#location-blocks">3.4 Location 块</a></li>
+                        <li><a href="#variables">3.5 Nginx 变量</a></li>
+                    </ul>
+                </li>
+                <li><a href="#server-blocks">4. 虚拟主机配置</a>
+                    <ul>
+                        <li><a href="#server-block-basics">4.1 server 块基础</a></li>
+                        <li><a href="#name-based">4.2 基于名称的虚拟主机</a></li>
+                        <li><a href="#ip-based">4.3 基于 IP 的虚拟主机</a></li>
+                    </ul>
+                </li>
+                <li><a href="#locations">5. 路由与位置匹配</a>
+                    <ul>
+                        <li><a href="#location-syntax">5.1 location 语法</a></li>
+                        <li><a href="#location-priority">5.2 匹配优先级</a></li>
+                        <li><a href="#try-files">5.3 try_files 指令</a></li>
+                    </ul>
+                </li>
+                <li><a href="#static-files">6. 静态文件服务</a></li>
+                <li><a href="#proxy">7. 反向代理</a></li>
+                <li><a href="#load-balancing">8. 负载均衡</a></li>
+                <li><a href="#ssl">9. HTTPS 配置</a></li>
+                <li><a href="#optimization">10. 性能优化</a></li>
+                <li><a href="#security">11. 安全最佳实践</a></li>
+                <li><a href="#use-cases">12. 常见应用场景</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Nginx 简介</h2>
+            <p>Nginx（发音为"engine-x"）是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。Nginx 由 Igor Sysoev 于 2004 年创建，最初是为解决 C10K 问题（同时处理 10,000 个客户端连接）而设计的。本章将介绍 Nginx 的基本概念、特点和应用场景。</p>
+            
+            <h3>1.1 什么是 Nginx</h3>
+            <p>Nginx 是一个开源的 Web 服务器，以其高性能、稳定性、丰富的功能集、简单的配置和低资源消耗而闻名。它可以用作 Web 服务器、反向代理服务器、负载均衡器、邮件代理和 HTTP 缓存。</p>
+
+            <h3>1.2 Nginx 的历史与发展</h3>
+            <p>Nginx 的发展历程：</p>
+            <ul>
+                <li><strong>2004年</strong> - Igor Sysoev 开始开发 Nginx</li>
+                <li><strong>2011年</strong> - 成立 Nginx, Inc. 公司，提供商业支持和 Nginx Plus 产品</li>
+                <li><strong>2019年</strong> - 被 F5 Networks 以 6.7 亿美元收购</li>
+                <li><strong>当前</strong> - 全球市场份额超过 30%，是排名前三的 Web 服务器</li>
+            </ul>
+
+            <h3>1.3 为什么选择 Nginx</h3>
+            <p>Nginx 相比其他 Web 服务器有以下优势：</p>
+            <ul>
+                <li><strong>高性能</strong>：采用异步非阻塞事件驱动模型，能够同时处理数千个连接</li>
+                <li><strong>高并发</strong>：即使在高负载下仍保持低内存占用和高稳定性</li>
+                <li><strong>可扩展性</strong>：模块化设计，支持动态模块扩展功能</li>
+                <li><strong>可靠性</strong>：以稳定和可预测的方式处理大量并发连接</li>
+                <li><strong>功能丰富</strong>：不仅是 Web 服务器，还是反向代理、负载均衡器等</li>
+            </ul>
+
+            <h3>1.4 Nginx 的主要应用场景</h3>
+            <ul>
+                <li><strong>静态内容服务器</strong>：高效地提供静态文件（HTML、CSS、JavaScript、图片等）</li>
+                <li><strong>反向代理</strong>：接收客户端请求并转发到后端服务器，隐藏后端服务器的细节</li>
+                <li><strong>负载均衡器</strong>：分发流量到多个服务器，提高应用程序的可用性和可靠性</li>
+                <li><strong>API 网关</strong>：作为微服务架构中的入口点，路由请求到相应的服务</li>
+                <li><strong>SSL 终结</strong>：处理 HTTPS 加密/解密，减轻后端服务器的负担</li>
+                <li><strong>HTTP 缓存</strong>：缓存静态内容，减少后端服务器的负载</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>小知识：</strong>Nginx 的名称来源于"引擎 X"（Engine X），象征其强大的引擎特性。而 Apache HTTP Server 更侧重于功能的全面性，Nginx 则专注于核心功能的高性能实现。</p>
+            </div>
+
+            <h3>1.5 Nginx 与其他 Web 服务器的比较</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>特性</th>
+                        <th>Nginx</th>
+                        <th>Apache HTTP Server</th>
+                        <th>IIS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>处理模型</td>
+                        <td>异步非阻塞事件驱动</td>
+                        <td>多进程/多线程</td>
+                        <td>多线程</td>
+                    </tr>
+                    <tr>
+                        <td>资源消耗</td>
+                        <td>低</td>
+                        <td>中到高</td>
+                        <td>中到高</td>
+                    </tr>
+                    <tr>
+                        <td>高并发处理</td>
+                        <td>优秀</td>
+                        <td>一般</td>
+                        <td>一般</td>
+                    </tr>
+                    <tr>
+                        <td>配置复杂度</td>
+                        <td>简单</td>
+                        <td>中等</td>
+                        <td>图形界面，较简单</td>
+                    </tr>
+                    <tr>
+                        <td>操作系统</td>
+                        <td>跨平台</td>
+                        <td>跨平台</td>
+                        <td>仅 Windows</td>
+                    </tr>
+                    <tr>
+                        <td>动态内容</td>
+                        <td>需要通过代理</td>
+                        <td>内置支持 (mod_php 等)</td>
+                        <td>内置支持 (ASP.NET)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="installation">
+            <h2>2. 安装与基本配置</h2>
+            <p>Nginx 可以在各种操作系统上安装，包括 Linux、Windows、macOS 和 FreeBSD 等。本章将介绍不同平台上的安装方法以及基本配置文件结构。</p>
+            
+            <h3 id="install-methods">2.1 安装方法</h3>
+            
+            <h4>2.1.1 在 Linux 上安装</h4>
+            <p>大多数 Linux 发行版都在其官方软件仓库中提供 Nginx 包。</p>
+            
+            <p><strong>Ubuntu/Debian:</strong></p>
+            <pre><code>sudo apt update
+sudo apt install nginx</code></pre>
+            
+            <p><strong>CentOS/RHEL:</strong></p>
+            <pre><code>sudo yum install epel-release
+sudo yum install nginx</code></pre>
+            
+            <p><strong>使用官方仓库安装最新版本</strong>（推荐）:</p>
+            <pre><code># Ubuntu/Debian
+sudo apt install curl gnupg2 ca-certificates lsb-release
+echo "deb https://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
+sudo apt update
+sudo apt install nginx
+
+# CentOS/RHEL
+sudo yum install yum-utils
+sudo tee /etc/yum.repos.d/nginx.repo << EOF
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/centos/\$releasever/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+EOF
+sudo yum install nginx</code></pre>
+            
+            <h4>2.1.2 在 Windows 上安装</h4>
+            <p>Nginx 提供 Windows 版本的二进制文件：</p>
+            <ol>
+                <li>从 <a href="https://nginx.org/en/download.html" target="_blank">nginx.org</a> 下载 Windows 版本的 zip 文件</li>
+                <li>解压到任意目录，如 <code>C:\nginx</code></li>
+                <li>打开命令提示符，进入 Nginx 目录</li>
+                <li>运行 <code>start nginx</code> 启动服务器</li>
+            </ol>
+            
+            <h4>2.1.3 在 macOS 上安装</h4>
+            <p>使用 Homebrew 安装 Nginx：</p>
+            <pre><code>brew install nginx</code></pre>
+            
+            <h4>2.1.4 从源码编译安装</h4>
+            <p>如果需要自定义编译选项或使用特定模块，可以从源码编译：</p>
+            <pre><code>wget https://nginx.org/download/nginx-1.24.0.tar.gz
+tar -zxvf nginx-1.24.0.tar.gz
+cd nginx-1.24.0
+
+./configure --prefix=/usr/local/nginx \
+            --with-http_ssl_module \
+            --with-http_v2_module \
+            --with-http_realip_module \
+            --with-http_stub_status_module
+
+make
+sudo make install</code></pre>
+            
+            <div class="tip">
+                <p><strong>提示：</strong>使用包管理器安装 Nginx 通常会自动配置系统服务，而手动安装则需要额外步骤来配置自启动服务。</p>
+            </div>
+            
+            <h3 id="basic-config">2.2 基本配置文件结构</h3>
+            <p>Nginx 的配置文件通常位于 <code>/etc/nginx/</code> 目录（Linux）或安装目录下的 <code>conf</code> 文件夹（Windows）。主配置文件是 <code>nginx.conf</code>，它包含其他配置文件的引用。</p>
+            
+            <h4>2.2.1 配置文件层次结构</h4>
+            <ul>
+                <li><code>nginx.conf</code> - 主配置文件</li>
+                <li><code>conf.d/*.conf</code> - 包含的配置文件目录</li>
+                <li><code>sites-available/</code> - 可用站点配置</li>
+                <li><code>sites-enabled/</code> - 已启用站点的符号链接</li>
+                <li><code>modules-enabled/</code> - 已启用模块的配置</li>
+            </ul>
+            
+            <h4>2.2.2 nginx.conf 的基本结构</h4>
+            <pre><code>user nginx;              # 运行 Nginx 的用户
+worker_processes auto;   # 工作进程数，通常设置为 CPU 核心数
+error_log /var/log/nginx/error.log warn;  # 错误日志
+pid /var/run/nginx.pid;  # 存储主进程 PID 的文件
+
+events {
+    worker_connections 1024;  # 每个工作进程的最大连接数
+}
+
+http {
+    include /etc/nginx/mime.types;  # 包含 MIME 类型定义
+    default_type application/octet-stream;  # 默认 MIME 类型
+    
+    # 日志格式定义
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+    
+    access_log /var/log/nginx/access.log main;  # 访问日志
+    
+    sendfile on;  # 启用 sendfile 系统调用
+    tcp_nopush on;  # 优化网络包传输
+    tcp_nodelay on;  # 禁用 Nagle 算法
+    keepalive_timeout 65;  # 保持连接超时时间
+    
+    # 包含其他配置文件
+    include /etc/nginx/conf.d/*.conf;
+}</code></pre>
+            
+            <h4>2.2.3 基本的 server 块</h4>
+            <p>在 <code>/etc/nginx/conf.d/default.conf</code> 中：</p>
+            <pre><code>server {
+    listen 80;  # 监听端口
+    server_name example.com www.example.com;  # 服务器名称
+    
+    location / {
+        root /usr/share/nginx/html;  # 根目录
+        index index.html index.htm;  # 默认文件
+    }
+    
+    # 错误页面
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}</code></pre>
+            
+            <h3 id="commands">2.3 常用命令</h3>
+            <p>Nginx 提供了多种命令来控制服务器操作：</p>
+            
+            <h4>2.3.1 基本控制命令</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>命令</th>
+                        <th>描述</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>nginx</code> 或 <code>systemctl start nginx</code></td>
+                        <td>启动 Nginx</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -s stop</code> 或 <code>systemctl stop nginx</code></td>
+                        <td>快速停止 Nginx</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -s quit</code> 或 <code>systemctl quit nginx</code></td>
+                        <td>优雅停止 Nginx（等待工作进程处理完现有请求）</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -s reload</code> 或 <code>systemctl reload nginx</code></td>
+                        <td>重新加载配置文件</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -s reopen</code></td>
+                        <td>重新打开日志文件</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -t</code></td>
+                        <td>测试配置文件是否有语法错误</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -v</code></td>
+                        <td>显示 Nginx 版本</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx -V</code></td>
+                        <td>显示 Nginx 版本、编译参数和配置参数</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h4>2.3.2 在 Linux 中使用 systemd 管理 Nginx</h4>
+            <pre><code>sudo systemctl start nginx    # 启动 Nginx
+sudo systemctl stop nginx     # 停止 Nginx
+sudo systemctl restart nginx  # 重启 Nginx
+sudo systemctl reload nginx   # 重新加载配置
+sudo systemctl status nginx   # 查看 Nginx 状态
+sudo systemctl enable nginx   # 设置开机自启动
+sudo systemctl disable nginx  # 禁用开机自启动</code></pre>
+            
+            <h4>2.3.3 Windows 下的命令</h4>
+            <p>在 Windows 命令提示符中：</p>
+            <pre><code>cd C:\nginx
+start nginx           # 启动 Nginx
+nginx -s stop         # 停止 Nginx
+nginx -s quit         # 优雅停止
+nginx -s reload       # 重新加载配置
+nginx -s reopen       # 重新打开日志</code></pre>
+            
+            <div class="example">
+                <p><strong>实例：配置验证最佳实践</strong></p>
+                <p>在更改配置后，始终进行验证并使用 reload 命令：</p>
+                <pre><code>sudo nginx -t && sudo systemctl reload nginx</code></pre>
+                <p>这样可以确保只有在配置正确的情况下才会重新加载 Nginx。</p>
+            </div>
+        </section>
+
+        <section id="core-concepts">
+            <h2>3. 核心概念</h2>
+            <p>要熟练使用 Nginx，需要了解其核心概念和架构设计。本章将深入探讨 Nginx 的工作原理以及关键配置元素。</p>
+            
+            <h3 id="architecture">3.1 Nginx 架构</h3>
+            <p>Nginx 采用主从架构，由一个 master 进程和多个 worker 进程组成：</p>
+            
+            <div class="diagram">
+                <div class="arch-diagram">
+                    <div class="master-process">
+                        <span>Master Process</span>
+                        <div class="master-desc">读取配置、管理工作进程</div>
+                    </div>
+                    <div class="worker-processes">
+                        <div class="worker-process"><span>Worker Process 1</span></div>
+                        <div class="worker-process"><span>Worker Process 2</span></div>
+                        <div class="worker-process"><span>Worker Process n</span></div>
+                    </div>
+                    <div class="connections">
+                        <div class="connection-line"></div>
+                        <div class="connection-line"></div>
+                        <div class="connection-line"></div>
+                    </div>
+                    <div class="clients">
+                        <div class="client"><span>Client 请求</span></div>
+                        <div class="client"><span>Client 请求</span></div>
+                        <div class="client"><span>Client 请求</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>3.1.1 Master 进程</h4>
+            <ul>
+                <li>读取和验证配置</li>
+                <li>创建、管理和维护 worker 进程</li>
+                <li>接收信号并传递给 worker 进程</li>
+                <li>不处理任何客户端连接</li>
+            </ul>
+            
+            <h4>3.1.2 Worker 进程</h4>
+            <ul>
+                <li>处理客户端连接和请求</li>
+                <li>每个 worker 可以处理数千个并发连接</li>
+                <li>worker 进程数通常设置为 CPU 核心数</li>
+                <li>所有 worker 进程都是平等的，不存在通信和同步</li>
+            </ul>
+            
+            <h4>3.1.3 事件驱动模型</h4>
+            <p>Nginx 使用异步非阻塞 I/O 模型处理请求：</p>
+            <ul>
+                <li>单个 worker 进程使用事件循环处理多个连接</li>
+                <li>避免了为每个连接创建线程的开销</li>
+                <li>利用操作系统的高效事件通知机制（如 epoll、kqueue）</li>
+                <li>非阻塞 I/O 操作确保进程不会在等待 I/O 时被阻塞</li>
+            </ul>
+            
+            <div class="note">
+                <p><strong>小知识：</strong>一个 Nginx worker 进程可以处理 10,000+ 并发连接，而传统的多线程服务器每个线程通常只能处理一个连接。</p>
+            </div>
+            
+            <h3 id="config-structure">3.2 配置结构与语法</h3>
+            <p>Nginx 配置文件使用简单直观的语法，基于块和指令组织：</p>
+            
+            <h4>3.2.1 指令和块</h4>
+            <ul>
+                <li><strong>简单指令</strong>：由名称和参数组成，以分号结束</li>
+                <li><strong>块指令</strong>：由名称和包含在花括号中的一组指令组成</li>
+                <li><strong>上下文</strong>：特定类型的块，定义了指令的作用域</li>
+            </ul>
+            
+            <h4>3.2.2 主要配置上下文</h4>
+            <ul>
+                <li><code>main</code>：全局配置，影响整个服务器</li>
+                <li><code>events</code>：事件处理配置</li>
+                <li><code>http</code>：HTTP 服务器配置</li>
+                <li><code>server</code>：虚拟主机配置</li>
+                <li><code>location</code>：请求 URI 匹配规则</li>
+                <li><code>mail</code>：邮件服务器配置（如果启用）</li>
+                <li><code>stream</code>：TCP/UDP 代理配置（1.9.0+ 版本）</li>
+            </ul>
+            
+            <h4>3.2.3 指令继承与覆盖</h4>
+            <p>大多数指令都遵循自上而下的继承规则：</p>
+            <ul>
+                <li>子块可以继承父块的指令</li>
+                <li>子块中的指令会覆盖从父块继承的相同指令</li>
+                <li>部分指令（如 <code>add_header</code>）不继承而是完全替换</li>
+            </ul>
+            
+            <h4>3.2.4 配置文件结构示例</h4>
+            <pre><code># 全局配置 (main 上下文)
+user nginx;
+worker_processes 4;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+# 事件配置 (events 上下文)
+events {
+    worker_connections 1024;
+}
+
+# HTTP 配置 (http 上下文)
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    
+    # 日志配置
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                     '$status $body_bytes_sent "$http_referer" '
+                     '"$http_user_agent" "$http_x_forwarded_for"';
+    access_log /var/log/nginx/access.log main;
+    
+    # 全局 HTTP 选项
+    sendfile on;
+    keepalive_timeout 65;
+    
+    # 虚拟主机配置 (server 上下文)
+    server {
+        listen 80;
+        server_name example.com;
+        
+        # URI 匹配配置 (location 上下文)
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+        
+        location /api/ {
+            proxy_pass http://backend_servers;
+        }
+    }
+    
+    # 另一个虚拟主机
+    server {
+        listen 80;
+        server_name sub.example.com;
+        
+        location / {
+            root /var/www/sub;
+            index index.html;
+        }
+    }
+}</code></pre>
+            
+            <h3 id="server-blocks">3.3 Server 块</h3>
+            <p>Server 块定义了虚拟服务器，允许 Nginx 在单个 IP 地址上处理多个域名。每个 server 块需要包含 <code>listen</code> 指令（指定端口）和 <code>server_name</code> 指令（指定域名）。</p>
+            
+            <h4>3.3.1 基本 server 块配置</h4>
+            <pre><code>server {
+    listen 80;                  # 监听端口
+    server_name example.com;    # 服务器名称
+    
+    # 其他配置...
+}</code></pre>
+            
+            <h4>3.3.2 server_name 指令</h4>
+            <p><code>server_name</code> 指令用于区分请求应该由哪个 server 块处理，支持多种匹配模式：</p>
+            <ul>
+                <li><strong>精确匹配</strong>：<code>server_name example.com;</code></li>
+                <li><strong>通配符匹配</strong>：<code>server_name *.example.com;</code> 或 <code>server_name example.*;</code></li>
+                <li><strong>正则表达式匹配</strong>：<code>server_name ~^www\d+\.example\.com$;</code></li>
+                <li><strong>多个名称</strong>：<code>server_name example.com www.example.com;</code></li>
+            </ul>
+            
+            <h4>3.3.3 匹配优先级</h4>
+            <p>当一个请求匹配多个 server 块时，Nginx 按以下优先级选择：</p>
+            <ol>
+                <li>精确匹配的 server_name</li>
+                <li>以 * 开头的最长通配符名称（如：*.example.com）</li>
+                <li>以 * 结尾的最长通配符名称（如：mail.*）</li>
+                <li>第一个匹配的正则表达式</li>
+                <li>默认 server 块（使用 <code>listen 80 default_server;</code> 指定）</li>
+            </ol>
+            
+            <h4>3.3.4 默认 server 块</h4>
+            <p>当请求的 Host 头不匹配任何 server_name 时，Nginx 使用默认 server 块：</p>
+            <pre><code>server {
+    listen 80 default_server;
+    server_name _;
+    
+    return 404 "No server is configured for this host.";
+}</code></pre>
+            
+            <div class="example">
+                <p><strong>实例：多域名配置</strong></p>
+                <pre><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+    
+    root /var/www/example;
+    index index.html;
+}
+
+server {
+    listen 80;
+    server_name api.example.com;
+    
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    return 444;  # 关闭连接，不返回任何内容
+}</code></pre>
+            </div>
+            
+            <h3 id="location-blocks">3.4 Location 块</h3>
+            <p>Location 块用于根据请求的 URI 处理不同的内容或逻辑，是 Nginx 配置中最灵活的部分。</p>
+            
+            <h4>3.4.1 Location 匹配类型</h4>
+            <ul>
+                <li><code>location = /uri</code> - 精确匹配</li>
+                <li><code>location /uri</code> - 前缀匹配</li>
+                <li><code>location ^~ /uri</code> - 优先前缀匹配</li>
+                <li><code>location ~ pattern</code> - 区分大小写的正则匹配</li>
+                <li><code>location ~* pattern</code> - 不区分大小写的正则匹配</li>
+                <li><code>location @name</code> - 命名 location，用于内部重定向</li>
+            </ul>
+            
+            <h4>3.4.2 Location 匹配优先级</h4>
+            <p>Nginx 按以下顺序选择匹配的 location 块：</p>
+            <ol>
+                <li>精确匹配（<code>=</code>）</li>
+                <li>优先前缀匹配（<code>^~</code>）</li>
+                <li>正则表达式匹配（<code>~</code> 或 <code>~*</code>），按照它们在配置文件中的出现顺序</li>
+                <li>前缀匹配，选择最长匹配</li>
+            </ol>
+            
+            <h4>3.4.3 常用 location 配置</h4>
+            <pre><code># 精确匹配首页
+location = / {
+    root /var/www/html;
+    index index.html;
+}
+
+# 处理静态文件
+location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+    root /var/www/static;
+    expires 30d;  # 设置缓存时间
+}
+
+# API 请求代理到后端
+location /api/ {
+    proxy_pass http://backend_servers;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# 禁止访问隐藏文件
+location ~ /\. {
+    deny all;
+    return 404;
+}
+
+# 命名 location 用于错误处理
+error_page 404 @notfound;
+location @notfound {
+    return 301 /404.html;
+}</code></pre>
+            
+            <h4>3.4.4 location 中的常用指令</h4>
+            <ul>
+                <li><code>root</code> - 设置请求的根目录</li>
+                <li><code>alias</code> - 替换 location 匹配的部分</li>
+                <li><code>index</code> - 定义默认文件</li>
+                <li><code>try_files</code> - 按顺序尝试文件</li>
+                <li><code>return</code> - 返回指定的状态码和消息</li>
+                <li><code>rewrite</code> - 重写 URI</li>
+                <li><code>proxy_pass</code> - 将请求代理到后端服务器</li>
+            </ul>
+            
+            <div class="tip">
+                <p><strong>提示：</strong>了解 <code>root</code> 和 <code>alias</code> 的区别非常重要。使用 <code>root</code> 时，完整路径是 root + URI；使用 <code>alias</code> 时，location 匹配的部分会被 alias 替换。</p>
+            </div>
+            
+            <h3 id="variables">3.5 Nginx 变量</h3>
+            <p>Nginx 提供了许多内置变量，可以在配置中使用：</p>
+            
+            <h4>3.5.1 常用 HTTP 请求变量</h4>
+            <ul>
+                <li><code>$uri</code> - 当前请求的规范化 URI</li>
+                <li><code>$request_uri</code> - 完整的原始请求 URI（包含查询参数）</li>
+                <li><code>$args</code> - 请求的参数字符串</li>
+                <li><code>$arg_name</code> - 特定查询参数的值</li>
+                <li><code>$request_method</code> - 请求方法（GET, POST 等）</li>
+                <li><code>$remote_addr</code> - 客户端 IP 地址</li>
+                <li><code>$remote_port</code> - 客户端端口</li>
+                <li><code>$server_addr</code> - 服务器 IP 地址</li>
+                <li><code>$server_port</code> - 服务器端口</li>
+                <li><code>$server_name</code> - 匹配上的 server_name</li>
+            </ul>
+            
+            <h4>3.5.2 HTTP 头部变量</h4>
+            <ul>
+                <li><code>$http_user_agent</code> - User-Agent 头</li>
+                <li><code>$http_referer</code> - Referer 头</li>
+                <li><code>$http_host</code> - Host 头</li>
+                <li><code>$http_cookie</code> - Cookie 头</li>
+                <li><code>$http_x_forwarded_for</code> - X-Forwarded-For 头</li>
+            </ul>
+            
+            <h4>3.5.3 响应相关变量</h4>
+            <ul>
+                <li><code>$status</code> - 响应状态码</li>
+                <li><code>$body_bytes_sent</code> - 发送给客户端的字节数</li>
+                <li><code>$bytes_sent</code> - 发送给客户端的总字节数</li>
+                <li><code>$request_time</code> - 请求处理时间（秒）</li>
+                <li><code>$upstream_response_time</code> - 上游服务器响应时间</li>
+            </ul>
+            
+            <h4>3.5.4 在配置中使用变量</h4>
+            <pre><code># 日志格式中使用变量
+log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" '
+                 '"$http_user_agent"';
+
+# 重写规则中使用变量
+if ($http_user_agent ~* "Googlebot") {
+    rewrite ^/(.*)$ /google-bot/$1 last;
+}
+
+# proxy_pass 中使用变量
+set $backend_server "backend.example.com";
+location /api/ {
+    proxy_pass http://$backend_server;
+}
+
+# 根据语言变量提供不同内容
+location / {
+    if ($http_accept_language ~* ^zh) {
+        root /var/www/html/zh;
+    }
+    if ($http_accept_language ~* ^en) {
+        root /var/www/html/en;
+    }
+    index index.html;
+}</code></pre>
+        </section>
+
+        <section id="server-blocks">
+            <h2>4. 虚拟主机配置</h2>
+            <p>Nginx 允许在单个 IP 地址上配置多个虚拟主机，每个虚拟主机可以处理不同的域名和端口。本章将介绍如何配置虚拟主机。</p>
+            
+            <h3 id="server-block-basics">4.1 server 块基础</h3>
+            <p>每个 server 块需要包含 <code>listen</code> 指令（指定端口）和 <code>server_name</code> 指令（指定域名）。</p>
+            
+            <h4>4.1.1 基本 server 块配置</h4>
+            <pre><code>server {
+    listen 80;                  # 监听端口
+    server_name example.com;    # 服务器名称
+    
+    # 其他配置...
+}</code></pre>
+            
+            <h4>4.1.2 server_name 指令</h4>
+            <p><code>server_name</code> 指令用于区分请求应该由哪个 server 块处理，支持多种匹配模式：</p>
+            <ul>
+                <li><strong>精确匹配</strong>：<code>server_name example.com;</code></li>
+                <li><strong>通配符匹配</strong>：<code>server_name *.example.com;</code> 或 <code>server_name example.*;</code></li>
+                <li><strong>正则表达式匹配</strong>：<code>server_name ~^www\d+\.example\.com$;</code></li>
+                <li><strong>多个名称</strong>：<code>server_name example.com www.example.com;</code></li>
+            </ul>
+            
+            <h4>4.1.3 匹配优先级</h4>
+            <p>当一个请求匹配多个 server 块时，Nginx 按以下优先级选择：</p>
+            <ol>
+                <li>精确匹配的 server_name</li>
+                <li>以 * 开头的最长通配符名称（如：*.example.com）</li>
+                <li>以 * 结尾的最长通配符名称（如：mail.*）</li>
+                <li>第一个匹配的正则表达式</li>
+                <li>默认 server 块（使用 <code>listen 80 default_server;</code> 指定）</li>
+            </ol>
+            
+            <h4>4.1.4 默认 server 块</h4>
+            <p>当请求的 Host 头不匹配任何 server_name 时，Nginx 使用默认 server 块：</p>
+            <pre><code>server {
+    listen 80 default_server;
+    server_name _;
+    
+    return 404 "No server is configured for this host.";
+}</code></pre>
+            
+            <div class="example">
+                <p><strong>实例：多域名配置</strong></p>
+                <pre><code>server {
+    listen 80;
+    server_name example.com www.example.com;
+    
+    root /var/www/example;
+    index index.html;
+}
+
+server {
+    listen 80;
+    server_name api.example.com;
+    
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    return 444;  # 关闭连接，不返回任何内容
+}</code></pre>
+            </div>
+        </section>
+
+        <section id="locations">
+            <h2>5. 路由与位置匹配</h2>
+            <p>Nginx 使用 location 块来匹配请求的 URI，并根据匹配结果处理不同的内容或逻辑。本章将介绍 location 块的语法和使用方法。</p>
+            
+            <h3 id="location-syntax">5.1 location 语法</h3>
+            <p>location 块的语法如下：</p>
+            <pre><code>location [ = | ~ | ~* | ^~ ] uri {
+    # 配置指令
+}</code></pre>
+            
+            <h4>5.1.1 匹配类型</h4>
+            <ul>
+                <li><code>=</code> - 精确匹配</li>
+                <li><code>~</code> - 区分大小写的正则匹配</li>
+                <li><code>~*</code> - 不区分大小写的正则匹配</li>
+                <li><code>^~</code> - 优先前缀匹配</li>
+            </ul>
+            
+            <h4>5.1.2 匹配优先级</h4>
+            <p>Nginx 按以下顺序选择匹配的 location 块：</p>
+            <ol>
+                <li>精确匹配（<code>=</code>）</li>
+                <li>优先前缀匹配（<code>^~</code>）</li>
+                <li>正则表达式匹配（<code>~</code> 或 <code>~*</code>），按照它们在配置文件中的出现顺序</li>
+                <li>前缀匹配，选择最长匹配</li>
+            </ol>
+            
+            <h3 id="location-priority">5.2 匹配优先级</h3>
+            <p>Nginx 按以下顺序选择匹配的 location 块：</p>
+            <ol>
+                <li>精确匹配（<code>=</code>）</li>
+                <li>优先前缀匹配（<code>^~</code>）</li>
+                <li>正则表达式匹配（<code>~</code> 或 <code>~*</code>），按照它们在配置文件中的出现顺序</li>
+                <li>前缀匹配，选择最长匹配</li>
+            </ol>
+            
+            <h3 id="try-files">5.3 try_files 指令</h3>
+            <p>try_files 指令用于按顺序尝试文件，并根据尝试结果处理请求。</p>
+            
+            <h4>5.3.1 基本语法</h4>
+            <pre><code>try_files file1 file2 ... fileN = code;</code></pre>
+            
+            <h4>5.3.2 使用示例</h4>
+            <pre><code>try_files $uri $uri/index.html $uri/index.htm =404;</code></pre>
+            
+            <h4>5.3.3 与 alias 指令结合使用</h4>
+            <pre><code>try_files $uri $uri/index.html $uri/index.htm =404;
+alias /path/to/files;</code></pre>
+            
+            <h4>5.3.4 与 return 指令结合使用</h4>
+            <pre><code>try_files $uri $uri/index.html $uri/index.htm =404;
+return 404;</code></pre>
+        </section>
+
+        <section id="static-files">
+            <h2>6. 静态文件服务</h2>
+            <p>Nginx 可以高效地提供静态文件服务，包括 HTML、CSS、JavaScript、图片等。本章将介绍如何配置静态文件服务。</p>
+            
+            <h3>6.1 配置静态文件服务器</h3>
+            <p>要配置静态文件服务器，需要使用 <code>root</code> 指令指定文件的根目录，并使用 <code>index</code> 指令指定默认文件。</p>
+            
+            <h4>6.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html;
+}</code></pre>
+            
+            <h4>6.1.2 处理多个默认文件</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html index.htm;
+}</code></pre>
+            
+            <h4>6.1.3 处理静态文件</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html;
+}</code></pre>
+            
+            <h3>6.2 配置缓存</h3>
+            <p>Nginx 可以使用 <code>expires</code> 指令来配置缓存策略，以减少对后端服务器的负载。</p>
+            
+            <h4>6.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html;
+    
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;
+    }
+}</code></pre>
+            
+            <h4>6.2.2 配置多个缓存策略</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html;
+    
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;
+    }
+    
+    location ~* \.(html|htm)$ {
+        expires 1h;
+    }
+}</code></pre>
+        </section>
+
+        <section id="proxy">
+            <h2>7. 反向代理</h2>
+            <p>Nginx 可以用作反向代理服务器，接收客户端请求并转发到后端服务器。本章将介绍如何配置反向代理。</p>
+            
+            <h3>7.1 配置反向代理</h3>
+            <p>要配置反向代理，需要使用 <code>proxy_pass</code> 指令将请求代理到后端服务器。</p>
+            
+            <h4>7.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>7.1.2 配置多个后端服务器</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>7.2 配置负载均衡</h3>
+            <p>Nginx 可以使用 <code>upstream</code> 指令来配置负载均衡，将请求分发到多个后端服务器。</p>
+            
+            <h4>7.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>7.2.2 配置多个后端服务器</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+        </section>
+
+        <section id="load-balancing">
+            <h2>8. 负载均衡</h2>
+            <p>Nginx 可以使用多种方式进行负载均衡，包括轮询、加权轮询、最少连接和 IP 哈希等。本章将介绍如何配置负载均衡。</p>
+            
+            <h3>8.1 配置轮询负载均衡</h3>
+            <p>Nginx 可以使用 <code>upstream</code> 指令来配置轮询负载均衡。</p>
+            
+            <h4>8.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>8.1.2 配置加权轮询</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>8.2 配置最少连接负载均衡</h3>
+            <p>Nginx 可以使用 <code>least_conn</code> 指令来配置最少连接负载均衡。</p>
+            
+            <h4>8.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>8.2.2 配置 IP 哈希负载均衡</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+        </section>
+
+        <section id="ssl">
+            <h2>9. HTTPS 配置</h2>
+            <p>Nginx 可以配置 HTTPS 服务器，处理 HTTPS 请求。本章将介绍如何配置 HTTPS 服务器。</p>
+            
+            <h3>9.1 配置 SSL</h3>
+            <p>要配置 SSL，需要使用 <code>ssl</code> 指令和相关配置。</p>
+            
+            <h4>9.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+}</code></pre>
+            
+            <h4>9.1.2 配置多个 SSL 证书</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert1.pem;
+    ssl_certificate_key /path/to/key1.pem;
+    
+    ssl_certificate /path/to/cert2.pem;
+    ssl_certificate_key /path/to/key2.pem;
+}</code></pre>
+            
+            <h3>9.2 配置 SSL 会话缓存</h3>
+            <p>Nginx 可以使用 <code>ssl_session_cache</code> 指令来配置 SSL 会话缓存。</p>
+            
+            <h4>9.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+    
+    ssl_session_cache shared:SSL:10m;
+}</code></pre>
+            
+            <h4>9.2.2 配置 SSL 会话缓存大小</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+    
+    ssl_session_cache shared:SSL:10m;
+}</code></pre>
+        </section>
+
+        <section id="optimization">
+            <h2>10. 性能优化</h2>
+            <p>Nginx 提供了多种配置选项来优化性能，包括调整工作进程数、缓存配置和连接超时等。本章将介绍如何优化 Nginx 性能。</p>
+            
+            <h3>10.1 调整工作进程数</h3>
+            <p>Nginx 可以使用 <code>worker_processes</code> 指令来调整工作进程数。</p>
+            
+            <h4>10.1.1 基本配置</h4>
+            <pre><code>worker_processes auto;   # 工作进程数，通常设置为 CPU 核心数</code></pre>
+            
+            <h4>10.1.2 配置多个工作进程</h4>
+            <pre><code>worker_processes 4;   # 配置多个工作进程</code></pre>
+            
+            <h3>10.2 配置缓存</h3>
+            <p>Nginx 可以使用 <code>proxy_cache</code> 指令来配置缓存。</p>
+            
+            <h4>10.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>10.2.2 配置缓存大小</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>10.3 配置连接超时</h3>
+            <p>Nginx 可以使用 <code>keepalive_timeout</code> 指令来配置连接超时。</p>
+            
+            <h4>10.3.1 基本配置</h4>
+            <pre><code>keepalive_timeout 65;   # 保持连接超时时间</code></pre>
+            
+            <h4>10.3.2 配置多个连接超时</h4>
+            <pre><code>keepalive_timeout 65;   # 保持连接超时时间</code></pre>
+        </section>
+
+        <section id="security">
+            <h2>11. 安全最佳实践</h2>
+            <p>Nginx 提供了多种安全配置选项，包括限制访问、配置访问控制和启用安全功能等。本章将介绍如何配置 Nginx 以提高安全性。</p>
+            
+            <h3>11.1 限制访问</h3>
+            <p>Nginx 可以使用 <code>allow</code> 和 <code>deny</code> 指令来限制访问。</p>
+            
+            <h4>11.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>11.1.2 配置访问控制</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>11.2 配置访问控制</h3>
+            <p>Nginx 可以使用 <code>allow</code> 和 <code>deny</code> 指令来限制访问。</p>
+            
+            <h4>11.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>11.2.2 配置访问控制</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>11.3 启用安全功能</h3>
+            <p>Nginx 可以使用 <code>ssl</code> 指令和相关配置来启用安全功能。</p>
+            
+            <h4>11.3.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+}</code></pre>
+            
+            <h4>11.3.2 配置 SSL</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    ssl on;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+}</code></pre>
+        </section>
+
+        <section id="use-cases">
+            <h2>12. 常见应用场景</h2>
+            <p>Nginx 可以用于多种应用场景，包括 Web 服务器、反向代理、负载均衡和 API 网关等。本章将介绍如何配置这些应用场景。</p>
+            
+            <h3>12.1 配置 Web 服务器</h3>
+            <p>要配置 Web 服务器，需要使用 <code>root</code> 指令指定文件的根目录，并使用 <code>index</code> 指令指定默认文件。</p>
+            
+            <h4>12.1.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html;
+}</code></pre>
+            
+            <h4>12.1.2 处理多个默认文件</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    root /var/www/example;
+    index index.html index.htm;
+}</code></pre>
+            
+            <h3>12.2 配置反向代理</h3>
+            <p>要配置反向代理，需要使用 <code>proxy_pass</code> 指令将请求代理到后端服务器。</p>
+            
+            <h4>12.2.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>12.2.2 配置多个后端服务器</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>12.3 配置负载均衡</h3>
+            <p>Nginx 可以使用 <code>upstream</code> 指令来配置负载均衡，将请求分发到多个后端服务器。</p>
+            
+            <h4>12.3.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>12.3.2 配置轮询负载均衡</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h3>12.4 配置 API 网关</h3>
+            <p>Nginx 可以用作 API 网关，将请求路由到相应的服务。</p>
+            
+            <h4>12.4.1 基本配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+            
+            <h4>12.4.2 配置多个后端服务器</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://backend_servers;
+    }
+}</code></pre>
+        </section>
+
+        <section id="basic-usage">
+            <h2>4. 基本用法</h2>
+            <p>掌握了 Nginx 的核心概念后，接下来我们将学习如何配置和使用 Nginx 来完成常见任务。</p>
+
+            <h3 id="static-content">4.1 静态内容服务</h3>
+            <p>Nginx 作为静态文件服务器非常高效，可以轻松处理 HTML、CSS、JavaScript、图片等文件：</p>
+
+            <h4>4.1.1 基本静态文件配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    # 网站根目录
+    root /var/www/example;
+    
+    # 默认索引文件
+    index index.html index.htm;
+    
+    # 静态文件缓存设置
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+}</code></pre>
+
+            <h4>4.1.2 try_files 指令</h4>
+            <p><code>try_files</code> 指令按顺序检查文件是否存在，并使用第一个找到的文件进行请求处理：</p>
+            <pre><code>location / {
+    try_files $uri $uri/ /index.html;
+}</code></pre>
+            <p>这个配置会：</p>
+            <ol>
+                <li>尝试提供与 URI 匹配的文件</li>
+                <li>如果找不到，则尝试将 URI 作为目录并寻找索引文件</li>
+                <li>如果仍找不到，则回退到 /index.html（适用于单页应用）</li>
+            </ol>
+
+            <h4>4.1.3 目录列表</h4>
+            <p>可以启用目录列表功能，当访问一个没有索引文件的目录时显示文件列表：</p>
+            <pre><code>location /downloads/ {
+    root /var/www/example;
+    autoindex on;
+    autoindex_exact_size off;  # 以可读格式显示文件大小
+    autoindex_localtime on;    # 显示本地时间
+}</code></pre>
+
+            <h4>4.1.4 文件访问权限控制</h4>
+            <p>可以限制对某些文件或目录的访问：</p>
+            <pre><code># 禁止访问隐藏文件
+location ~ /\. {
+    deny all;
+    return 404;
+}
+
+# 保护敏感文件
+location ~* \.(htaccess|htpasswd|ini|conf|txt)$ {
+    deny all;
+    return 404;
+}
+
+# 基于 IP 限制访问
+location /admin/ {
+    allow 192.168.1.0/24;
+    allow 10.0.0.0/8;
+    deny all;
+}</code></pre>
+
+            <h3 id="reverse-proxy">4.2 反向代理</h3>
+            <p>Nginx 作为反向代理可以将请求转发到后端服务器，是其最常见的应用场景之一。</p>
+
+            <h4>4.2.1 基本代理配置</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+
+            <div class="warning">
+                <p><strong>注意：</strong>在 <code>proxy_pass</code> 中，如果 URL 包含路径（如 <code>http://localhost:8080/app/</code>），则 location 匹配的部分会被替换成该路径。如果不含路径，则完整的原始 URI 会被追加。</p>
+            </div>
+
+            <h4>4.2.2 重要的代理头部</h4>
+            <ul>
+                <li><code>Host</code> - 确保后端服务器知道原始请求的域名</li>
+                <li><code>X-Real-IP</code> - 传递客户端的真实 IP</li>
+                <li><code>X-Forwarded-For</code> - 包含请求经过的所有代理 IP</li>
+                <li><code>X-Forwarded-Proto</code> - 原始请求的协议（HTTP 或 HTTPS）</li>
+            </ul>
+
+            <h4>4.2.3 代理超时设置</h4>
+            <pre><code>location /api/ {
+    proxy_pass http://backend_api;
+    
+    # 超时设置
+    proxy_connect_timeout 5s;     # 连接超时
+    proxy_send_timeout 60s;       # 发送超时
+    proxy_read_timeout 60s;       # 读取超时
+    
+    # 缓冲设置
+    proxy_buffering on;
+    proxy_buffer_size 8k;
+    proxy_buffers 8 8k;
+}</code></pre>
+
+            <h4>4.2.4 WebSocket 代理</h4>
+            <p>Nginx 可以代理 WebSocket 连接，需要设置特殊的头部和超时：</p>
+            <pre><code>location /ws/ {
+    proxy_pass http://websocket_backend;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    
+    # WebSocket 连接可能长时间保持，增加超时
+    proxy_read_timeout 3600s;
+}</code></pre>
+
+            <h3 id="load-balancing">4.3 负载均衡</h3>
+            <p>Nginx 可以在多个后端服务器之间分配请求，提供高可用和扩展性。</p>
+
+            <h4>4.3.1 定义上游服务器组</h4>
+            <pre><code>http {
+    # 定义上游服务器组
+    upstream backend_servers {
+        server 192.168.1.10:8080;
+        server 192.168.1.11:8080;
+        server 192.168.1.12:8080;
+    }
+    
+    server {
+        listen 80;
+        server_name example.com;
+        
+        location / {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
+}</code></pre>
+
+            <h4>4.3.2 负载均衡方法</h4>
+            <p>Nginx 支持多种负载均衡算法：</p>
+            <pre><code># 轮询（默认）
+upstream backend {
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+
+# 加权轮询
+upstream backend {
+    server 192.168.1.10:8080 weight=3;  # 该服务器接收 3/4 的请求
+    server 192.168.1.11:8080 weight=1;  # 该服务器接收 1/4 的请求
+}
+
+# IP 哈希（会话持久性）
+upstream backend {
+    ip_hash;
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+
+# 最少连接
+upstream backend {
+    least_conn;
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+
+# 通用哈希
+upstream backend {
+    hash $request_uri consistent;  # 基于 URI 的一致性哈希
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}</code></pre>
+
+            <h4>4.3.3 健康检查和服务器参数</h4>
+            <pre><code>upstream backend {
+    server 192.168.1.10:8080 max_fails=3 fail_timeout=30s;
+    server 192.168.1.11:8080 max_fails=3 fail_timeout=30s;
+    server 192.168.1.12:8080 backup;  # 备用服务器
+    server 192.168.1.13:8080 down;    # 标记为不可用
+}</code></pre>
+            <p>参数说明：</p>
+            <ul>
+                <li><code>max_fails</code> - 允许的最大失败次数</li>
+                <li><code>fail_timeout</code> - 在指定时间内达到最大失败次数后，服务器将被标记为不可用的时间</li>
+                <li><code>backup</code> - 备用服务器，仅在所有主服务器不可用时使用</li>
+                <li><code>down</code> - 标记服务器为永久不可用</li>
+                <li><code>weight</code> - 服务器权重，默认为 1</li>
+                <li><code>max_conns</code> - 服务器的最大并发连接数</li>
+            </ul>
+
+            <div class="note">
+                <p><strong>小知识：</strong>Nginx 开源版只支持被动健康检查（通过 max_fails 和 fail_timeout）。主动健康检查（定期探测后端服务器状态）需要 Nginx Plus 商业版。</p>
+            </div>
+
+            <h3 id="url-rewriting">4.4 URL 重写与重定向</h3>
+            <p>Nginx 提供了强大的 URL 重写功能，可以修改请求 URI 或将客户端重定向到不同的 URL。</p>
+
+            <h4>4.4.1 rewrite 指令</h4>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    # 基本重写：将请求从旧路径重写到新路径
+    rewrite ^/old-page\.html$ /new-page.html permanent;
+    
+    # 使用捕获组保留 URI 的一部分
+    rewrite ^/products/(\d+)$ /items/$1 last;
+    
+    # 处理尾部斜杠
+    rewrite ^/(.+)/$ /$1 permanent;
+    
+    # 多个重写规则
+    location /old-site/ {
+        rewrite ^/old-site/(.*)$ /new-site/$1 permanent;
+    }
+}</code></pre>
+
+            <h4>4.4.2 rewrite 标志</h4>
+            <ul>
+                <li><code>last</code> - 停止处理当前指令集并从头开始匹配新的 location</li>
+                <li><code>break</code> - 停止处理当前指令集但继续在当前 location 内处理</li>
+                <li><code>redirect</code> - 返回 302 临时重定向</li>
+                <li><code>permanent</code> - 返回 301 永久重定向</li>
+            </ul>
+
+            <h4>4.4.3 使用 return 指令</h4>
+            <p>对于简单重定向，<code>return</code> 指令比 <code>rewrite</code> 更高效：</p>
+            <pre><code># 永久重定向
+location /old-url {
+    return 301 https://example.com/new-url;
+}
+
+# 临时重定向
+location /temp-url {
+    return 302 https://example.com/temporary;
+}
+
+# 返回自定义状态和消息
+location /forbidden {
+    return 403 "Access Forbidden";
+}
+
+# 对整个站点强制使用 HTTPS
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}</code></pre>
+
+            <h4>4.4.4 if 条件判断</h4>
+            <p>Nginx 支持在 server 和 location 块中使用 if 条件：</p>
+            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    
+    # 基于查询参数重定向
+    if ($args ~* utm_source=newsletter) {
+        return 302 /landing-page;
+    }
+    
+    # 检查文件是否存在
+    if (!-f $request_filename) {
+        rewrite ^/(.*)$ /index.php?q=$1 last;
+    }
+    
+    # 基于 User-Agent 重写
+    if ($http_user_agent ~* "Googlebot") {
+        rewrite ^/(.*)$ /for-bots/$1 last;
+    }
+}</code></pre>
+
+            <div class="warning">
+                <p><strong>注意：</strong>Nginx 开发者不建议过度使用 if 指令，因为它在某些情况下可能导致不可预期的行为。尽可能使用 location 块或 try_files 指令代替。</p>
+            </div>
+
+            <h4>4.4.5 常见重写场景</h4>
+            <ul>
+                <li>强制 HTTPS：将 HTTP 请求重定向到 HTTPS</li>
+                <li>www/非 www 规范化：统一使用 www 或非 www 域名</li>
+                <li>旧网站结构重定向到新结构</li>
+                <li>为单页应用（SPA）提供回退页面</li>
+                <li>移动设备检测和重定向</li>
+                <li>语言/地区重定向</li>
+            </ul>
+
+            <h4>4.4.6 实际示例</h4>
+            <pre><code># 单页应用配置
+location / {
+    try_files $uri $uri/ /index.html;
+}
+
+# WordPress 漂亮链接
+location / {
+    try_files $uri $uri/ /index.php?$args;
+}
+
+# Laravel 应用
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+# 域名规范化 (非 www 到 www)
+server {
+    listen 80;
+    server_name example.com;
+    return 301 $scheme://www.example.com$request_uri;
+}
+
+# 强制 HTTPS
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}</code></pre>
+        </section>
+    </div>
+</body>
+</html> 

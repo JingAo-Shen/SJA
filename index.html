@@ -12,6 +12,9 @@
             --text-color: #333;
             --card-background: #ffffff;
             --hover-color: #E8F5E9;
+            --beginner-color: #4CAF50;
+            --intermediate-color: #FFC107;
+            --advanced-color: #F44336;
         }
 
         * {
@@ -53,6 +56,21 @@
             margin-bottom: 1rem;
         }
 
+        .category-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .category-description {
+            margin-bottom: 2rem;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
         .tutorial-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -66,6 +84,8 @@
             padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .tutorial-card:hover {
@@ -116,6 +136,60 @@
             background-color: var(--secondary-color);
         }
 
+        .difficulty-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.3rem 0.7rem;
+            color: white;
+            font-size: 0.8rem;
+            border-bottom-left-radius: 8px;
+        }
+
+        .beginner {
+            background-color: var(--beginner-color);
+        }
+
+        .intermediate {
+            background-color: var(--intermediate-color);
+        }
+
+        .advanced {
+            background-color: var(--advanced-color);
+        }
+
+        .prerequisites {
+            font-size: 0.85rem;
+            color: #777;
+            font-style: italic;
+            margin-top: 1rem;
+            border-top: 1px dashed #ddd;
+            padding-top: 0.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 0.7rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -136,155 +210,19 @@
         <div class="container">
             <h1>Java 学习教程</h1>
             <p class="subtitle">全面的 Java 技术学习资源</p>
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="搜索教程...">
+                <button onclick="searchTutorials()">搜索</button>
+            </div>
         </div>
     </header>
 
     <main class="container">
+        <h2 class="category-header">基础入门</h2>
+        <p class="category-description">开始您的 Java 学习之旅，掌握核心概念和基础知识。</p>
         <div class="tutorial-grid">
             <div class="tutorial-card">
-                <h2>Spring Boot 教程</h2>
-                <p>Spring Boot 是一个用于简化 Spring 应用开发的框架，它提供了自动配置、独立运行等特性。</p>
-                <ul>
-                    <li>Spring Boot 基础</li>
-                    <li>自动配置</li>
-                    <li>Web 开发</li>
-                    <li>数据访问</li>
-                    <li>安全配置</li>
-                </ul>
-                <a href="SpringBoot教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>Maven 教程</h2>
-                <p>Maven 是一个项目管理和构建自动化工具，用于 Java 项目的依赖管理和构建。</p>
-                <ul>
-                    <li>Maven 基础</li>
-                    <li>POM 文件</li>
-                    <li>依赖管理</li>
-                    <li>生命周期</li>
-                    <li>插件使用</li>
-                </ul>
-                <a href="Maven教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>Spring Boot Thymeleaf 教程</h2>
-                <p>Thymeleaf 是一个现代的服务器端 Java 模板引擎，与 Spring Boot 完美集成。</p>
-                <ul>
-                    <li>Thymeleaf 基础</li>
-                    <li>模板语法</li>
-                    <li>布局系统</li>
-                    <li>表单处理</li>
-                    <li>国际化支持</li>
-                </ul>
-                <a href="SpringBootThymeleaf教程/index.html">开始学习</a>
-            </div>
-            
-            <div class="tutorial-card">
-                <h2>SpringBoot缓存教程</h2>
-                <p>缓存是提高应用性能的重要手段，本教程介绍各种缓存技术和最佳实践。</p>
-                <ul>
-                    <li>Spring Boot 缓存概述</li>
-                    <li>快速入门</li>
-                    <li>缓存提供者</li>
-                    <li>缓存注解</li>
-                    <li>缓存配置</li>
-                    <li>缓存策略</li>
-                    <li>分布式缓存</li>
-                    <li>缓存监控</li>
-                    <li>最佳实践</li>
-                </ul>
-                <a href="SpringBoot缓存教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>Spring Security 教程</h2>
-                <p>Spring Security 是一个功能强大的安全框架，为 Spring 应用提供全面的安全解决方案。</p>
-                <ul>
-                    <li>认证机制</li>
-                    <li>授权控制</li>
-                    <li>安全配置</li>
-                    <li>OAuth2 集成</li>
-                    <li>JWT 支持</li>
-                </ul>
-                <a href="SpringSecurity教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>RabbitMQ 教程</h2>
-                <p>RabbitMQ 是一个开源的消息队列系统，用于实现应用程序之间的异步通信。</p>
-                <ul>
-                    <li>消息队列基础</li>
-                    <li>交换机类型</li>
-                    <li>队列绑定</li>
-                    <li>消息确认</li>
-                    <li>死信队列</li>
-                </ul>
-                <a href="RabbitMQ教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>Spring 框架教程</h2>
-                <p>Spring 框架是一个功能强大的 Java 开发框架，提供了全面的企业级应用开发支持。</p>
-                <ul>
-                    <li>IoC 容器</li>
-                    <li>AOP 编程</li>
-                    <li>Bean 管理</li>
-                    <li>依赖注入</li>
-                    <li>事务管理</li>
-                    <li>Spring MVC</li>
-                    <li>数据访问</li>
-                    <li>安全框架</li>
-                </ul>
-                <a href="Spring框架教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>Git 教程</h2>
-                <p>Git 是一个分布式版本控制系统，用于跟踪代码变更并支持团队协作开发。</p>
-                <ul>
-                    <li>Git 基础</li>
-                    <li>分支管理</li>
-                    <li>远程仓库</li>
-                    <li>工作流程</li>
-                    <li>高级技巧</li>
-                    <li>最佳实践</li>
-                    <li>问题解决</li>
-                </ul>
-                <a href="Git教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>MySQL 教程</h2>
-                <p>MySQL 是世界上最受欢迎的开源关系型数据库管理系统，提供了强大的数据存储和管理功能。</p>
-                <ul>
-                    <li>基础概念</li>
-                    <li>SQL 语句</li>
-                    <li>数据类型</li>
-                    <li>索引优化</li>
-                    <li>查询优化</li>
-                    <li>性能调优</li>
-                    <li>安全管理</li>
-                </ul>
-                <a href="MySQL教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <h2>MyBatis 教程</h2>
-                <p>MyBatis 是一款优秀的持久层框架，支持自定义 SQL、存储过程以及高级映射，并集成了 MyBatis Plus 增强功能。</p>
-                <ul>
-                    <li>基础配置</li>
-                    <li>XML 映射</li>
-                    <li>动态 SQL</li>
-                    <li>注解开发</li>
-                    <li>高级特性</li>
-                    <li>MyBatis Plus</li>
-                    <li>最佳实践</li>
-                </ul>
-                <a href="MyBatis教程/index.html">开始学习</a>
-            </div>
-            
-            <div class="tutorial-card">
+                <div class="difficulty-badge beginner">入门</div>
                 <h2>Java SE 教程</h2>
                 <p>Java SE 是 Java 平台标准版，提供了完整的 Java 核心 API，是学习 Java 编程的基础。</p>
                 <ul>
@@ -301,60 +239,248 @@
             </div>
 
             <div class="tutorial-card">
-                <h2>分布式架构</h2>
-                <p></p>
+                <div class="difficulty-badge beginner">入门</div>
+                <h2>Git 教程</h2>
+                <p>Git 是一个分布式版本控制系统，用于跟踪代码变更并支持团队协作开发。</p>
                 <ul>
-                    <li></li>
+                    <li>Git 基础</li>
+                    <li>分支管理</li>
+                    <li>远程仓库</li>
+                    <li>工作流程</li>
+                    <li>高级技巧</li>
+                    <li>最佳实践</li>
+                    <li>问题解决</li>
                 </ul>
-                <a href="分布式架构/index.html">开始学习</a>
+                <a href="Git教程/index.html">开始学习</a>
             </div>
 
             <div class="tutorial-card">
-                <h2>分布式缓存</h2>
-                <p></p>
+                <div class="difficulty-badge beginner">入门</div>
+                <h2>Maven 教程</h2>
+                <p>Maven 是一个项目管理和构建自动化工具，用于 Java 项目的依赖管理和构建。</p>
                 <ul>
-                    <li></li>
+                    <li>Maven 基础</li>
+                    <li>POM 文件</li>
+                    <li>依赖管理</li>
+                    <li>生命周期</li>
+                    <li>插件使用</li>
                 </ul>
-                <a href="分布式缓存/index.html">开始学习</a>
+                <a href="Maven教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE 基础</div>
             </div>
 
             <div class="tutorial-card">
-                <h2>分布式锁</h2>
-                <p></p>
+                <div class="difficulty-badge beginner">入门</div>
+                <h2>MySQL 教程</h2>
+                <p>MySQL 是世界上最受欢迎的开源关系型数据库管理系统，提供了强大的数据存储和管理功能。</p>
                 <ul>
-                    <li></li>
+                    <li>基础概念</li>
+                    <li>SQL 语句</li>
+                    <li>数据类型</li>
+                    <li>索引优化</li>
+                    <li>查询优化</li>
+                    <li>性能调优</li>
+                    <li>安全管理</li>
                 </ul>
-                <a href="分布式锁/index.html">开始学习</a>
+                <a href="MySQL教程/index.html">开始学习</a>
+            </div>
+        </div>
+
+        <h2 class="category-header">框架与开发</h2>
+        <p class="category-description">学习主流的 Java 开发框架，提高开发效率和代码质量。</p>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Spring 框架教程</h2>
+                <p>Spring 框架是一个功能强大的 Java 开发框架，提供了全面的企业级应用开发支持。</p>
+                <ul>
+                    <li>IoC 容器</li>
+                    <li>AOP 编程</li>
+                    <li>Bean 管理</li>
+                    <li>依赖注入</li>
+                    <li>事务管理</li>
+                    <li>Spring MVC</li>
+                    <li>数据访问</li>
+                    <li>安全框架</li>
+                </ul>
+                <a href="Spring框架教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE, Maven</div>
             </div>
 
             <div class="tutorial-card">
-                <h2>排行榜</h2>
-                <p></p>
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Spring Boot 教程</h2>
+                <p>Spring Boot 是一个用于简化 Spring 应用开发的框架，它提供了自动配置、独立运行等特性。</p>
                 <ul>
-                    <li></li>
+                    <li>Spring Boot 基础</li>
+                    <li>自动配置</li>
+                    <li>Web 开发</li>
+                    <li>数据访问</li>
+                    <li>安全配置</li>
                 </ul>
-                <a href="排行榜/index.html">开始学习</a>
+                <a href="SpringBoot教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring 框架</div>
             </div>
 
             <div class="tutorial-card">
-                <h2>秒杀</h2>
-                <p></p>
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>MyBatis 教程</h2>
+                <p>MyBatis 是一款优秀的持久层框架，支持自定义 SQL、存储过程以及高级映射，并集成了 MyBatis Plus 增强功能。</p>
                 <ul>
-                    <li></li>
+                    <li>基础配置</li>
+                    <li>XML 映射</li>
+                    <li>动态 SQL</li>
+                    <li>注解开发</li>
+                    <li>高级特性</li>
+                    <li>MyBatis Plus</li>
+                    <li>最佳实践</li>
                 </ul>
-                <a href="秒杀/index.html">开始学习</a>
+                <a href="MyBatis教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE, MySQL</div>
             </div>
-            
+
             <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Spring Boot Thymeleaf 教程</h2>
+                <p>Thymeleaf 是一个现代的服务器端 Java 模板引擎，与 Spring Boot 完美集成。</p>
+                <ul>
+                    <li>Thymeleaf 基础</li>
+                    <li>模板语法</li>
+                    <li>布局系统</li>
+                    <li>表单处理</li>
+                    <li>国际化支持</li>
+                </ul>
+                <a href="SpringBootThymeleaf教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring Boot</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Spring Boot 支付宝教程</h2>
+                <p>集成支付宝支付功能到 Spring Boot 应用中，包括沙箱环境配置、支付接口实现和回调处理。</p>
+                <ul>
+                    <li>支付宝沙箱环境配置</li>
+                    <li>支付宝 SDK 整合</li>
+                    <li>支付接口实现</li>
+                    <li>同步回调与异步通知</li>
+                    <li>订单查询与支付验证</li>
+                    <li>生产环境部署建议</li>
+                </ul>
+                <a href="SpringBoot支付宝教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring Boot</div>
+            </div>
+        </div>
+
+        <h2 class="category-header">安全与性能</h2>
+        <p class="category-description">学习保障应用安全与提升系统性能的关键技术。</p>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Spring Security 教程</h2>
+                <p>Spring Security 是一个功能强大的安全框架，为 Spring 应用提供全面的安全解决方案。</p>
+                <ul>
+                    <li>认证机制</li>
+                    <li>授权控制</li>
+                    <li>安全配置</li>
+                    <li>OAuth2 集成</li>
+                    <li>JWT 支持</li>
+                </ul>
+                <a href="SpringSecurity教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring Boot</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Web安全教程</h2>
+                <p>全面的Web安全指南，为后端开发人员讲解常见安全漏洞和防护策略，帮助构建更安全的应用程序。</p>
+                <ul>
+                    <li>OWASP Top 10安全风险</li>
+                    <li>身份认证与授权</li>
+                    <li>安全编码最佳实践</li>
+                    <li>SQL注入与XSS防护</li>
+                    <li>数据加密与保护</li>
+                    <li>API安全策略</li>
+                    <li>安全测试与部署</li>
+                </ul>
+                <a href="Web安全教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
                 <h2>缓存教程</h2>
-                <p></p>
+                <p>缓存是提高应用响应速度和减轻数据库负担的重要技术，包括本地缓存和远程缓存的实现与应用。</p>
                 <ul>
-                    <li></li>
+                    <li>缓存基本原理</li>
+                    <li>Java 缓存 API</li>
+                    <li>Ehcache 实现</li>
+                    <li>Caffeine 缓存</li>
+                    <li>缓存策略与模式</li>
+                    <li>缓存一致性问题</li>
                 </ul>
                 <a href="缓存教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE</div>
             </div>
-            
+
             <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>SpringBoot缓存教程</h2>
+                <p>缓存是提高应用性能的重要手段，本教程介绍各种缓存技术和最佳实践。</p>
+                <ul>
+                    <li>Spring Boot 缓存概述</li>
+                    <li>快速入门</li>
+                    <li>缓存提供者</li>
+                    <li>缓存注解</li>
+                    <li>缓存配置</li>
+                    <li>缓存策略</li>
+                    <li>分布式缓存</li>
+                    <li>缓存监控</li>
+                    <li>最佳实践</li>
+                </ul>
+                <a href="SpringBoot缓存教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring Boot, 缓存基础</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>HTTPS 教程</h2>
+                <p>HTTPS 是 HTTP 协议的安全版本，通过加密与证书机制保障网络通信的安全性。</p>
+                <ul>
+                    <li>HTTPS 协议原理</li>
+                    <li>加密算法基础</li>
+                    <li>数字证书与 PKI</li>
+                    <li>TLS/SSL 握手过程</li>
+                    <li>安全特性与防御</li>
+                    <li>常见攻击与防御</li>
+                    <li>部署与最佳实践</li>
+                </ul>
+                <a href="HTTPS教程/index.html">开始学习</a>
+            </div>
+        </div>
+
+        <h2 class="category-header">Web 服务与工具</h2>
+        <p class="category-description">学习构建和调试 Web 应用的关键工具和服务。</p>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>Nginx 教程</h2>
+                <p>Nginx 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。</p>
+                <ul>
+                    <li>Nginx 基础概念</li>
+                    <li>安装与配置</li>
+                    <li>虚拟主机配置</li>
+                    <li>反向代理与负载均衡</li>
+                    <li>静态资源处理</li>
+                    <li>HTTPS 配置</li>
+                    <li>性能优化</li>
+                    <li>安全最佳实践</li>
+                </ul>
+                <a href="Nginx教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：了解基本的 Web 知识</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
                 <h2>Fiddler 教程</h2>
                 <p>Fiddler 是一个强大的 HTTP 调试代理工具，用于捕获、检查和修改 HTTP/HTTPS 请求和响应。</p>
                 <ul>
@@ -367,8 +493,139 @@
                     <li>高级功能</li>
                 </ul>
                 <a href="Fiddler教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：了解基本的 HTTP 协议</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">进阶</div>
+                <h2>RabbitMQ 教程</h2>
+                <p>RabbitMQ 是一个开源的消息队列系统，用于实现应用程序之间的异步通信。</p>
+                <ul>
+                    <li>消息队列基础</li>
+                    <li>交换机类型</li>
+                    <li>队列绑定</li>
+                    <li>消息确认</li>
+                    <li>死信队列</li>
+                </ul>
+                <a href="RabbitMQ教程/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java SE, Spring 框架基础</div>
+            </div>
+        </div>
+
+        <h2 class="category-header">分布式系统</h2>
+        <p class="category-description">深入学习构建可扩展、高可用分布式系统的核心技术。</p>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2>分布式架构</h2>
+                <p>分布式架构是构建大规模可扩展系统的基础，包括微服务、服务发现、配置中心等关键技术。</p>
+                <ul>
+                    <li>分布式理论基础</li>
+                    <li>CAP 与 BASE 理论</li>
+                    <li>微服务架构</li>
+                    <li>服务发现与注册</li>
+                    <li>配置中心</li>
+                    <li>API 网关</li>
+                    <li>服务熔断与降级</li>
+                    <li>分布式事务</li>
+                </ul>
+                <a href="分布式架构/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Spring Boot, 微服务基础</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2>分布式缓存</h2>
+                <p>分布式缓存解决了大规模系统的数据访问性能问题，提供高可用、可扩展的缓存服务。</p>
+                <ul>
+                    <li>Redis 基础与高级特性</li>
+                    <li>缓存集群设计</li>
+                    <li>缓存一致性策略</li>
+                    <li>数据分片与复制</li>
+                    <li>缓存穿透与雪崩防护</li>
+                    <li>热点数据处理</li>
+                    <li>监控与运维</li>
+                </ul>
+                <a href="分布式缓存/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：缓存教程, Spring Boot</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2>分布式锁</h2>
+                <p>分布式锁是保障分布式系统中数据一致性和处理并发控制的关键机制。</p>
+                <ul>
+                    <li>分布式锁基本原理</li>
+                    <li>基于 Redis 的分布式锁</li>
+                    <li>基于 Zookeeper 的分布式锁</li>
+                    <li>基于数据库的分布式锁</li>
+                    <li>锁的可重入性实现</li>
+                    <li>死锁防护策略</li>
+                    <li>性能优化技巧</li>
+                </ul>
+                <a href="分布式锁/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：Java 多线程, Redis/Zookeeper</div>
+            </div>
+        </div>
+
+        <h2 class="category-header">高并发场景</h2>
+        <p class="category-description">学习处理高并发、大流量互联网应用的专业技术。</p>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2>秒杀</h2>
+                <p>秒杀系统是典型的高并发场景，需要处理短时间内的大量用户请求，对系统架构提出极高要求。</p>
+                <ul>
+                    <li>秒杀系统设计原则</li>
+                    <li>前端限流策略</li>
+                    <li>缓存预热与库存控制</li>
+                    <li>消息队列异步处理</li>
+                    <li>分布式锁应用</li>
+                    <li>防刷与风控</li>
+                    <li>性能优化最佳实践</li>
+                </ul>
+                <a href="秒杀/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：分布式缓存, 分布式锁, RabbitMQ</div>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2>排行榜</h2>
+                <p>排行榜是互联网应用中常见的功能，需要高效处理大量数据的实时排序与展示。</p>
+                <ul>
+                    <li>排行榜系统设计</li>
+                    <li>基于 Redis 的实现</li>
+                    <li>实时计算与更新策略</li>
+                    <li>大数据量处理技巧</li>
+                    <li>分区与分片处理</li>
+                    <li>数据一致性保障</li>
+                    <li>性能优化与扩展</li>
+                </ul>
+                <a href="排行榜/index.html">开始学习</a>
+                <div class="prerequisites">先修课程：分布式缓存, Redis 高级特性</div>
             </div>
         </div>
     </main>
+
+    <script>
+        function searchTutorials() {
+            const searchInput = document.getElementById('search').value.toLowerCase();
+            const tutorialCards = document.querySelectorAll('.tutorial-card');
+            
+            tutorialCards.forEach(card => {
+                const title = card.querySelector('h2').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                const listItems = Array.from(card.querySelectorAll('li')).map(li => li.textContent.toLowerCase());
+                
+                const content = title + ' ' + description + ' ' + listItems.join(' ');
+                
+                if (content.includes(searchInput) || searchInput === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

@@ -214,7 +214,7 @@
                 <li><a href="#introduction">1. Fiddler 简介</a></li>
                 <li><a href="#installation">2. 安装与配置</a></li>
                 <li><a href="#basic-usage">3. 基本使用</a></li>
-                <li><a href="#http-capture">4. HTTP/HTTPS 请求捕获与分析</a></li>
+                <li><a href="#http-analysis">4. HTTP/HTTPS 请求分析</a></li>
                 <li><a href="#request-manipulation">5. 请求拦截与修改</a></li>
                 <li><a href="#performance">6. 性能分析</a></li>
                 <li><a href="#common-scenarios">7. 常见应用场景</a></li>
@@ -255,144 +255,954 @@
 
         <section id="http-analysis">
             <h2>4. HTTP/HTTPS 请求分析</h2>
-            <p>本节将详细介绍如何使用 Fiddler 分析 HTTP 和 HTTPS 请求与响应。</p>
+            <p>本章将深入介绍如何使用Fiddler分析HTTP/HTTPS请求和响应，帮助您理解Web通信的细节，发现潜在问题，并优化应用性能。</p>
+
+            <h3>4.1 HTTP请求和响应结构</h3>
+            <p>在深入分析之前，先了解HTTP请求和响应的基本结构：</p>
             
-            <h3>4.1 检查器面板</h3>
-            <p>选择一个会话后，右侧的检查器面板提供了多种查看请求和响应的方式：</p>
+            <h4>4.1.1 HTTP请求结构</h4>
+            <p>一个完整的HTTP请求包含以下部分：</p>
             <ul>
-                <li><strong>Statistics</strong>：显示性能统计信息，如时间轴、速度等</li>
-                <li><strong>Inspectors</strong>：提供多种格式查看请求和响应</li>
-                <li><strong>AutoResponder</strong>：配置自动响应规则</li>
-                <li><strong>Composer</strong>：创建和发送自定义请求</li>
+                <li><strong>请求行</strong>：包含请求方法（GET、POST等）、请求URL和HTTP协议版本</li>
+                <li><strong>请求头</strong>：包含客户端信息、接受的内容类型、cookie等</li>
+                <li><strong>空行</strong>：分隔请求头和请求体</li>
+                <li><strong>请求体</strong>：POST、PUT等方法携带的数据</li>
             </ul>
             
-            <h3>4.2 常用检查器标签</h3>
-            <h4>4.2.1 Headers 标签</h4>
-            <p>显示 HTTP 请求和响应的所有头信息：</p>
+            <div class="code-block">
+                <pre>
+GET /api/users HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0
+Accept: application/json
+Cookie: session=abc123
+
+</pre>
+            </div>
+            
+            <h4>4.1.2 HTTP响应结构</h4>
+            <p>一个完整的HTTP响应包含以下部分：</p>
             <ul>
-                <li>请求方法、URL、HTTP 版本</li>
-                <li>状态码和原因短语</li>
-                <li>所有请求和响应头</li>
-                <li>可查看原始格式或分类格式</li>
+                <li><strong>状态行</strong>：包含HTTP协议版本、状态码和状态消息</li>
+                <li><strong>响应头</strong>：包含服务器信息、内容类型、长度等</li>
+                <li><strong>空行</strong>：分隔响应头和响应体</li>
+                <li><strong>响应体</strong>：实际返回的内容（HTML、JSON、图片等）</li>
             </ul>
             
-            <h4>4.2.2 WebForms/JSON/XML 标签</h4>
-            <p>根据内容类型自动格式化请求或响应体：</p>
+            <div class="code-block">
+                <pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 234
+Cache-Control: max-age=3600
+
+{"id": 123, "name": "John Doe", "email": "john@example.com"}
+</pre>
+            </div>
+            
+            <h3>4.2 详细分析HTTP请求</h3>
+            <p>Fiddler提供了多种工具来分析HTTP请求的各个方面：</p>
+            
+            <h4>4.2.1 分析请求方法和URL</h4>
+            <p>在会话列表中，您可以查看每个请求的方法（GET、POST等）和URL。双击会话打开检查器，在请求选项卡下可以查看完整的请求信息。</p>
+            <p>常见的HTTP请求方法及其用途：</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>方法</th>
+                        <th>用途</th>
+                        <th>是否包含请求体</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td>获取资源</td>
+                        <td>否</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>创建资源</td>
+                        <td>是</td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>更新资源</td>
+                        <td>是</td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>删除资源</td>
+                        <td>通常否</td>
+                    </tr>
+                    <tr>
+                        <td>PATCH</td>
+                        <td>部分更新资源</td>
+                        <td>是</td>
+                    </tr>
+                    <tr>
+                        <td>HEAD</td>
+                        <td>仅获取响应头</td>
+                        <td>否</td>
+                    </tr>
+                    <tr>
+                        <td>OPTIONS</td>
+                        <td>获取支持的方法</td>
+                        <td>否</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h4>4.2.2 分析请求头</h4>
+            <p>请求头包含有关客户端和请求的重要信息。在Fiddler的检查器中，选择Headers标签页查看格式化的请求头。重要的请求头包括：</p>
             <ul>
-                <li>WebForms：显示表单数据，如 POST 参数</li>
-                <li>JSON：格式化并语法高亮 JSON 数据</li>
-                <li>XML：格式化并语法高亮 XML 数据</li>
-            </ul>
-            
-            <h4>4.2.3 Raw 标签</h4>
-            <p>显示原始的请求或响应数据，包括头和体，不进行格式化。</p>
-            
-            <h4>4.2.4 HexView 标签</h4>
-            <p>以十六进制格式显示请求或响应，对于分析二进制数据很有用。</p>
-            
-            <h3>4.3 性能分析</h3>
-            <p>Fiddler 提供多种方式分析请求性能：</p>
-            <ul>
-                <li><strong>Timeline</strong>：查看会话列表中的时间轴栏</li>
-                <li><strong>Statistics 标签</strong>：详细查看单个请求的时间分配</li>
-                <li><strong>Web Sessions 面板</strong>：查看每个请求的持续时间</li>
+                <li><strong>User-Agent</strong>：浏览器或客户端标识</li>
+                <li><strong>Accept</strong>：接受的内容类型（如text/html、application/json）</li>
+                <li><strong>Authorization</strong>：身份验证信息</li>
+                <li><strong>Cookie</strong>：客户端存储的Cookie</li>
+                <li><strong>Referer</strong>：来源页面的URL</li>
+                <li><strong>Content-Type</strong>：请求体的MIME类型（用于POST/PUT等）</li>
+                <li><strong>Content-Length</strong>：请求体的长度</li>
+                <li><strong>Cache-Control</strong>：缓存控制指令</li>
             </ul>
             
             <div class="tip">
-                <p><strong>提示</strong>：使用 Statistics 标签可以查看详细的时间分解，如 DNS 解析时间、连接时间、发送时间、服务器处理时间和接收时间等。</p>
+                <p><strong>小技巧：</strong> 右键点击请求头可以复制单个头或所有头信息，方便与团队分享或记录问题。</p>
             </div>
             
-            <h3>4.4 查看 HTTPS 解密内容</h3>
-            <p>在配置了 HTTPS 解密后，Fiddler 会显示解密的内容：</p>
+            <h4>4.2.3 分析请求参数</h4>
+            <p>查看和分析请求参数的方法：</p>
+            <ul>
+                <li><strong>URL查询参数</strong>：在Inspectors选项卡的WebForms视图中可以看到格式化的URL参数</li>
+                <li><strong>POST数据</strong>：对于表单提交，同样可以在WebForms视图中查看</li>
+                <li><strong>JSON数据</strong>：在JSON视图中，可以查看格式化的JSON请求体</li>
+                <li><strong>XML数据</strong>：在XML视图中，可以查看格式化的XML请求体</li>
+            </ul>
+            
+            <h4>4.2.4 分析Cookie</h4>
+            <p>Cookie是跟踪用户会话和状态的重要机制。在Inspectors选项卡中：</p>
             <ol>
-                <li>确认 HTTPS 流量在会话列表中显示为 HTTPS 而非 CONNECT 隧道</li>
-                <li>选择 HTTPS 会话，在检查器面板中查看解密的内容</li>
-                <li>查看 Headers 标签可以看到加密前的实际 HTTP 头</li>
-                <li>查看适当的标签（JSON、WebForms、Images 等）可以看到解密的内容</li>
+                <li>选择<strong>Headers</strong>视图，查看Cookie请求头</li>
+                <li>使用<strong>Cookies</strong>视图（如果可用），查看解析后的各个Cookie及其值</li>
+            </ol>
+            
+            <h3>4.3 详细分析HTTP响应</h3>
+            <p>同样，Fiddler提供多种工具来分析服务器响应：</p>
+            
+            <h4>4.3.1 分析状态码</h4>
+            <p>HTTP状态码指示请求的结果。常见状态码及其含义：</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>状态码</th>
+                        <th>类别</th>
+                        <th>描述</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2xx</td>
+                        <td>成功</td>
+                        <td>请求成功处理（200 OK, 201 Created等）</td>
+                    </tr>
+                    <tr>
+                        <td>3xx</td>
+                        <td>重定向</td>
+                        <td>需要进一步操作（301 Moved, 302 Found等）</td>
+                    </tr>
+                    <tr>
+                        <td>4xx</td>
+                        <td>客户端错误</td>
+                        <td>请求错误（400 Bad Request, 404 Not Found等）</td>
+                    </tr>
+                    <tr>
+                        <td>5xx</td>
+                        <td>服务器错误</td>
+                        <td>服务器处理错误（500 Internal Server Error等）</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>在Fiddler中，会话列表的Result列显示状态码，不同状态码类别以不同颜色显示，方便快速识别问题。</p>
+            
+            <h4>4.3.2 分析响应头</h4>
+            <p>响应头包含有关服务器和响应的重要信息。重要的响应头包括：</p>
+            <ul>
+                <li><strong>Content-Type</strong>：响应体的MIME类型</li>
+                <li><strong>Content-Length</strong>：响应体的长度</li>
+                <li><strong>Cache-Control</strong>：缓存控制指令</li>
+                <li><strong>Set-Cookie</strong>：设置客户端Cookie</li>
+                <li><strong>Server</strong>：服务器软件信息</li>
+                <li><strong>Date</strong>：响应生成时间</li>
+                <li><strong>Last-Modified</strong>：资源最后修改时间</li>
+                <li><strong>ETag</strong>：资源的标识符，用于缓存验证</li>
+            </ul>
+            
+            <h4>4.3.3 分析响应内容</h4>
+            <p>根据响应的Content-Type，Fiddler提供不同的查看方式：</p>
+            <ul>
+                <li><strong>TextView</strong>：以文本形式查看响应体</li>
+                <li><strong>WebView</strong>：用内置浏览器渲染HTML响应</li>
+                <li><strong>ImageView</strong>：显示图片响应</li>
+                <li><strong>HexView</strong>：以十六进制查看二进制数据</li>
+                <li><strong>JSON/XML</strong>：格式化显示JSON或XML数据</li>
+                <li><strong>Auth</strong>：分析授权信息</li>
+            </ul>
+            
+            <div class="tip">
+                <p><strong>小技巧：</strong> 对于JSON响应，使用JSON视图可以展开/折叠节点，方便查看复杂的数据结构。</p>
+            </div>
+            
+            <h3>4.4 HTTPS解密分析</h3>
+            <p>启用HTTPS解密后，Fiddler可以检查加密的HTTPS流量：</p>
+            
+            <h4>4.4.1 HTTPS解密原理</h4>
+            <p>Fiddler的HTTPS解密使用"中间人"技术：</p>
+            <ol>
+                <li>Fiddler生成并安装自签名根证书</li>
+                <li>当浏览器请求HTTPS站点时，Fiddler：
+                    <ul>
+                        <li>与服务器建立安全连接</li>
+                        <li>使用自己的证书与浏览器建立安全连接</li>
+                        <li>在两个连接之间转发数据，同时查看解密后的内容</li>
+                    </ul>
+                </li>
             </ol>
             
             <div class="warning">
-                <p><strong>警告</strong>：解密 HTTPS 流量可能违反某些应用程序的使用条款。在生产环境或处理敏感数据时要特别谨慎。</p>
+                <p><strong>注意：</strong> HTTPS解密可能违反某些组织的安全政策。在生产环境中使用前，请确保获得适当授权。</p>
+            </div>
+            
+            <h4>4.4.2 验证HTTPS解密是否有效</h4>
+            <p>确认HTTPS解密工作正常的方法：</p>
+            <ol>
+                <li>访问任何HTTPS网站（如https://www.google.com）</li>
+                <li>在Fiddler中，确认可以看到会话的完整详情，包括请求和响应的内容</li>
+                <li>如果只能看到连接信息但看不到内容，则HTTPS解密可能未正确配置</li>
+            </ol>
+            
+            <h3>4.5 常见HTTP问题分析</h3>
+            <p>使用Fiddler可以发现和诊断各种常见的HTTP问题：</p>
+            
+            <h4>4.5.1 404错误（未找到）</h4>
+            <p>检查URL是否正确，确认资源路径无误。常见原因：</p>
+            <ul>
+                <li>URL拼写错误</li>
+                <li>资源已移动或删除</li>
+                <li>服务器配置问题</li>
+            </ul>
+            
+            <h4>4.5.2 500错误（服务器错误）</h4>
+            <p>检查服务器端是否有异常。常见原因：</p>
+            <ul>
+                <li>服务器代码运行错误</li>
+                <li>数据库连接问题</li>
+                <li>服务器配置错误</li>
+            </ul>
+            <p>查看响应体可能包含的错误信息，这对调试非常有帮助。</p>
+            
+            <h4>4.5.3 302/301重定向链</h4>
+            <p>过多的重定向会影响性能。使用Fiddler的Timeline视图跟踪重定向链，确认是否有不必要的重定向。</p>
+            
+            <h4>4.5.4 CORS问题</h4>
+            <p>跨域资源共享(CORS)问题常见于前端开发。查找响应中的Access-Control-Allow-Origin等头信息，确认服务器是否正确配置了CORS。</p>
+            
+            <h4>4.5.5 Cookie问题</h4>
+            <p>会话跟踪和认证问题常与Cookie相关。检查：</p>
+            <ul>
+                <li>Cookie是否正确设置</li>
+                <li>域和路径设置是否正确</li>
+                <li>Secure和HttpOnly标志是否适当设置</li>
+                <li>SameSite属性是否配置</li>
+            </ul>
+            
+            <h3>4.6 实用分析技巧</h3>
+            
+            <h4>4.6.1 对比会话</h4>
+            <p>同时分析两个会话可以发现差异：</p>
+            <ol>
+                <li>按住Ctrl键选择两个会话</li>
+                <li>右键点击，选择"Compare"</li>
+                <li>Fiddler将显示两个会话的差异</li>
+            </ol>
+            
+            <h4>4.6.2 查找缺失的资源</h4>
+            <p>要查找页面加载过程中缺失的资源：</p>
+            <ol>
+                <li>在过滤器中输入<code>result:404</code></li>
+                <li>查看结果，找出所有404错误</li>
+            </ol>
+            
+            <h4>4.6.3 查找慢请求</h4>
+            <p>识别影响性能的慢请求：</p>
+            <ol>
+                <li>在会话列表中点击"Duration"列，按耗时排序</li>
+                <li>分析耗时较长的请求，查找性能瓶颈</li>
+            </ol>
+            
+            <h4>4.6.4 分析请求时序</h4>
+            <p>使用Timeline视图分析请求的时间顺序和依赖关系：</p>
+            <ol>
+                <li>在Fiddler主界面中，选择<strong>View > Timeline</strong></li>
+                <li>观察请求的瀑布图，了解加载顺序和时间分布</li>
+            </ol>
+            
+            <div class="practice">
+                <h4>实践练习</h4>
+                <p>尝试分析一个复杂网站（如新闻网站）的首页加载过程：</p>
+                <ol>
+                    <li>清除Fiddler会话列表</li>
+                    <li>访问目标网站</li>
+                    <li>观察捕获的请求数量、类型和大小</li>
+                    <li>分析关键请求的响应时间</li>
+                    <li>识别可能的优化机会（如合并资源、启用压缩等）</li>
+                </ol>
             </div>
         </section>
 
-        <section id="request-modification">
+        <!-- 请求拦截与修改 -->
+        <section id="request-manipulation">
             <h2>5. 请求拦截与修改</h2>
-            <p>本节将介绍如何使用 Fiddler 拦截和修改 HTTP/HTTPS 请求和响应，这是 Fiddler 最强大的功能之一。</p>
-            
-            <h3>5.1 使用 AutoResponder</h3>
-            <p>AutoResponder 允许您定义规则来拦截特定请求并返回自定义响应：</p>
+            <p>Fiddler最强大的功能之一是能够拦截并修改HTTP请求和响应。本章将介绍如何使用这些功能来测试、调试和优化Web应用程序。</p>
+
+            <h3>5.1 使用AutoResponder</h3>
+            <p>AutoResponder允许您为特定请求设置自动响应，无需实际发送请求到服务器。</p>
+
+            <h4>5.1.1 启用AutoResponder</h4>
             <ol>
-                <li>切换到右侧的 AutoResponder 标签</li>
-                <li>勾选 "Enable rules" 和 "Unmatched requests pass through"</li>
-                <li>点击 "Add Rule" 或将会话从列表拖到 AutoResponder 区域</li>
-                <li>定义匹配规则（可以使用精确匹配或正则表达式）</li>
-                <li>指定响应动作（如本地文件、内置响应或保存的会话）</li>
+                <li>在Fiddler右侧面板中，选择<strong>AutoResponder</strong>标签</li>
+                <li>勾选<strong>Enable automatic responses</strong></li>
+                <li>（可选）勾选<strong>Unmatched requests pass through</strong>，这样未匹配的请求会正常发送到服务器</li>
+            </ol>
+
+            <h4>5.1.2 创建规则</h4>
+            <p>创建自动响应规则的步骤：</p>
+            <ol>
+                <li>点击<strong>Add Rule</strong>按钮</li>
+                <li>在第一个输入框中输入匹配规则（可以使用精确URL或通配符模式）</li>
+                <li>在第二个输入框中选择或输入响应动作</li>
+                <li>点击<strong>Save</strong>保存规则</li>
+            </ol>
+
+            <h4>5.1.3 常用响应动作</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>动作</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>http://localsite/file.ext</code></td>
+                        <td>使用另一个URL的响应</td>
+                    </tr>
+                    <tr>
+                        <td><code>C:\path\to\file.ext</code></td>
+                        <td>使用本地文件作为响应</td>
+                    </tr>
+                    <tr>
+                        <td><code>*delay:1000</code></td>
+                        <td>延迟响应1000毫秒</td>
+                    </tr>
+                    <tr>
+                        <td><code>*bps:56000</code></td>
+                        <td>限制带宽为56kbps</td>
+                    </tr>
+                    <tr>
+                        <td><code>*drop</code></td>
+                        <td>丢弃连接</td>
+                    </tr>
+                    <tr>
+                        <td><code>*reset</code></td>
+                        <td>重置连接</td>
+                    </tr>
+                    <tr>
+                        <td><code>*404</code></td>
+                        <td>返回404状态码</td>
+                    </tr>
+                    <tr>
+                        <td><code>*string:Hello, World!</code></td>
+                        <td>返回文本字符串</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>5.1.4 使用现有会话创建规则</h4>
+            <p>更简单的方法是基于已捕获的会话创建规则：</p>
+            <ol>
+                <li>在会话列表中找到您想要模拟的响应</li>
+                <li>将其拖放到AutoResponder标签面板中</li>
+                <li>编辑匹配规则（如果需要）</li>
+                <li>点击<strong>Save</strong>保存规则</li>
+            </ol>
+
+            <div class="tip">
+                <p><strong>小技巧：</strong> 通过右键点击规则并选择<strong>Edit Response</strong>，您可以修改缓存的响应内容。这对于测试不同响应内容非常有用。</p>
+            </div>
+
+            <h4>5.1.5 AutoResponder的应用场景</h4>
+            <ul>
+                <li><strong>前端开发</strong>：将API请求重定向到本地模拟数据</li>
+                <li><strong>测试错误处理</strong>：模拟服务器错误或慢响应</li>
+                <li><strong>性能测试</strong>：模拟不同网络条件</li>
+                <li><strong>替换静态资源</strong>：用本地修改版本替换远程JS/CSS文件</li>
+            </ul>
+
+            <h3>5.2 使用请求构造器(Composer)</h3>
+            <p>Composer允许您手动创建和发送HTTP请求，无需使用浏览器。</p>
+
+            <h4>5.2.1 访问Composer</h4>
+            <p>有两种方法可以打开Composer：</p>
+            <ul>
+                <li>在主菜单中选择<strong>Tools > Composer</strong></li>
+                <li>按下<strong>Ctrl+N</strong>快捷键</li>
+            </ul>
+
+            <h4>5.2.2 创建新请求</h4>
+            <ol>
+                <li>选择HTTP方法（GET、POST等）</li>
+                <li>输入请求URL</li>
+                <li>（可选）添加请求头和请求体</li>
+                <li>点击<strong>Execute</strong>按钮发送请求</li>
+            </ol>
+
+            <h4>5.2.3 基于现有请求</h4>
+            <p>更快的方法是基于已捕获的会话创建新请求：</p>
+            <ol>
+                <li>在会话列表中选择目标请求</li>
+                <li>右键点击并选择<strong>Copy > Copy to Composer</strong>，或者拖放到Composer标签</li>
+                <li>修改请求（如更改URL、头或体）</li>
+                <li>点击<strong>Execute</strong>发送修改后的请求</li>
+            </ol>
+
+            <div class="tip">
+                <p><strong>小技巧：</strong> 基于现有请求创建新请求时，所有的Cookie、认证和其他头信息都会自动包含，省去手动重新创建这些信息的麻烦。</p>
+            </div>
+
+            <h4>5.2.4 Composer的应用场景</h4>
+            <ul>
+                <li><strong>API测试</strong>：测试REST API端点，无需使用专用工具</li>
+                <li><strong>表单提交测试</strong>：修改和重放表单提交</li>
+                <li><strong>认证测试</strong>：测试不同认证头的效果</li>
+                <li><strong>安全测试</strong>：测试API参数验证和安全限制</li>
+            </ul>
+
+            <h3>5.3 使用FiddlerScript修改请求/响应</h3>
+            <p>FiddlerScript是一种基于JScript.NET的脚本语言，允许您编程方式修改请求和响应。</p>
+
+            <h4>5.3.1 访问FiddlerScript编辑器</h4>
+            <ol>
+                <li>在主菜单中选择<strong>Rules > Customize Rules...</strong></li>
+                <li>这将打开默认的脚本文件（CustomRules.js）</li>
+            </ol>
+
+            <h4>5.3.2 理解事件处理器</h4>
+            <p>FiddlerScript定义了多个事件处理器函数，在请求/响应生命周期的不同阶段被调用：</p>
+            <ul>
+                <li><strong>OnBeforeRequest</strong>：在请求发送到服务器前调用</li>
+                <li><strong>OnBeforeResponse</strong>：在响应返回给客户端前调用</li>
+                <li><strong>OnStartup</strong>：在Fiddler启动时调用</li>
+                <li><strong>OnShutdown</strong>：在Fiddler关闭时调用</li>
+            </ul>
+
+            <h4>5.3.3 常见修改示例</h4>
+            <p>下面是一些常见的FiddlerScript修改示例：</p>
+
+            <p><strong>修改请求头：</strong></p>
+            <div class="code-block">
+                <pre>
+static function OnBeforeRequest(oSession: Session) {
+    // 添加自定义请求头
+    oSession.oRequest["X-Custom-Header"] = "CustomValue";
+    
+    // 修改User-Agent
+    oSession.oRequest["User-Agent"] = "Custom User Agent";
+}
+</pre>
+            </div>
+
+            <p><strong>修改响应内容：</strong></p>
+            <div class="code-block">
+                <pre>
+static function OnBeforeResponse(oSession: Session) {
+    // 检查响应是否为HTML
+    if (oSession.oResponse.headers.ExistsAndContains("Content-Type", "text/html")) {
+        // 将所有响应中的"Hello"替换为"Goodbye"
+        oSession.utilReplaceInResponse("Hello", "Goodbye");
+    }
+}
+</pre>
+            </div>
+
+            <p><strong>模拟网络延迟：</strong></p>
+            <div class="code-block">
+                <pre>
+static function OnBeforeRequest(oSession: Session) {
+    // 为特定域名添加延迟
+    if (oSession.hostname.EndsWith("example.com")) {
+        // 添加500毫秒延迟
+        oSession["request-trickle-delay"] = "500";
+    }
+}
+</pre>
+            </div>
+
+            <h4>5.3.4 保存和应用更改</h4>
+            <p>修改FiddlerScript后：</p>
+            <ol>
+                <li>保存文件（Ctrl+S）</li>
+                <li>Fiddler会自动重新加载脚本</li>
+                <li>在状态栏中查看是否有编译错误</li>
+            </ol>
+
+            <div class="warning">
+                <p><strong>注意：</strong> FiddlerScript错误可能导致Fiddler无法正确处理请求。确保在应用前测试您的脚本代码。</p>
+            </div>
+
+            <h3>5.4 使用断点调试</h3>
+            <p>Fiddler的断点功能允许您在请求发送前或响应返回前暂停并修改内容。</p>
+
+            <h4>5.4.1 设置断点</h4>
+            <p>有多种方式设置断点：</p>
+            <ul>
+                <li><strong>全局断点</strong>：在工具栏上点击<strong>Rules > Automatic Breakpoints</strong>，然后选择
+                    <ul>
+                        <li>Before Requests - 在所有请求发送前暂停</li>
+                        <li>After Responses - 在所有响应返回前暂停</li>
+                        <li>Disabled - 禁用断点</li>
+                    </ul>
+                </li>
+                <li><strong>特定会话断点</strong>：在会话列表中右键点击某个会话，选择<strong>Break on...</strong>选项</li>
+            </ul>
+
+            <h4>5.4.2 修改请求/响应</h4>
+            <p>当断点触发时：</p>
+            <ol>
+                <li>Fiddler会显示请求/响应编辑器</li>
+                <li>您可以编辑头信息、URL或请求/响应体</li>
+                <li>点击<strong>Run to Completion</strong>继续处理</li>
+                <li>点击<strong>Break on Response</strong>（仅请求断点）设置对应响应的断点</li>
+            </ol>
+
+            <h4>5.4.3 断点的应用场景</h4>
+            <ul>
+                <li><strong>实时修改请求参数</strong>：测试不同参数的效果</li>
+                <li><strong>修改认证信息</strong>：尝试不同的认证凭据</li>
+                <li><strong>篡改响应数据</strong>：测试前端错误处理</li>
+                <li><strong>学习目的</strong>：理解API请求和响应格式</li>
+            </ul>
+
+            <h3>5.5 应用实例：API测试</h3>
+            <p>下面是一个完整的API测试案例，将多种技术结合起来：</p>
+
+            <h4>5.5.1 捕获原始请求</h4>
+            <ol>
+                <li>启动Fiddler并确保捕获功能已开启</li>
+                <li>在应用中触发目标API请求</li>
+                <li>在Fiddler中找到并选择该API请求</li>
+            </ol>
+
+            <h4>5.5.2 修改并重放请求</h4>
+            <ol>
+                <li>右键点击请求，选择<strong>Copy > Copy to Composer</strong></li>
+                <li>在Composer中，修改请求参数或头信息</li>
+                <li>点击<strong>Execute</strong>发送修改后的请求</li>
+                <li>比较原始响应和修改后的响应</li>
+            </ol>
+
+            <h4>5.5.3 创建自动响应</h4>
+            <ol>
+                <li>将API请求拖放到AutoResponder面板</li>
+                <li>编辑响应内容以测试前端错误处理</li>
+                <li>保存规则并启用AutoResponder</li>
+                <li>在应用中再次触发相同请求，观察应用如何处理修改后的响应</li>
+            </ol>
+
+            <div class="practice">
+                <h4>实践练习</h4>
+                <p>尝试使用以下步骤测试一个登录表单：</p>
+                <ol>
+                    <li>捕获正常登录请求</li>
+                    <li>使用Composer修改凭据，测试无效凭据处理</li>
+                    <li>使用AutoResponder模拟服务器错误</li>
+                    <li>使用FiddlerScript为所有登录请求添加延迟，测试UI反馈</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 性能分析 -->
+        <section id="performance">
+            <h2>6. 性能分析</h2>
+            <p>Fiddler是Web应用性能分析的强大工具，可帮助识别性能瓶颈和优化机会。本章将介绍如何使用Fiddler分析和优化网站加载性能。</p>
+
+            <h3>6.1 性能指标概述</h3>
+            <p>在深入分析之前，先了解一些关键的Web性能指标：</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>指标</th>
+                        <th>描述</th>
+                        <th>理想值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>DNS查找时间</td>
+                        <td>将域名解析为IP地址所需的时间</td>
+                        <td>&lt; 50ms</td>
+                    </tr>
+                    <tr>
+                        <td>TCP连接时间</td>
+                        <td>建立TCP连接所需的时间</td>
+                        <td>&lt; 100ms</td>
+                    </tr>
+                    <tr>
+                        <td>TLS握手时间</td>
+                        <td>完成HTTPS握手所需的时间</td>
+                        <td>&lt; 200ms</td>
+                    </tr>
+                    <tr>
+                        <td>请求发送时间</td>
+                        <td>发送HTTP请求所需的时间</td>
+                        <td>&lt; 100ms</td>
+                    </tr>
+                    <tr>
+                        <td>等待时间(TTFB)</td>
+                        <td>从请求发出到收到第一个字节的时间</td>
+                        <td>&lt; 200ms</td>
+                    </tr>
+                    <tr>
+                        <td>内容下载时间</td>
+                        <td>下载响应内容所需的时间</td>
+                        <td>与响应大小相关</td>
+                    </tr>
+                    <tr>
+                        <td>总响应时间</td>
+                        <td>从请求开始到接收完整响应的总时间</td>
+                        <td>&lt; 1s</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>6.2 使用Statistics检查单个请求性能</h3>
+            <p>Fiddler的Statistics标签提供了单个请求的详细性能分析：</p>
+            
+            <h4>6.2.1 访问Statistics视图</h4>
+            <ol>
+                <li>在会话列表中选择一个请求</li>
+                <li>在右侧检查器面板中，切换到<strong>Statistics</strong>标签</li>
             </ol>
             
-            <h4>5.1.1 常用匹配规则</h4>
+            <h4>6.2.2 解析Statistics数据</h4>
+            <p>Statistics标签显示了请求生命周期的关键时间点：</p>
             <ul>
-                <li><code>exact:http://example.com/path</code>：精确匹配 URL</li>
-                <li><code>regex:\.jpg$</code>：匹配所有 .jpg 文件</li>
-                <li><code>*example.com*</code>：使用通配符匹配包含 example.com 的 URL</li>
+                <li><strong>Client Connected</strong>：客户端连接到Fiddler的时间</li>
+                <li><strong>Request Headers</strong>：客户端发送请求头的时间</li>
+                <li><strong>Request Body</strong>：客户端发送请求体的时间</li>
+                <li><strong>Response Headers</strong>：收到服务器响应头的时间</li>
+                <li><strong>Response Body</strong>：收到服务器响应体的时间</li>
+                <li><strong>Request Complete</strong>：请求完成的时间</li>
             </ul>
-            
-            <h4>5.1.2 响应动作</h4>
+            <p>此外，还提供了各阶段的耗时分析，例如：</p>
             <ul>
-                <li><code>http://otherdomain.com</code>：重定向到其他 URL</li>
-                <li><code>C:\path\to\local\file.json</code>：使用本地文件响应</li>
-                <li><code>*delay:1000</code>：延迟响应 1000 毫秒</li>
-                <li><code>*reset</code>：重置连接</li>
-                <li><code>*dropout</code>：丢弃连接</li>
+                <li><strong>DNS Lookup</strong>：域名解析时间</li>
+                <li><strong>TCP/IP Connect</strong>：TCP连接建立时间</li>
+                <li><strong>HTTPS Handshake</strong>：SSL/TLS握手时间</li>
+                <li><strong>ServerProcess</strong>：服务器处理时间</li>
+                <li><strong>ResponseTransfer</strong>：响应传输时间</li>
             </ul>
-            
-            <h3>5.2 使用 Composer</h3>
-            <p>Composer 允许您创建和发送自定义 HTTP 请求：</p>
-            <ol>
-                <li>切换到右侧的 Composer 标签</li>
-                <li>选择请求方法（GET、POST 等）</li>
-                <li>输入完整的 URL</li>
-                <li>添加或修改 HTTP 头</li>
-                <li>对于 POST/PUT 请求，添加请求体</li>
-                <li>点击 "Execute" 发送请求</li>
-            </ol>
             
             <div class="tip">
-                <p><strong>提示</strong>：您可以从会话列表中拖动现有会话到 Composer，以快速创建基于现有请求的新请求。</p>
+                <p><strong>小技巧：</strong> 观察<strong>ServerProcess</strong>时间可以评估服务器端性能，而<strong>ResponseTransfer</strong>时间则反映了网络带宽和响应大小的影响。</p>
             </div>
             
-            <h3>5.3 使用断点 (Breakpoints)</h3>
-            <p>断点允许您在请求被发送前或响应被接收后暂停并修改它们：</p>
+            <h3>6.3 使用Timeline分析多个请求</h3>
+            <p>Timeline视图提供了页面加载过程中所有请求的瀑布图，帮助识别性能瓶颈：</p>
             
-            <h4>5.3.1 设置全局断点</h4>
-            <ul>
-                <li>按 F11：设置请求前断点（所有请求）</li>
-                <li>按 Alt+F11：设置响应前断点（所有响应）</li>
-                <li>在状态栏上点击相应按钮启用/禁用断点</li>
-            </ul>
-            
-            <h4>5.3.2 设置条件断点</h4>
-            <p>使用 FiddlerScript 可以设置仅适用于特定请求的条件断点：</p>
+            <h4>6.3.1 启用Timeline视图</h4>
             <ol>
-                <li>点击 Rules > Customize Rules</li>
-                <li>找到 OnBeforeRequest 或 OnBeforeResponse 函数</li>
-                <li>添加条件代码，如：</li>
+                <li>在Fiddler主菜单中，选择<strong>View > Timeline</strong></li>
+                <li>Timeline面板将显示在会话列表下方</li>
+                <li>清除所有会话（按Ctrl+X），然后访问要分析的网页</li>
             </ol>
-            <pre><code>if (oSession.HostnameIs("example.com") && oSession.PathAndQuery.Contains("/api/")) {
-    oSession["x-breakrequest"] = "before";
-}</code></pre>
             
-            <h4>5.3.3 使用断点修改内容</h4>
-            <p>触发断点后，您可以：</p>
+            <h4>6.3.2 理解Timeline瀑布图</h4>
+            <p>Timeline瀑布图水平显示每个请求的耗时：</p>
             <ul>
-                <li>修改 HTTP 头或 URL</li>
-                <li>编辑请求或响应体</li>
-                <li>点击 "Run to Completion" 继续处理</li>
-                <li>点击 "Break on Response" 在响应前再次暂停</li>
+                <li><span style="color: black;">黑色</span>：DNS查找时间</li>
+                <li><span style="color: blue;">蓝色</span>：连接时间（TCP和SSL/TLS）</li>
+                <li><span style="color: purple;">紫色</span>：发送请求时间</li>
+                <li><span style="color: green;">绿色</span>：等待服务器响应时间</li>
+                <li><span style="color: red;">红色</span>：接收响应时间</li>
+            </ul>
+            <p>水平轴表示时间（毫秒），垂直轴表示请求顺序。</p>
+            
+            <h4>6.3.3 识别Timeline中的性能问题</h4>
+            <p>检查Timeline可能发现以下问题：</p>
+            <ul>
+                <li><strong>长时间DNS查找</strong>：黑色条较长，考虑使用DNS预取</li>
+                <li><strong>重复连接</strong>：多个蓝色条，考虑使用持久连接</li>
+                <li><strong>排队请求</strong>：请求没有并行处理，考虑使用域名分片或HTTP/2</li>
+                <li><strong>慢服务器响应</strong>：绿色条较长，需要优化服务器处理</li>
+                <li><strong>大文件下载</strong>：红色条较长，考虑压缩或优化资源</li>
+                <li><strong>资源瀑布不合理</strong>：关键资源加载太晚，考虑调整加载顺序</li>
             </ul>
             
             <div class="warning">
-                <p><strong>警告</strong>：在使用断点时，浏览器会一直等待，直到您在 Fiddler 中继续处理。长时间不处理可能导致浏览器超时。</p>
+                <p><strong>注意：</strong> Timeline视图的精度可能受到多种因素影响，包括系统负载和Fiddler自身的处理。对于最精确的测量，应使用专用性能工具。</p>
+            </div>
+            
+            <h3>6.4 使用SummaryView分析统计数据</h3>
+            <p>SummaryView提供了会话集合的整体统计信息：</p>
+            
+            <h4>6.4.1 访问SummaryView</h4>
+            <ol>
+                <li>在会话列表中选择要分析的会话（可以按Ctrl+A全选）</li>
+                <li>右键点击，选择<strong>Summary</strong></li>
+                <li>或使用主菜单<strong>View > Show SummaryView</strong></li>
+            </ol>
+            
+            <h4>6.4.2 理解SummaryView数据</h4>
+            <p>SummaryView提供以下统计信息：</p>
+            <ul>
+                <li><strong>请求和字节总数</strong>：总请求数、总字节数、平均大小</li>
+                <li><strong>按MIME类型分类</strong>：不同类型资源（图片、脚本、样式表等）的分布</li>
+                <li><strong>按状态码分类</strong>：不同HTTP状态码的分布</li>
+                <li><strong>按协议分类</strong>：HTTP vs HTTPS的请求分布</li>
+                <li><strong>按域名分类</strong>：不同域名的请求分布</li>
+            </ul>
+            
+            <h3>6.5 模拟网络条件</h3>
+            <p>Fiddler可以模拟各种网络条件，帮助测试应用在不同网络环境下的性能：</p>
+            
+            <h4>6.5.1 使用内置网络模拟</h4>
+            <ol>
+                <li>在主菜单中，选择<strong>Rules > Performance > Simulate Modem Speeds</strong></li>
+                <li>或选择其他预设，如<strong>Rules > Performance > DSL/Cable</strong></li>
+            </ol>
+            
+            <h4>6.5.2 自定义网络延迟和带宽</h4>
+            <ol>
+                <li>在主菜单中，选择<strong>Rules > Customize Rules...</strong></li>
+                <li>找到<code>OnBeforeRequest</code>函数</li>
+                <li>添加以下代码来模拟延迟：</li>
+            </ol>
+            <div class="code-block">
+                <pre>
+if (m_SimulateModem) {
+    // 为所有请求添加延迟
+    oSession["request-trickle-delay"] = "300"; // 300ms延迟
+    // 限制上传速度
+    oSession["request-trickle-delay"] = "56000"; // 56kbps上传速度
+}
+</pre>
+            </div>
+            <ol start="4">
+                <li>找到<code>OnBeforeResponse</code>函数</li>
+                <li>添加以下代码来模拟下载限制：</li>
+            </ol>
+            <div class="code-block">
+                <pre>
+if (m_SimulateModem) {
+    // 限制下载速度
+    oSession["response-trickle-delay"] = "28000"; // 28kbps下载速度
+}
+</pre>
+            </div>
+            
+            <h3>6.6 性能优化建议</h3>
+            <p>基于Fiddler分析，以下是常见的Web性能优化建议：</p>
+            
+            <h4>6.6.1 减少请求数量</h4>
+            <ul>
+                <li><strong>合并资源</strong>：合并多个JavaScript或CSS文件</li>
+                <li><strong>使用CSS Sprites</strong>：将多个小图标合并为一个图像</li>
+                <li><strong>内联小资源</strong>：将小型CSS或JavaScript内联到HTML中</li>
+                <li><strong>使用字体图标</strong>：用字体图标替代图片图标</li>
+            </ul>
+            
+            <h4>6.6.2 减少资源大小</h4>
+            <ul>
+                <li><strong>启用Gzip/Brotli压缩</strong>：确保文本资源使用压缩</li>
+                <li><strong>优化图像</strong>：使用适当的图像格式和压缩级别</li>
+                <li><strong>缩小（Minify）代码</strong>：移除JavaScript和CSS中的空白和注释</li>
+                <li><strong>使用现代图像格式</strong>：使用WebP或AVIF等高效格式</li>
+            </ul>
+            
+            <h4>6.6.3 优化资源加载</h4>
+            <ul>
+                <li><strong>使用浏览器缓存</strong>：设置适当的Cache-Control和Expires头</li>
+                <li><strong>实现CDN</strong>：使用内容分发网络减少延迟</li>
+                <li><strong>延迟加载</strong>：非关键资源使用延迟加载</li>
+                <li><strong>预加载关键资源</strong>：使用&lt;link rel="preload"&gt;预加载关键资源</li>
+                <li><strong>使用HTTP/2</strong>：多路复用减少连接开销</li>
+            </ul>
+            
+            <h4>6.6.4 减少阻塞时间</h4>
+            <ul>
+                <li><strong>异步加载脚本</strong>：使用async或defer属性</li>
+                <li><strong>将CSS放在头部</strong>：避免无样式内容闪烁</li>
+                <li><strong>将JavaScript放在底部</strong>：减少阻塞渲染</li>
+                <li><strong>优化关键渲染路径</strong>：确保最快的视觉完成时间</li>
+            </ul>
+            
+            <h3>6.7 实际性能分析案例</h3>
+            <p>下面是一个完整的性能分析和优化案例：</p>
+            
+            <h4>6.7.1 初始分析</h4>
+            <ol>
+                <li>清除Fiddler会话列表（Ctrl+X）</li>
+                <li>启用Timeline视图（View > Timeline）</li>
+                <li>访问目标网站</li>
+                <li>等待页面完全加载</li>
+                <li>分析Timeline瀑布图和SummaryView数据</li>
+            </ol>
+            
+            <h4>6.7.2 识别问题</h4>
+            <p>通过分析，找出以下潜在问题：</p>
+            <ul>
+                <li>大量小图片请求，增加了HTTP请求数</li>
+                <li>未压缩的JavaScript和CSS文件</li>
+                <li>阻塞渲染的第三方脚本</li>
+                <li>多个重定向链</li>
+                <li>缺少浏览器缓存设置</li>
+            </ul>
+            
+            <h4>6.7.3 实施优化</h4>
+            <p>基于分析结果，实施以下优化：</p>
+            <ol>
+                <li>创建CSS Sprites并减少图像请求数</li>
+                <li>配置服务器启用Gzip压缩</li>
+                <li>使用async属性加载非关键第三方脚本</li>
+                <li>消除重定向链</li>
+                <li>设置适当的Cache-Control头</li>
+            </ol>
+            
+            <h4>6.7.4 验证优化效果</h4>
+            <ol>
+                <li>清除浏览器缓存和Fiddler会话列表</li>
+                <li>再次访问目标网站</li>
+                <li>比较优化前后的Timeline和统计数据</li>
+                <li>记录改进情况：请求数减少、总下载大小减少、加载时间缩短</li>
+            </ol>
+            
+            <div class="practice">
+                <h4>实践练习</h4>
+                <p>尝试分析一个您经常访问的网站：</p>
+                <ol>
+                    <li>使用Fiddler捕获网站加载过程</li>
+                    <li>识别至少三个性能问题</li>
+                    <li>如果您有权限，实施您的优化建议</li>
+                    <li>如果没有权限，记录您的优化建议及预期效果</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 常见应用场景 -->
+        <section id="common-scenarios">
+            <h2>7. 常见应用场景</h2>
+            <p>Fiddler在各种Web开发和测试场景中都非常有用。本章将介绍一些常见的应用场景，并提供相应的解决方案。</p>
+
+            <h3>7.1 移动应用测试</h3>
+            <p>Fiddler可以捕获移动设备的网络流量，帮助测试应用在不同网络环境下的性能和兼容性。</p>
+
+            <h4>7.1.1 捕获移动设备流量</h4>
+            <p>使用Fiddler捕获移动设备的网络流量，可以分析请求和响应，确保应用在不同网络条件下的正常运行。</p>
+
+            <h4>7.1.2 模拟移动网络条件</h4>
+            <p>Fiddler可以模拟各种移动网络条件，帮助测试应用在不同网络环境下的性能。</p>
+
+            <h3>7.2 安全测试</p>
+            <p>Fiddler可以检查敏感数据传输，帮助确保应用的安全性。</p>
+
+            <h4>7.2.1 检查敏感数据传输</h4>
+            <p>使用Fiddler检查敏感数据传输，确保数据在传输过程中不被泄露。</p>
+
+            <h4>7.2.2 修改请求进行安全测试</h4>
+            <p>Fiddler允许您修改请求，进行安全测试，确保应用在不同安全环境下的安全性。</p>
+
+            <h3>7.3 性能优化</h3>
+            <p>Fiddler可以帮助识别性能瓶颈和优化机会，帮助提升应用性能。</p>
+
+            <h4>7.3.1 分析性能指标</h4>
+            <p>使用Fiddler分析关键性能指标，如DNS查找时间、TCP连接时间、TLS握手时间等。</p>
+
+            <h4>7.3.2 使用Timeline视图</h4>
+            <p>Timeline视图提供了页面加载过程中所有请求的瀑布图，帮助识别性能瓶颈。</p>
+
+            <h4>7.3.3 使用SummaryView</h4>
+            <p>SummaryView提供了会话集合的整体统计信息，帮助分析性能瓶颈。</p>
+
+            <h3>7.4 接口测试</h3>
+            <p>Fiddler可以测试REST API端点，无需使用专用工具。</p>
+
+            <h4>7.4.1 捕获API请求</h4>
+            <p>使用Fiddler捕获API请求，可以分析请求和响应，确保API的正常运行。</p>
+
+            <h4>7.4.2 测试API返回的数据格式</h4>
+            <p>Fiddler可以测试API返回的数据格式，确保API返回的数据符合预期。</p>
+
+            <h3>7.5 网络故障排查</h3>
+            <p>Fiddler可以帮助定位和解决网络通信问题。</p>
+
+            <h4>7.5.1 捕获网络流量</h4>
+            <p>使用Fiddler捕获网络流量，可以分析请求和响应，确保网络通信的正常运行。</p>
+
+            <h4>7.5.2 设置断点</h4>
+            <p>Fiddler的断点功能允许您在请求发送前或响应返回前暂停并修改内容，帮助定位网络通信问题。</p>
+
+            <h3>7.6 性能分析和优化</h3>
+            <p>Fiddler可以帮助分析和优化网站加载性能。</p>
+
+            <h4>7.6.1 使用Timeline视图</h4>
+            <p>Timeline视图提供了页面加载过程中所有请求的瀑布图，帮助识别性能瓶颈。</p>
+
+            <h4>7.6.2 使用SummaryView</h4>
+            <p>SummaryView提供了会话集合的整体统计信息，帮助分析性能瓶颈。</p>
+
+            <h4>7.6.3 模拟网络条件</h4>
+            <p>Fiddler可以模拟各种网络条件，帮助测试应用在不同网络环境下的性能。</p>
+
+            <h4>7.6.4 性能优化建议</h4>
+            <p>基于Fiddler分析，以下是常见的Web性能优化建议：</p>
+
+            <h5>7.6.4.1 减少请求数量</h5>
+            <p>合并资源、使用CSS Sprites、内联小资源、使用字体图标等方法可以减少请求数量。</p>
+
+            <h5>7.6.4.2 减少资源大小</h5>
+            <p>启用Gzip/Brotli压缩、优化图像、缩小代码、使用现代图像格式等方法可以减少资源大小。</p>
+
+            <h5>7.6.4.3 优化资源加载</h5>
+            <p>使用浏览器缓存、实现CDN、延迟加载、预加载关键资源、使用HTTP/2等方法可以优化资源加载。</p>
+
+            <h5>7.6.4.4 减少阻塞时间</h5>
+            <p>异步加载脚本、将CSS放在头部、将JavaScript放在底部、优化关键渲染路径等方法可以减少阻塞时间。</p>
+
+            <h3>7.7 实际性能分析案例</h3>
+            <p>下面是一个完整的性能分析和优化案例：</p>
+
+            <h4>7.7.1 初始分析</h4>
+            <p>清除Fiddler会话列表（Ctrl+X），启用Timeline视图（View > Timeline），访问目标网站，等待页面完全加载，分析Timeline瀑布图和SummaryView数据。</p>
+
+            <h4>7.7.2 识别问题</h4>
+            <p>通过分析，找出以下潜在问题：大量小图片请求、未压缩的JavaScript和CSS文件、阻塞渲染的第三方脚本、多个重定向链、缺少浏览器缓存设置。</p>
+
+            <h4>7.7.3 实施优化</h4>
+            <p>基于分析结果，实施以下优化：创建CSS Sprites并减少图像请求数、配置服务器启用Gzip压缩、使用async属性加载非关键第三方脚本、消除重定向链、设置适当的Cache-Control头。</p>
+
+            <h4>7.7.4 验证优化效果</h4>
+            <p>清除浏览器缓存和Fiddler会话列表，再次访问目标网站，比较优化前后的Timeline和统计数据，记录改进情况：请求数减少、总下载大小减少、加载时间缩短。</p>
+
+            <div class="practice">
+                <h4>实践练习</h4>
+                <p>尝试分析一个您经常访问的网站：</p>
+                <ol>
+                    <li>使用Fiddler捕获网站加载过程</li>
+                    <li>识别至少三个性能问题</li>
+                    <li>如果您有权限，实施您的优化建议</li>
+                    <li>如果没有权限，记录您的优化建议及预期效果</li>
+                </ol>
             </div>
         </section>
 
