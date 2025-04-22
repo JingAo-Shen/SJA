@@ -214,6 +214,11 @@
                 <li><a href="#clustering">8. 集群部署</a></li>
                 <li><a href="#monitoring">9. 监控和管理</a></li>
                 <li><a href="#best-practices">10. 最佳实践</a></li>
+                <li><a href="#message-acknowledgment">11. 消息确认机制</a></li>
+                <li><a href="#dead-letter-exchange">12. 死信队列</a></li>
+                <li><a href="#spring-amqp">13. Spring AMQP 集成</a></li>
+                <li><a href="#error-handling">14. 错误处理与重试机制</a></li>
+                <li><a href="#consumer-prefetch">15. 消费者预取与负载均衡</a></li>
             </ul>
         </div>
 
@@ -374,7 +379,25 @@ channel.queueBind(queueName, "headers_logs", "", args);</code></pre>
         <section id="message-patterns" class="card">
             <h2>5. 消息模式</h2>
             
-            <h3>5.1 工作队列模式</h3>
+            <h3>5.1 简单模式</h3>
+            <p>最基本的消息模式，一个生产者，一个消费者：</p>
+            <pre><code>// 生产者
+channel.queueDeclare("simple_queue", true, false, false, null);
+String message = "Hello World!";
+channel.basicPublish("", "simple_queue", null, message.getBytes());
+
+// 消费者
+channel.queueDeclare("simple_queue", true, false, false, null);
+channel.basicConsume("simple_queue", true, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) {
+        String message = new String(body, "UTF-8");
+        System.out.println(" [x] Received '" + message + "'");
+    }
+});</code></pre>
+
+            <h3>5.2 工作队列模式</h3>
             <p>一个生产者，多个消费者：</p>
             <pre><code>// 生产者
 String message = "Hello World!";
@@ -390,7 +413,7 @@ channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
     }
 });</code></pre>
 
-            <h3>5.2 发布/订阅模式</h3>
+            <h3>5.3 发布/订阅模式</h3>
             <p>一个生产者，多个消费者，每个消费者收到所有消息：</p>
             <pre><code>// 生产者
 channel.exchangeDeclare("logs", "fanout");
@@ -410,7 +433,7 @@ channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
     }
 });</code></pre>
 
-            <h3>5.3 路由模式</h3>
+            <h3>5.4 路由模式</h3>
             <p>根据路由键将消息发送到特定的队列：</p>
             <pre><code>// 生产者
 channel.exchangeDeclare("direct_logs", "direct");
@@ -431,9 +454,115 @@ channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
     }
 });</code></pre>
 
+            <h3>5.5 主题模式</h3>
+            <p>使用通配符路由键将消息发送到匹配的队列：</p>
+            <pre><code>// 生产者
+channel.exchangeDeclare("topic_logs", "topic");
+String routingKey = "kern.critical"; // 例如：设备.严重程度
+String message = "A critical kernel error";
+channel.basicPublish("topic_logs", routingKey, null, message.getBytes());
+
+// 消费者
+channel.exchangeDeclare("topic_logs", "topic");
+String queueName = channel.queueDeclare().getQueue();
+
+// 可以绑定多个路由键模式
+// * 匹配一个单词，# 匹配零个或多个单词
+channel.queueBind(queueName, "topic_logs", "kern.*"); // 所有内核消息
+channel.queueBind(queueName, "topic_logs", "*.critical"); // 所有严重错误消息
+channel.queueBind(queueName, "topic_logs", "kern.#"); // 所有内核相关消息
+
+channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) {
+        String message = new String(body, "UTF-8");
+        String receivedRoutingKey = envelope.getRoutingKey();
+        System.out.println(" [x] Received '" + message + "' with routing key '" + 
+                          receivedRoutingKey + "'");
+    }
+});</code></pre>
+
+            <h3>5.6 RPC模式</h3>
+            <p>请求/响应模式，客户端发送请求并等待响应：</p>
+            <pre><code>// 服务端（RPC服务提供者）
+channel.queueDeclare("rpc_queue", false, false, false, null);
+channel.basicQos(1); // 每次只处理一个请求
+channel.basicConsume("rpc_queue", false, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) throws IOException {
+        // 提取相关ID，用于响应
+        AMQP.BasicProperties replyProps = new AMQP.BasicProperties
+                .Builder()
+                .correlationId(properties.getCorrelationId())
+                .build();
+        
+        String response = "";
+        try {
+            String message = new String(body, "UTF-8");
+            int n = Integer.parseInt(message);
+            
+            // 执行RPC操作（这里是计算斐波那契数列）
+            System.out.println(" [x] Received request for fib(" + message + ")");
+            response = String.valueOf(fib(n));
+        } catch (Exception e) {
+            response = "Error: " + e.getMessage();
+        } finally {
+            // 发送响应到回调队列
+            channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes());
+            channel.basicAck(envelope.getDeliveryTag(), false);
+        }
+    }
+});
+
+// 斐波那契函数示例
+private static int fib(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    return fib(n-1) + fib(n-2);
+}
+
+// 客户端（RPC调用者）
+final String corrId = UUID.randomUUID().toString();
+String replyQueueName = channel.queueDeclare().getQueue();
+AMQP.BasicProperties props = new AMQP.BasicProperties
+        .Builder()
+        .correlationId(corrId)
+        .replyTo(replyQueueName)
+        .build();
+
+// 发送RPC请求
+String message = "30"; // 请求计算fib(30)
+channel.basicPublish("", "rpc_queue", props, message.getBytes());
+
+// 等待响应
+final BlockingQueue&lt;String&gt; response = new ArrayBlockingQueue&lt;&gt;(1);
+channel.basicConsume(replyQueueName, true, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) {
+        if (properties.getCorrelationId().equals(corrId)) {
+            response.offer(new String(body, "UTF-8"));
+        }
+    }
+});
+
+// 获取结果（设置超时）
+String result = response.poll(5, TimeUnit.SECONDS);
+System.out.println(" [x] Got '" + result + "'");</code></pre>
+
             <div class="tip">
                 <div class="tip-title">小提示</div>
-                <p>选择适合的消息模式对于实现特定的业务需求至关重要。工作队列模式适用于任务分发，发布/订阅模式适用于广播，路由模式适用于选择性接收消息。</p>
+                <p>RabbitMQ提供了六种主要的消息模式，每种适合不同的场景：</p>
+                <ul>
+                    <li><strong>简单模式</strong>：最基本的点对点通信</li>
+                    <li><strong>工作队列模式</strong>：任务分发，适合多消费者处理耗时任务</li>
+                    <li><strong>发布/订阅模式</strong>：广播消息，适合一对多通知</li>
+                    <li><strong>路由模式</strong>：按照精确的路由键分发消息</li>
+                    <li><strong>主题模式</strong>：按照通配符路由键分发消息，最灵活的消息路由</li>
+                    <li><strong>RPC模式</strong>：请求/响应，适合需要返回结果的远程调用场景</li>
+                </ul>
             </div>
         </section>
 
@@ -617,6 +746,535 @@ rabbitmqctl set_disk_free_limit "100MB"</code></pre>
             <div class="note">
                 <div class="note-title">笔记</div>
                 <p>遵循最佳实践可以帮助构建可靠、高效、安全的消息队列系统。根据具体需求选择合适的技术和配置。</p>
+            </div>
+        </section>
+
+        <section id="message-acknowledgment" class="card">
+            <h2>11. 消息确认机制</h2>
+            
+            <h3>11.1 消息确认的重要性</h3>
+            <p>消息确认机制是 RabbitMQ 保证消息可靠性的核心机制，它确保消息在处理过程中不会丢失。</p>
+            <ul>
+                <li><strong>消费者确认</strong>：消费者处理完消息后向 RabbitMQ 发送确认</li>
+                <li><strong>发布者确认</strong>：RabbitMQ 收到消息后向发布者发送确认</li>
+            </ul>
+
+            <h3>11.2 消费者确认模式</h3>
+            <p>RabbitMQ 支持三种消费者确认模式：</p>
+            <ol>
+                <li><strong>自动确认（Auto Ack）</strong>：消息一旦被发送给消费者，立即从队列中移除</li>
+                <li><strong>手动确认（Manual Ack）</strong>：消费者处理完消息后手动发送确认</li>
+                <li><strong>批量确认（Batch Ack）</strong>：消费者可以一次性确认多条消息</li>
+            </ol>
+
+            <pre><code>// 设置为手动确认模式
+boolean autoAck = false;
+channel.basicConsume(queueName, autoAck, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) throws IOException {
+        String message = new String(body, "UTF-8");
+        try {
+            // 处理消息
+            System.out.println(" [x] Received '" + message + "'");
+            // 处理完成后确认
+            channel.basicAck(envelope.getDeliveryTag(), false);
+        } catch (Exception e) {
+            // 处理失败时拒绝消息，并重新入队
+            channel.basicNack(envelope.getDeliveryTag(), false, true);
+            // 或者拒绝消息，不重新入队
+            // channel.basicReject(envelope.getDeliveryTag(), false);
+        }
+    }
+});</code></pre>
+
+            <h3>11.3 发布者确认</h3>
+            <p>发布者确认（Publisher Confirms）允许发布者确认消息已被 RabbitMQ 成功接收：</p>
+            <pre><code>// 启用发布者确认模式
+channel.confirmSelect();
+
+// 同步等待确认
+channel.basicPublish("", queueName, null, message.getBytes());
+if (channel.waitForConfirms()) {
+    System.out.println("消息已确认");
+} else {
+    System.out.println("消息未确认");
+}
+
+// 异步确认
+channel.addConfirmListener(new ConfirmListener() {
+    @Override
+    public void handleAck(long deliveryTag, boolean multiple) {
+        System.out.println("消息已确认: " + deliveryTag);
+    }
+
+    @Override
+    public void handleNack(long deliveryTag, boolean multiple) {
+        System.out.println("消息未确认: " + deliveryTag);
+    }
+});</code></pre>
+
+            <h3>11.4 事务机制</h3>
+            <p>RabbitMQ 也支持事务机制，但性能较低，一般不推荐使用：</p>
+            <pre><code>// 开启事务
+channel.txSelect();
+
+try {
+    // 发送消息
+    channel.basicPublish("", queueName, null, message.getBytes());
+    // 提交事务
+    channel.txCommit();
+} catch (Exception e) {
+    // 回滚事务
+    channel.txRollback();
+    throw e;
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">最佳实践</div>
+                <p>对于关键业务，推荐使用手动确认模式和发布者确认（Publisher Confirms）机制，而不是使用事务。发布者确认机制性能更好，且提供了异步确认的能力。</p>
+            </div>
+        </section>
+
+        <section id="dead-letter-exchange" class="card">
+            <h2>12. 死信队列</h2>
+            
+            <h3>12.1 什么是死信队列</h3>
+            <p>死信队列（Dead Letter Queue，DLQ）是 RabbitMQ 中处理无法被正常消费的消息的机制。当消息变成死信时，它会被重新发布到指定的死信交换机（Dead Letter Exchange，DLX）。</p>
+
+            <h3>12.2 消息成为死信的情况</h3>
+            <ul>
+                <li><strong>消息被拒绝（reject/nack）</strong>：消费者拒绝消息并且不将其重新放入队列</li>
+                <li><strong>消息过期（TTL）</strong>：消息在队列中的存活时间超过设定的 TTL</li>
+                <li><strong>队列达到最大长度</strong>：队列中的消息数量达到最大限制</li>
+            </ul>
+
+            <h3>12.3 配置死信队列</h3>
+            <p>配置一个带有死信队列的正常队列：</p>
+            <pre><code>// 声明死信交换机
+channel.exchangeDeclare("dead.letter.exchange", "direct");
+
+// 声明死信队列
+channel.queueDeclare("dead.letter.queue", true, false, false, null);
+
+// 绑定死信队列到死信交换机
+channel.queueBind("dead.letter.queue", "dead.letter.exchange", "dead.letter.routing.key");
+
+// 为正常队列设置死信交换机
+Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+args.put("x-dead-letter-exchange", "dead.letter.exchange");
+args.put("x-dead-letter-routing-key", "dead.letter.routing.key");
+// 可选：设置消息TTL
+args.put("x-message-ttl", 60000); // 60秒
+// 可选：设置队列最大长度
+args.put("x-max-length", 1000);
+
+// 声明正常队列
+channel.queueDeclare("normal.queue", true, false, false, args);</code></pre>
+
+            <h3>12.4 消费者拒绝导致的死信</h3>
+            <pre><code>// 消费者拒绝消息
+channel.basicConsume("normal.queue", false, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) throws IOException {
+        String message = new String(body, "UTF-8");
+        try {
+            // 处理消息
+            if (someCondition) {
+                throw new Exception("无法处理该消息");
+            }
+            // 确认消息
+            channel.basicAck(envelope.getDeliveryTag(), false);
+        } catch (Exception e) {
+            // 拒绝消息，不重新入队，消息将被发送到死信队列
+            channel.basicReject(envelope.getDeliveryTag(), false);
+        }
+    }
+});</code></pre>
+
+            <h3>12.5 死信队列的处理</h3>
+            <p>消费处理死信队列中的消息：</p>
+            <pre><code>// 消费死信队列
+channel.basicConsume("dead.letter.queue", false, new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope,
+                             AMQP.BasicProperties properties, byte[] body) throws IOException {
+        String message = new String(body, "UTF-8");
+        
+        // 记录死信消息
+        System.out.println("处理死信消息: " + message);
+        
+        // 分析消息失败原因，可以通过原始消息的属性获取
+        Map&lt;String, Object&gt; headers = properties.getHeaders();
+        if (headers != null) {
+            String xDeathReason = headers.get("x-death") != null ? 
+                                 headers.get("x-death").toString() : "未知原因";
+            System.out.println("死信原因: " + xDeathReason);
+        }
+        
+        // 确认死信消息
+        channel.basicAck(envelope.getDeliveryTag(), false);
+    }
+});</code></pre>
+
+            <div class="note">
+                <div class="note-title">场景应用</div>
+                <p>死信队列在以下场景特别有用：</p>
+                <ul>
+                    <li>处理无法消费的消息，如格式错误的消息</li>
+                    <li>实现消息的延迟处理（通过TTL和死信队列组合）</li>
+                    <li>捕获和监控异常情况</li>
+                    <li>实现请求的限时响应</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="spring-amqp" class="card">
+            <h2>13. Spring AMQP 集成</h2>
+            
+            <h3>13.1 Spring AMQP 简介</h3>
+            <p>Spring AMQP 提供了一套基于 Spring 框架的 AMQP 抽象，简化了 RabbitMQ 的使用。它包含两个核心模块：</p>
+            <ul>
+                <li><strong>spring-amqp</strong>：提供核心抽象和通用 AMQP 模型</li>
+                <li><strong>spring-rabbit</strong>：提供 RabbitMQ 的具体实现</li>
+            </ul>
+
+            <h3>13.2 Maven 依赖</h3>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
+    &lt;version&gt;2.7.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <h3>13.3 基本配置</h3>
+            <p>在 Spring Boot 应用中配置 RabbitMQ：</p>
+            <pre><code>// application.properties 配置
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+spring.rabbitmq.virtual-host=/
+
+// Java配置类
+@Configuration
+public class RabbitMQConfig {
+
+    @Bean
+    public Queue queue() {
+        return new Queue("my-queue", true);
+    }
+
+    @Bean
+    public DirectExchange exchange() {
+        return new DirectExchange("my-exchange");
+    }
+
+    @Bean
+    public Binding binding(Queue queue, DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("my-routing-key");
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(messageConverter);
+        return rabbitTemplate;
+    }
+}</code></pre>
+
+            <h3>13.4 发送消息</h3>
+            <p>使用 RabbitTemplate 发送消息：</p>
+            <pre><code>@Service
+public class MessageProducer {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendMessage(String message) {
+        rabbitTemplate.convertAndSend("my-exchange", "my-routing-key", message);
+    }
+
+    public void sendObjectMessage(MyObject object) {
+        rabbitTemplate.convertAndSend("my-exchange", "my-routing-key", object);
+    }
+}</code></pre>
+
+            <h3>13.5 接收消息</h3>
+            <p>使用 @RabbitListener 注解接收消息：</p>
+            <pre><code>@Component
+public class MessageConsumer {
+
+    @RabbitListener(queues = "my-queue")
+    public void receiveMessage(String message) {
+        System.out.println("收到消息: " + message);
+    }
+
+    @RabbitListener(queues = "my-queue")
+    public void receiveObjectMessage(MyObject object) {
+        System.out.println("收到对象消息: " + object);
+    }
+}</code></pre>
+
+            <h3>13.6 高级配置</h3>
+            <h4>13.6.1 配置确认回调</h4>
+            <pre><code>@Bean
+public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    RabbitTemplate template = new RabbitTemplate(connectionFactory);
+    template.setConfirmCallback((correlationData, ack, cause) -> {
+        if (ack) {
+            System.out.println("消息发送成功");
+        } else {
+            System.out.println("消息发送失败: " + cause);
+        }
+    });
+    template.setReturnsCallback(returned -> {
+        System.out.println("消息被退回: " + 
+            "交换机: " + returned.getExchange() + 
+            ", 路由键: " + returned.getRoutingKey() +
+            ", 原因: " + returned.getReplyText());
+    });
+    return template;
+}
+
+// 启用确认回调
+@Bean
+public ConnectionFactory connectionFactory() {
+    CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
+    connectionFactory.setUsername("guest");
+    connectionFactory.setPassword("guest");
+    connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
+    connectionFactory.setPublisherReturns(true);
+    return connectionFactory;
+}</code></pre>
+
+            <h4>13.6.2 配置死信队列</h4>
+            <pre><code>@Bean
+public Queue orderQueue() {
+    Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+    args.put("x-dead-letter-exchange", "order.dead.letter.exchange");
+    args.put("x-dead-letter-routing-key", "order.dead");
+    args.put("x-message-ttl", 60000); // 1分钟
+    return new Queue("order.queue", true, false, false, args);
+}
+
+@Bean
+public DirectExchange orderExchange() {
+    return new DirectExchange("order.exchange");
+}
+
+@Bean
+public Binding orderBinding() {
+    return BindingBuilder.bind(orderQueue()).to(orderExchange()).with("order");
+}
+
+@Bean
+public Queue deadLetterQueue() {
+    return new Queue("order.dead.letter.queue", true);
+}
+
+@Bean
+public DirectExchange deadLetterExchange() {
+    return new DirectExchange("order.dead.letter.exchange");
+}
+
+@Bean
+public Binding deadLetterBinding() {
+    return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with("order.dead");
+}</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">最佳实践</div>
+                <p>使用 Spring AMQP 可以大大简化 RabbitMQ 的使用，特别是在 Spring Boot 应用中。利用 Spring 的依赖注入和声明式编程模型，可以更方便地配置和使用消息队列。</p>
+            </div>
+        </section>
+
+        <section id="error-handling" class="card">
+            <h2>14. 错误处理与重试机制</h2>
+            
+            <h3>14.1 基本错误处理</h3>
+            <p>使用 try-catch 捕获消费者处理消息时的异常：</p>
+            <pre><code>@RabbitListener(queues = "my-queue")
+public void receiveMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
+    try {
+        // 处理消息
+        System.out.println("处理消息: " + message);
+        // 确认消息
+        channel.basicAck(tag, false);
+    } catch (Exception e) {
+        try {
+            // 拒绝消息，重新入队
+            channel.basicNack(tag, false, true);
+        } catch (IOException ex) {
+            // 处理通道异常
+        }
+    }
+}</code></pre>
+
+            <h3>14.2 Spring Retry 集成</h3>
+            <p>使用 Spring Retry 实现消息处理的重试机制：</p>
+            <pre><code>// 添加依赖
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.retry&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-retry&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+// 配置重试
+@Configuration
+@EnableRetry
+public class RetryConfig {
+}
+
+// 在服务中使用重试
+@Service
+public class OrderService {
+
+    @Retryable(
+        value = {OrderProcessException.class},
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 1000, multiplier = 2)
+    )
+    public void processOrder(Order order) throws OrderProcessException {
+        // 处理订单
+        if (someCondition) {
+            throw new OrderProcessException("订单处理失败");
+        }
+    }
+
+    @Recover
+    public void recoverOrderProcess(OrderProcessException e, Order order) {
+        // 重试失败后的恢复处理
+        System.out.println("重试失败，执行补偿逻辑: " + order);
+    }
+}</code></pre>
+
+            <h3>14.3 Spring AMQP 重试机制</h3>
+            <p>配置 Spring AMQP 的重试机制：</p>
+            <pre><code>@Bean
+public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+        ConnectionFactory connectionFactory,
+        MessageConverter messageConverter) {
+        
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory);
+    factory.setMessageConverter(messageConverter);
+    
+    // 配置消费者确认模式
+    factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+    
+    // 配置重试
+    RetryInterceptorBuilder<?> retryInterceptorBuilder = RetryInterceptorBuilder.stateless()
+        .maxAttempts(3)
+        .backOffOptions(1000, 2.0, 10000)
+        .recoverer(new RejectAndDontRequeueRecoverer()); // 重试失败后拒绝消息
+    
+    factory.setAdviceChain(new Advice[] {retryInterceptorBuilder.build()});
+    
+    return factory;
+}</code></pre>
+
+            <h3>14.4 错误处理策略</h3>
+            <p>不同的错误处理策略：</p>
+            <ol>
+                <li><strong>重试后重新入队</strong>：适用于临时性错误，如网络抖动</li>
+                <li><strong>重试后发送到死信队列</strong>：适用于处理失败的消息</li>
+                <li><strong>重试后丢弃</strong>：适用于不重要的消息</li>
+                <li><strong>记录错误并继续</strong>：适用于可容忍错误的场景</li>
+            </ol>
+
+            <pre><code>// 重试后发送到死信队列
+@Bean
+public MessageRecoverer messageRecoverer(RabbitTemplate rabbitTemplate) {
+    return new RepublishMessageRecoverer(rabbitTemplate, "error.exchange", "error.routing.key");
+}</code></pre>
+
+            <div class="note">
+                <div class="note-title">最佳实践</div>
+                <p>为不同类型的消息和错误设计不同的处理策略。对于重要的业务消息，应该实现重试机制和死信处理；对于非关键消息，可以采用更简单的策略。始终记录错误信息，以便后续分析和改进。</p>
+            </div>
+        </section>
+
+        <section id="consumer-prefetch" class="card">
+            <h2>15. 消费者预取与负载均衡</h2>
+            
+            <h3>15.1 预取计数的作用</h3>
+            <p>预取计数（prefetch count）控制 RabbitMQ 一次发送给消费者的未确认消息数量，对消费者负载均衡和性能有重要影响。</p>
+            <ul>
+                <li><strong>过小的预取值</strong>：降低吞吐量，因为消息传递速度受限</li>
+                <li><strong>过大的预取值</strong>：可能导致某些消费者过载，而其他消费者空闲</li>
+                <li><strong>合适的预取值</strong>：根据消费者处理能力和消息处理时间决定</li>
+            </ul>
+
+            <h3>15.2 设置预取计数</h3>
+            <p>使用原生 API 设置预取计数：</p>
+            <pre><code>// 每次只预取一条消息
+int prefetchCount = 1;
+channel.basicQos(prefetchCount);
+
+// 也可以设置全局模式
+boolean global = true; // 适用于通道上的所有消费者
+channel.basicQos(prefetchCount, global);</code></pre>
+
+            <h3>15.3 在 Spring AMQP 中设置预取</h3>
+            <pre><code>@Bean
+public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+        ConnectionFactory connectionFactory) {
+        
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory);
+    
+    // 设置预取计数
+    factory.setPrefetchCount(10);
+    
+    return factory;
+}
+
+// 或者在应用配置中设置
+// application.properties
+spring.rabbitmq.listener.simple.prefetch=10</code></pre>
+
+            <h3>15.4 负载均衡考虑</h3>
+            <p>实现有效的负载均衡：</p>
+            <ol>
+                <li><strong>根据消费者能力设置预取</strong>：处理能力强的消费者可以设置更高的预取值</li>
+                <li><strong>考虑消息处理时间</strong>：处理时间长的消息应该设置较小的预取值</li>
+                <li><strong>动态调整</strong>：根据系统负载情况动态调整预取值</li>
+                <li><strong>使用手动确认</strong>：结合手动确认模式更精确地控制消息流</li>
+            </ol>
+
+            <h3>15.5 并发消费者</h3>
+            <p>在 Spring AMQP 中配置并发消费者：</p>
+            <pre><code>@Bean
+public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+        ConnectionFactory connectionFactory) {
+        
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory);
+    
+    // 设置并发消费者数量
+    factory.setConcurrentConsumers(5); // 初始并发消费者数
+    factory.setMaxConcurrentConsumers(10); // 最大并发消费者数
+    
+    return factory;
+}
+
+// 或者在应用配置中设置
+// application.properties
+spring.rabbitmq.listener.simple.concurrency=5
+spring.rabbitmq.listener.simple.max-concurrency=10</code></pre>
+
+            <div class="tip">
+                <div class="tip-title">性能调优</div>
+                <p>在调整预取计数和并发消费者时，建议从较小的值开始，然后根据实际负载和性能指标逐步调整。监控系统的消息吞吐量、处理延迟和资源使用情况，找到最佳配置。</p>
             </div>
         </section>
 
