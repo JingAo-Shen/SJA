@@ -1049,31 +1049,49 @@ function useWebSocket(url) {
         };
         
         ws.onmessage = (event) => {
-            setMessages(prev => [...prev, event.data]);
+            try {
+                // 尝试解析JSON数据
+                const data = JSON.parse(event.data);
+                setMessages(prev => [...prev, data]);
+            } catch (e) {
+                // 如果不是JSON，直接添加文本数据
+                setMessages(prev => [...prev, event.data]);
+            }
         };
         
         ws.onclose = () => {
             setIsConnected(false);
         };
         
+        ws.onerror = (error) => {
+            console.error('WebSocket错误:', error);
+        };
+        
         setSocket(ws);
         
         // 清理函数
         return () => {
-            ws.close();
+            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+                ws.close();
+            }
         };
     }, [url]);
     
     // 发送消息方法
     const sendMessage = useCallback((data) => {
-        if (socket && isConnected) {
-            socket.send(data);
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            // 如果数据是对象，转换为JSON字符串
+            if (typeof data === 'object') {
+                socket.send(JSON.stringify(data));
+            } else {
+                socket.send(data);
+            }
             return true;
         }
         return false;
-    }, [socket, isConnected]);
+    }, [socket]);
     
-    return { isConnected, messages, sendMessage };
+    return { socket, isConnected, messages, sendMessage };
 }
 
 // 在组件中使用
@@ -1090,18 +1108,33 @@ function ChatComponent() {
     
     return (
         <div>
-            <div>{isConnected ? '已连接' : '未连接'}</div>
-            <ul>
-                {messages.map((msg, index) => (
-                    <li key={index}>{msg}</li>
-                ))}
-            </ul>
-            <form onSubmit={handleSubmit}>
+            <div className="connection-status">
+                状态: {isConnected ? '已连接' : '未连接'}
+            </div>
+            <div className="messages-container">
+                <ul>
+                    {messages.map((msg, index) => (
+                        <li key={index}>
+                            {typeof msg === 'object' 
+                                ? JSON.stringify(msg) 
+                                : msg}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <form onSubmit={handleSubmit} className="message-form">
                 <input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="输入消息..."
+                    disabled={!isConnected}
                 />
-                <button type="submit">发送</button>
+                <button 
+                    type="submit" 
+                    disabled={!isConnected || !inputValue.trim()}
+                >
+                    发送
+                </button>
             </form>
         </div>
     );
@@ -2153,6 +2186,1283 @@ public class TradeResponse {
                 </ol>
                 <p>这个练习将帮助你理解 Java WebSocket 编程的核心概念和最佳实践。</p>
             </div>
+        </section>
+
+        <section id="python-websocket">
+            <h2>7. Python中的WebSocket实现</h2>
+            <p>Python拥有多个强大的WebSocket库，可以轻松实现客户端和服务器端WebSocket应用。接下来我们将介绍几个常用的Python WebSocket库及其使用方法。</p>
+
+            <h3>7.1 websockets库</h3>
+            <p><code>websockets</code>是一个流行的Python库，提供了异步WebSocket客户端和服务器端实现，基于Python的asyncio库。</p>
+
+            <h4>7.1.1 安装</h4>
+            <pre><code class="bash">pip install websockets</code></pre>
+
+            <h4>7.1.2 服务器端实现</h4>
+            <p>以下是一个简单的WebSocket服务器实现：</p>
+
+            <pre><code class="python">#!/usr/bin/env python
+
+import asyncio
+import websockets
+import json
+from datetime import datetime
+
+# 存储所有连接的客户端
+connected_clients = set()
+
+async def chat(websocket, path):
+    # 注册客户端
+    connected_clients.add(websocket)
+    
+    try:
+        # 发送欢迎消息
+        await websocket.send(json.dumps({
+            "type": "system",
+            "message": "欢迎加入聊天室！",
+            "timestamp": datetime.now().strftime("%H:%M:%S")
+        }))
+        
+        # 通知其他用户有新用户加入
+        if len(connected_clients) > 1:
+            await notify_others(websocket, "system", "新用户加入了聊天室")
+        
+        # 接收消息并广播
+        async for message in websocket:
+            try:
+                data = json.loads(message)
+                # 添加时间戳
+                data["timestamp"] = datetime.now().strftime("%H:%M:%S")
+                
+                # 广播给所有客户端
+                await broadcast(json.dumps(data))
+            except json.JSONDecodeError:
+                # 处理非JSON格式的消息
+                await websocket.send(json.dumps({
+                    "type": "error",
+                    "message": "消息格式错误，请发送JSON格式",
+                    "timestamp": datetime.now().strftime("%H:%M:%S")
+                }))
+                
+    except websockets.exceptions.ConnectionClosed:
+        print("客户端连接断开")
+    finally:
+        # 客户端断开连接时，从集合中移除
+        connected_clients.remove(websocket)
+        # 通知其他用户有用户离开
+        if connected_clients:
+            await notify_others(websocket, "system", "有用户离开了聊天室")
+
+async def broadcast(message):
+    """向所有连接的客户端广播消息"""
+    if connected_clients:
+        await asyncio.gather(
+            *[client.send(message) for client in connected_clients]
+        )
+
+async def notify_others(sender, msg_type, message):
+    """通知除发送者外的所有客户端"""
+    others = connected_clients - {sender}
+    if others:
+        notification = json.dumps({
+            "type": msg_type,
+            "message": message,
+            "timestamp": datetime.now().strftime("%H:%M:%S")
+        })
+        await asyncio.gather(*[client.send(notification) for client in others])
+
+# 启动WebSocket服务器
+start_server = websockets.serve(chat, "localhost", 8765)
+
+print("WebSocket服务器启动在 ws://localhost:8765")
+
+# 启动事件循环
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()</code></pre>
+
+            <h4>7.1.3 客户端实现</h4>
+            <p>以下是一个基于asyncio的WebSocket客户端实现：</p>
+
+            <pre><code class="python">#!/usr/bin/env python
+
+import asyncio
+import websockets
+import json
+import aioconsole
+
+async def receive_messages(websocket):
+    """接收并显示服务器发送的消息"""
+    try:
+        async for message in websocket:
+            data = json.loads(message)
+            
+            if data["type"] == "system":
+                print(f"\n[系统消息 {data['timestamp']}] {data['message']}")
+            elif data["type"] == "chat":
+                print(f"\n[{data['username']} {data['timestamp']}] {data['message']}")
+            elif data["type"] == "error":
+                print(f"\n[错误 {data['timestamp']}] {data['message']}")
+    except websockets.exceptions.ConnectionClosed:
+        print("\n连接已关闭")
+
+async def send_messages(websocket, username):
+    """从控制台读取消息并发送到服务器"""
+    try:
+        while True:
+            message = await aioconsole.ainput("") 
+            
+            if message.lower() == "/quit":
+                break
+                
+            await websocket.send(json.dumps({
+                "type": "chat",
+                "username": username,
+                "message": message
+            }))
+    except websockets.exceptions.ConnectionClosed:
+        pass
+
+async def chat_client():
+    # 获取用户名
+    username = input("请输入您的用户名: ")
+    
+    # 连接到WebSocket服务器
+    uri = "ws://localhost:8765"
+    print(f"正在连接到 {uri}...")
+    
+    try:
+        async with websockets.connect(uri) as websocket:
+            print("连接成功！输入消息开始聊天，输入 /quit 退出。")
+            
+            # 创建两个任务：一个接收消息，一个发送消息
+            receive_task = asyncio.create_task(receive_messages(websocket))
+            send_task = asyncio.create_task(send_messages(websocket, username))
+            
+            # 等待任一任务完成
+            done, pending = await asyncio.wait(
+                [receive_task, send_task],
+                return_when=asyncio.FIRST_COMPLETED
+            )
+            
+            # 取消未完成的任务
+            for task in pending:
+                task.cancel()
+                
+    except (websockets.exceptions.InvalidStatusCode, ConnectionRefusedError) as e:
+        print(f"连接错误: {e}")
+    except Exception as e:
+        print(f"发生未知错误: {e}")
+
+# 运行客户端
+asyncio.run(chat_client())</code></pre>
+
+            <div class="note">
+                <p><strong>提示：</strong> 要运行上面的客户端示例，您需要安装 <code>aioconsole</code> 库用于异步控制台输入：<code>pip install aioconsole</code></p>
+            </div>
+
+            <h3>7.2 FastAPI与WebSockets</h3>
+            <p>FastAPI是一个现代、高性能的Python Web框架，它也提供了内置的WebSocket支持。</p>
+
+            <h4>7.2.1 安装</h4>
+            <pre><code class="bash">pip install fastapi uvicorn</code></pre>
+
+            <h4>7.2.2 实现聊天服务器</h4>
+            <p>下面是一个基于FastAPI的WebSocket聊天服务器实现：</p>
+
+            <pre><code class="python">from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Dict, Optional
+import json
+from datetime import datetime, timedelta
+from pydantic import BaseModel
+import jwt
+from passlib.context import CryptContext
+
+# 创建FastAPI应用
+app = FastAPI(title="FastAPI WebSocket聊天")
+
+# 配置CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 在生产环境中应该限制来源
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 用于储存用户数据（实际应用中应使用数据库）
+fake_users_db = {
+    "admin": {
+        "username": "admin",
+        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",  # "password"
+        "disabled": False,
+    }
+}
+
+# 用于JWT认证的密钥
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# 密码加密上下文
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# OAuth2 密码流程
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# 用户模型
+class User(BaseModel):
+    username: str
+    disabled: Optional[bool] = None
+
+class UserInDB(User):
+    hashed_password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+# WebSocket连接管理器
+class ConnectionManager:
+    def __init__(self):
+        # 存储活跃的WebSocket连接
+        self.active_connections: Dict[str, WebSocket] = {}
+
+    async def connect(self, websocket: WebSocket, user_id: str):
+        await websocket.accept()
+        self.active_connections[user_id] = websocket
+        
+        # 系统消息 - 用户加入
+        await self.broadcast(
+            json.dumps({
+                "type": "system",
+                "content": f"{user_id} 加入了聊天",
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+        )
+
+    def disconnect(self, user_id: str):
+        if user_id in self.active_connections:
+            del self.active_connections[user_id]
+
+    async def send_personal_message(self, message: str, user_id: str):
+        if user_id in self.active_connections:
+            await self.active_connections[user_id].send_text(message)
+
+    async def broadcast(self, message: str):
+        # 向所有连接的客户端广播消息
+        for connection in self.active_connections.values():
+            await connection.send_text(message)
+
+# 创建连接管理器实例
+manager = ConnectionManager()
+
+# 辅助函数
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def get_user(db, username: str):
+    if username in db:
+        user_dict = db[username]
+        return UserInDB(**user_dict)
+
+def authenticate_user(fake_db, username: str, password: str):
+    user = get_user(fake_db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except jwt.PyJWTError:
+        raise credentials_exception
+    user = get_user(fake_users_db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+# 路由
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    # 认证用户
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # 创建访问令牌
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.websocket("/ws/{token}")
+async def websocket_endpoint(websocket: WebSocket, token: str):
+    try:
+        # 验证令牌并获取用户
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None or username not in fake_users_db:
+            await websocket.close(code=1008, reason="Invalid token")
+            return
+            
+        # 接受WebSocket连接
+        await manager.connect(websocket, username)
+        
+        try:
+            # 监听WebSocket消息
+            while True:
+                data = await websocket.receive_text()
+                
+                # 解析消息数据
+                try:
+                    message_data = json.loads(data)
+                    # 添加发送者和时间戳
+                    message_data["sender"] = username
+                    message_data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
+                    # 广播消息给所有用户
+                    await manager.broadcast(json.dumps(message_data))
+                    
+                except json.JSONDecodeError:
+                    # 发送错误消息给用户
+                    await manager.send_personal_message(
+                        json.dumps({
+                            "type": "error",
+                            "content": "Invalid JSON format",
+                            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }),
+                        username
+                    )
+                    
+        except WebSocketDisconnect:
+            # 用户断开连接
+            manager.disconnect(username)
+            # 通知其他用户
+            await manager.broadcast(
+                json.dumps({
+                    "type": "system",
+                    "content": f"{username} 离开了聊天",
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                })
+            )
+    except jwt.PyJWTError:
+        await websocket.close(code=1008, reason="Invalid token")
+
+# 前端页面路由（实际应用中应该使用单独的前端）
+@app.get("/")
+async def get():
+    return {"message": "WebSocket聊天服务器正在运行"}
+
+# 运行应用（使用命令：uvicorn app:app --reload）
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)</code></pre>
+
+            <h4>7.2.3 HTML客户端页面</h4>
+            <p>下面是一个配合FastAPI WebSocket服务器使用的简单HTML客户端：</p>
+
+            <pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;WebSocket聊天室&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #login-form, #chat-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .system {
+            background-color: #f0f0f0;
+            color: #555;
+            font-style: italic;
+        }
+        .user {
+            background-color: #e1f5fe;
+        }
+        .self {
+            background-color: #e8f5e9;
+            text-align: right;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .hidden {
+            display: none;
+        }
+        input[type="text"], input[type="password"], button {
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        #message-input {
+            width: 80%;
+            margin-right: 10px;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #999;
+            display: block;
+        }
+        .sender {
+            font-weight: bold;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;WebSocket聊天室&lt;/h1&gt;
+    
+    &lt;div id="login-form"&gt;
+        &lt;h2&gt;登录&lt;/h2&gt;
+        &lt;div&gt;
+            &lt;label for="username"&gt;用户名：&lt;/label&gt;
+            &lt;input type="text" id="username" placeholder="输入用户名" required&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;label for="password"&gt;密码：&lt;/label&gt;
+            &lt;input type="password" id="password" placeholder="输入密码" required&gt;
+        &lt;/div&gt;
+        &lt;button id="login-btn"&gt;登录&lt;/button&gt;
+        &lt;p id="login-error" style="color: red; display: none;"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+    
+    &lt;div id="chat-container" class="hidden"&gt;
+        &lt;h2&gt;聊天室&lt;/h2&gt;
+        &lt;div id="messages"&gt;&lt;/div&gt;
+        &lt;div id="input-container"&gt;
+            &lt;input type="text" id="message-input" placeholder="输入消息..."&gt;
+            &lt;button id="send-btn"&gt;发送&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;script&gt;
+        // DOM元素
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const chatContainer = document.getElementById('chat-container');
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const loginBtn = document.getElementById('login-btn');
+        
+        let socket = null;
+        let token = null;
+        let username = '';
+        
+        // 登录处理
+        loginBtn.addEventListener('click', async () => {
+            username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showLoginError('用户名和密码不能为空');
+                return;
+            }
+            
+            try {
+                // 发送登录请求
+                const response = await fetch('/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    token = data.access_token;
+                    // 登录成功，切换到聊天界面
+                    loginForm.classList.add('hidden');
+                    chatContainer.classList.remove('hidden');
+                    // 连接WebSocket
+                    connectWebSocket();
+                } else {
+                    showLoginError(data.detail || '登录失败');
+                }
+            } catch (error) {
+                showLoginError('连接服务器失败');
+                console.error('Login error:', error);
+            }
+        });
+        
+        // 显示登录错误
+        function showLoginError(message) {
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+        }
+        
+        // 连接WebSocket
+        function connectWebSocket() {
+            // 使用JWT token建立WebSocket连接
+            socket = new WebSocket(`ws://${window.location.host}/ws/${token}`);
+            
+            // 连接打开
+            socket.onopen = function(event) {
+                addMessage('system', '已连接到聊天服务器');
+            };
+            
+            // 收到消息
+            socket.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                
+                if (message.type === 'system') {
+                    addMessage('system', message.content, message.timestamp);
+                } else if (message.type === 'chat') {
+                    const isSelf = message.sender === username;
+                    addMessage(isSelf ? 'self' : 'user', message.content, message.timestamp, message.sender);
+                } else if (message.type === 'error') {
+                    addMessage('error', message.content, message.timestamp);
+                }
+            };
+            
+            // 连接关闭
+            socket.onclose = function(event) {
+                addMessage('system', '与服务器的连接已关闭');
+                // 尝试重新连接
+                setTimeout(() => {
+                    if (token) {
+                        connectWebSocket();
+                    }
+                }, 5000);
+            };
+            
+            // 连接错误
+            socket.onerror = function(error) {
+                addMessage('error', '连接错误');
+                console.error('WebSocket error:', error);
+            };
+        }
+        
+        // 发送消息
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message && socket && socket.readyState === WebSocket.OPEN) {
+                // 发送聊天消息
+                socket.send(JSON.stringify({
+                    type: 'chat',
+                    content: message
+                }));
+                
+                // 清空输入框
+                messageInput.value = '';
+            }
+        }
+        
+        // 向聊天窗口添加消息
+        function addMessage(type, content, timestamp = null, sender = null) {
+            const messageElem = document.createElement('div');
+            messageElem.className = `message ${type}`;
+            
+            let messageContent = '';
+            
+            if (sender && type !== 'self') {
+                messageContent += `&lt;span class="sender"&gt;${sender}&lt;/span&gt;: `;
+            }
+            
+            messageContent += content;
+            
+            if (timestamp) {
+                messageContent += `&lt;span class="timestamp"&gt;${timestamp}&lt;/span&gt;`;
+            }
+            
+            messageElem.innerHTML = messageContent;
+            messagesDiv.appendChild(messageElem);
+            
+            // 滚动到底部
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+            <h3>7.3 其他Python WebSocket库</h3>
+            <p>除了上述库外，Python还有其他几个WebSocket库值得关注：</p>
+            
+            <ul>
+                <li><strong>aiohttp</strong> - 提供异步WebSocket客户端和服务器支持</li>
+                <li><strong>Tornado</strong> - 包含WebSocket支持的异步网络库</li>
+                <li><strong>Django Channels</strong> - 为Django添加WebSocket支持</li>
+                <li><strong>Flask-SocketIO</strong> - 将Socket.IO集成到Flask应用中</li>
+                <li><strong>pywebsocket</strong> - 适用于WSGI服务器的WebSocket实现</li>
+            </ul>
+
+            <div class="comparison-table">
+                <h4>Python WebSocket库对比</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>库</th>
+                            <th>异步支持</th>
+                            <th>框架集成</th>
+                            <th>类型</th>
+                            <th>适用场景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>websockets</td>
+                            <td>是 (asyncio)</td>
+                            <td>独立</td>
+                            <td>纯WebSocket</td>
+                            <td>需要完全控制WebSocket实现的应用</td>
+                        </tr>
+                        <tr>
+                            <td>FastAPI</td>
+                            <td>是 (asyncio)</td>
+                            <td>FastAPI</td>
+                            <td>纯WebSocket</td>
+                            <td>构建REST API同时需要WebSocket功能</td>
+                        </tr>
+                        <tr>
+                            <td>aiohttp</td>
+                            <td>是 (asyncio)</td>
+                            <td>aiohttp</td>
+                            <td>纯WebSocket</td>
+                            <td>异步HTTP客户端/服务器需要WebSocket</td>
+                        </tr>
+                        <tr>
+                            <td>Django Channels</td>
+                            <td>是 (asyncio)</td>
+                            <td>Django</td>
+                            <td>多协议</td>
+                            <td>在Django应用中添加实时功能</td>
+                        </tr>
+                        <tr>
+                            <td>Flask-SocketIO</td>
+                            <td>可选</td>
+                            <td>Flask</td>
+                            <td>Socket.IO</td>
+                            <td>在Flask应用中快速添加WebSocket功能</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>7.4 选择合适的Python WebSocket库的考虑因素</h3>
+            <ul>
+                <li><strong>现有技术栈</strong>：如果您已经使用Django或Flask，选择与其集成的WebSocket库可能更容易</li>
+                <li><strong>性能需求</strong>：对于高性能应用，基于asyncio的库通常是更好的选择</li>
+                <li><strong>跨平台兼容性</strong>：如果需要支持旧浏览器，考虑提供回退机制的库</li>
+                <li><strong>扩展性</strong>：评估是否需要自定义WebSocket协议或其他功能</li>
+                <li><strong>学习曲线</strong>：一些库比其他库更容易上手</li>
+            </ul>
+
+            <div class="practice">
+                <h4>Python WebSocket练习</h4>
+                <p>尝试实现以下WebSocket练习：</p>
+                <ol>
+                    <li>使用websockets库创建一个简单的聊天服务器和客户端</li>
+                    <li>在FastAPI中实现一个实时数据仪表板，使用WebSocket推送数据更新</li>
+                    <li>创建一个多房间聊天应用，支持用户创建和加入不同的聊天室</li>
+                    <li>实现一个协作绘图应用，使用WebSocket同步用户的绘图动作</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="practice">
+            <div class="practice">
+                <h4>实践练习</h4>
+                <p>实现一个简单的实时聊天应用，包含以下功能：</p>
+                <ol>
+                    <li>使用 JSR 356 或 Spring WebSocket 创建服务端</li>
+                    <li>实现用户加入/离开通知</li>
+                    <li>支持一对一私聊和群聊</li>
+                    <li>添加基本的用户认证</li>
+                    <li>实现消息持久化（可选）</li>
+                </ol>
+                <p>这个练习将帮助你理解 Java WebSocket 编程的核心概念和最佳实践。</p>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <h2>WebSocket连接过程详解</h2>
+            
+            <section class="section">
+                <h3>连接建立过程</h3>
+                <p>WebSocket连接的建立过程分为两个主要阶段：HTTP握手和WebSocket协议升级。</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-http">// 客户端发起握手请求
+GET /chat HTTP/1.1
+Host: server.example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Sec-WebSocket-Version: 13
+Origin: http://example.com
+
+// 服务器响应
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</code></pre>
+                </div>
+                
+                <h4>握手请求关键字段说明：</h4>
+                <ul>
+                    <li><code>Upgrade: websocket</code> - 表示请求升级到WebSocket协议</li>
+                    <li><code>Connection: Upgrade</code> - 表示这是一个升级连接请求</li>
+                    <li><code>Sec-WebSocket-Key</code> - 客户端生成的随机密钥，用于安全验证</li>
+                    <li><code>Sec-WebSocket-Version</code> - 指定使用的WebSocket协议版本</li>
+                    <li><code>Origin</code> - 表示请求的来源，用于同源策略检查</li>
+                </ul>
+                
+                <h4>握手响应关键字段说明：</h4>
+                <ul>
+                    <li><code>HTTP/1.1 101 Switching Protocols</code> - 表示协议切换成功</li>
+                    <li><code>Sec-WebSocket-Accept</code> - 服务器根据客户端密钥计算出的响应值</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>连接状态转换</h3>
+                <p>WebSocket连接在其生命周期中会经历不同的状态：</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-javascript">// WebSocket状态常量
+const CONNECTING = 0;  // 连接尚未建立
+const OPEN = 1;        // 连接已建立，可以通信
+const CLOSING = 2;     // 连接正在关闭
+const CLOSED = 3;      // 连接已关闭或无法建立</code></pre>
+                </div>
+                
+                <h4>状态转换过程：</h4>
+                <ol>
+                    <li><strong>CONNECTING (0)</strong>
+                        <ul>
+                            <li>创建WebSocket对象时进入此状态</li>
+                            <li>正在进行HTTP握手</li>
+                            <li>可以监听onopen和onerror事件</li>
+                        </ul>
+                    </li>
+                    <li><strong>OPEN (1)</strong>
+                        <ul>
+                            <li>握手成功，连接已建立</li>
+                            <li>可以发送和接收消息</li>
+                            <li>可以监听onmessage事件</li>
+                        </ul>
+                    </li>
+                    <li><strong>CLOSING (2)</strong>
+                        <ul>
+                            <li>正在关闭连接</li>
+                            <li>正在进行关闭握手</li>
+                            <li>不再发送新消息</li>
+                        </ul>
+                    </li>
+                    <li><strong>CLOSED (3)</strong>
+                        <ul>
+                            <li>连接已完全关闭</li>
+                            <li>可以监听onclose事件</li>
+                            <li>无法发送或接收消息</li>
+                        </ul>
+                    </li>
+                </ol>
+            </section>
+            
+            <section class="section">
+                <h3>消息帧格式</h3>
+                <p>WebSocket消息以帧的形式传输，每个帧包含以下部分：</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-text">0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-------+-+-------------+-------------------------------+
+|F|R|R|R| opcode|M| Payload len |    Extended payload length    |
+|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |
+|N|V|V|V|       |S|             |   (if payload len==126/127)   |
+| |1|2|3|       |K|             |                               |
++-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
+|     Extended payload length continued, if payload len == 127  |
++ - - - - - - - - - - - - - - - +-------------------------------+
+|                               |Masking-key, if MASK set to 1  |
++-------------------------------+-------------------------------+
+| Masking-key (continued)       |          Payload Data         |
++-------------------------------- - - - - - - - - - - - - - - - +
+:                     Payload Data continued ...                :
++ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+|                     Payload Data continued ...                |
++---------------------------------------------------------------+</code></pre>
+                </div>
+                
+                <h4>帧字段说明：</h4>
+                <ul>
+                    <li><strong>FIN (1 bit)</strong> - 表示这是消息的最后一个片段</li>
+                    <li><strong>RSV1, RSV2, RSV3 (各1 bit)</strong> - 保留位，必须为0</li>
+                    <li><strong>Opcode (4 bits)</strong> - 定义帧的类型：
+                        <ul>
+                            <li>0x0: 继续帧</li>
+                            <li>0x1: 文本帧</li>
+                            <li>0x2: 二进制帧</li>
+                            <li>0x8: 连接关闭</li>
+                            <li>0x9: Ping</li>
+                            <li>0xA: Pong</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mask (1 bit)</strong> - 表示是否使用掩码</li>
+                    <li><strong>Payload Length (7 bits)</strong> - 负载长度</li>
+                    <li><strong>Masking-key (32 bits)</strong> - 掩码密钥（如果Mask=1）</li>
+                    <li><strong>Payload Data</strong> - 实际数据</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>心跳机制</h3>
+                <p>WebSocket协议通过Ping/Pong帧实现心跳机制，用于保持连接活跃和检测连接状态。</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-javascript">// 服务器发送Ping帧
+ws.ping('heartbeat');
+
+// 客户端自动响应Pong帧
+ws.on('pong', (data) => {
+    console.log('收到Pong响应:', data);
+});</code></pre>
+                </div>
+                
+                <h4>心跳机制的作用：</h4>
+                <ul>
+                    <li>保持连接活跃，防止被中间设备（如防火墙）断开</li>
+                    <li>检测连接是否仍然有效</li>
+                    <li>测量网络延迟</li>
+                    <li>触发网络层保活机制</li>
+                </ul>
+                
+                <h4>心跳实现建议：</h4>
+                <ul>
+                    <li>服务器定期发送Ping帧（如每30秒）</li>
+                    <li>客户端收到Ping后自动回复Pong</li>
+                    <li>如果多次未收到Pong响应，可以认为连接已断开</li>
+                    <li>可以根据网络状况动态调整心跳间隔</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>错误处理与重连机制</h3>
+                <p>WebSocket连接可能会因为各种原因断开，需要实现适当的错误处理和重连机制。</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-javascript">class WebSocketClient {
+    constructor(url) {
+        this.url = url;
+        this.ws = null;
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectDelay = 1000;
+        this.connect();
+    }
+    
+    connect() {
+        this.ws = new WebSocket(this.url);
+        
+        this.ws.onopen = () => {
+            console.log('连接已建立');
+            this.reconnectAttempts = 0;
+        };
+        
+        this.ws.onclose = (event) => {
+            console.log('连接已关闭:', event.code, event.reason);
+            this.handleReconnect();
+        };
+        
+        this.ws.onerror = (error) => {
+            console.error('连接错误:', error);
+        };
+    }
+    
+    handleReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+            
+            console.log(`将在 ${delay}ms 后尝试重连 (尝试 ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+            
+            setTimeout(() => {
+                this.connect();
+            }, delay);
+        } else {
+            console.error('达到最大重连次数，停止重连');
+        }
+    }
+}</code></pre>
+                </div>
+                
+                <h4>错误处理要点：</h4>
+                <ul>
+                    <li>监听onerror事件处理连接错误</li>
+                    <li>监听onclose事件处理连接关闭</li>
+                    <li>实现指数退避重连策略</li>
+                    <li>设置最大重连次数限制</li>
+                    <li>在重连过程中保持用户界面响应</li>
+                </ul>
+                
+                <h4>常见错误码：</h4>
+                <ul>
+                    <li>1000: 正常关闭</li>
+                    <li>1001: 端点离开</li>
+                    <li>1002: 协议错误</li>
+                    <li>1003: 不支持的数据类型</li>
+                    <li>1006: 异常关闭</li>
+                    <li>1007: 无效数据</li>
+                    <li>1008: 策略违规</li>
+                    <li>1009: 消息太大</li>
+                    <li>1010: 需要扩展</li>
+                    <li>1011: 内部错误</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>实践练习</h3>
+                <div class="exercise">
+                    <h4>练习：实现一个健壮的WebSocket客户端</h4>
+                    <p>基于上述知识，实现一个具有以下特性的WebSocket客户端：</p>
+                    <ol>
+                        <li>支持自动重连机制</li>
+                        <li>实现心跳检测</li>
+                        <li>处理各种连接状态</li>
+                        <li>支持消息重发机制</li>
+                        <li>提供连接状态监控</li>
+                    </ol>
+                    <p>提示：</p>
+                    <ul>
+                        <li>使用状态机管理连接状态</li>
+                        <li>实现消息队列处理重发</li>
+                        <li>添加详细的日志记录</li>
+                        <li>考虑网络状况对重连策略的影响</li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+
+        <section class="chapter">
+            <h2>WebSocket使用流程</h2>
+            
+            <section class="section">
+                <h3>1. 环境准备</h3>
+                <p>在使用WebSocket之前，需要确保开发环境满足以下要求：</p>
+                <ul>
+                    <li>现代浏览器支持（Chrome、Firefox、Safari、Edge等）</li>
+                    <li>服务器端WebSocket支持（Node.js、Java、Python等）</li>
+                    <li>网络环境允许WebSocket连接（某些网络可能限制WebSocket）</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>2. 服务器端设置</h3>
+                <p>服务器端需要完成以下配置：</p>
+                
+                <h4>2.1 选择WebSocket服务器实现</h4>
+                <ul>
+                    <li>Node.js: ws、Socket.IO、uWebSockets.js</li>
+                    <li>Java: Spring WebSocket、Netty</li>
+                    <li>Python: websockets、Django Channels</li>
+                </ul>
+                
+                <h4>2.2 配置WebSocket服务器</h4>
+                <div class="code-block">
+                    <pre><code class="language-javascript">// Node.js示例
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', function connection(ws) {
+    console.log('新客户端连接');
+    
+    ws.on('message', function incoming(message) {
+        console.log('收到消息:', message);
+        // 处理消息
+    });
+    
+    ws.on('close', function close() {
+        console.log('客户端断开连接');
+    });
+});</code></pre>
+                </div>
+                
+                <h4>2.3 配置安全措施</h4>
+                <ul>
+                    <li>启用WSS（WebSocket Secure）</li>
+                    <li>配置CORS策略</li>
+                    <li>实现身份验证机制</li>
+                    <li>设置消息大小限制</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>3. 客户端实现</h3>
+                <p>客户端需要完成以下步骤：</p>
+                
+                <h4>3.1 创建WebSocket连接</h4>
+                <div class="code-block">
+                    <pre><code class="language-javascript">// 创建WebSocket连接
+const ws = new WebSocket('wss://example.com/ws');
+
+// 连接建立时
+ws.onopen = function() {
+    console.log('连接已建立');
+    // 发送初始消息
+    ws.send('Hello Server!');
+};
+
+// 接收消息时
+ws.onmessage = function(event) {
+    console.log('收到消息:', event.data);
+    // 处理接收到的消息
+};
+
+// 连接关闭时
+ws.onclose = function(event) {
+    console.log('连接已关闭:', event.code, event.reason);
+};
+
+// 发生错误时
+ws.onerror = function(error) {
+    console.error('WebSocket错误:', error);
+};</code></pre>
+                </div>
+                
+                <h4>3.2 实现消息处理</h4>
+                <ul>
+                    <li>定义消息格式（JSON、Protocol Buffers等）</li>
+                    <li>实现消息序列化和反序列化</li>
+                    <li>处理不同类型的消息</li>
+                    <li>实现消息队列和重发机制</li>
+                </ul>
+                
+                <h4>3.3 实现重连机制</h4>
+                <div class="code-block">
+                    <pre><code class="language-javascript">class WebSocketClient {
+    constructor(url) {
+        this.url = url;
+        this.ws = null;
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectDelay = 1000;
+        this.connect();
+    }
+    
+    connect() {
+        this.ws = new WebSocket(this.url);
+        
+        this.ws.onopen = () => {
+            console.log('连接已建立');
+            this.reconnectAttempts = 0;
+        };
+        
+        this.ws.onclose = () => {
+            this.handleReconnect();
+        };
+        
+        this.ws.onerror = (error) => {
+            console.error('连接错误:', error);
+        };
+    }
+    
+    handleReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+            setTimeout(() => this.connect(), delay);
+        }
+    }
+}</code></pre>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h3>4. 测试与调试</h3>
+                <p>开发过程中需要进行以下测试：</p>
+                
+                <h4>4.1 连接测试</h4>
+                <ul>
+                    <li>测试正常连接建立</li>
+                    <li>测试断线重连</li>
+                    <li>测试网络切换场景</li>
+                    <li>测试服务器重启场景</li>
+                </ul>
+                
+                <h4>4.2 消息测试</h4>
+                <ul>
+                    <li>测试消息发送和接收</li>
+                    <li>测试大消息传输</li>
+                    <li>测试消息重发机制</li>
+                    <li>测试消息顺序</li>
+                </ul>
+                
+                <h4>4.3 性能测试</h4>
+                <ul>
+                    <li>测试并发连接数</li>
+                    <li>测试消息吞吐量</li>
+                    <li>测试内存使用情况</li>
+                    <li>测试CPU使用率</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>5. 部署与监控</h3>
+                <p>在生产环境中需要注意：</p>
+                
+                <h4>5.1 部署配置</h4>
+                <ul>
+                    <li>配置负载均衡</li>
+                    <li>设置适当的超时时间</li>
+                    <li>配置防火墙规则</li>
+                    <li>设置SSL证书</li>
+                </ul>
+                
+                <h4>5.2 监控指标</h4>
+                <ul>
+                    <li>连接数统计</li>
+                    <li>消息吞吐量</li>
+                    <li>错误率统计</li>
+                    <li>响应时间监控</li>
+                </ul>
+                
+                <h4>5.3 日志记录</h4>
+                <ul>
+                    <li>记录连接事件</li>
+                    <li>记录错误信息</li>
+                    <li>记录性能指标</li>
+                    <li>实现日志轮转</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>6. 最佳实践</h3>
+                <p>使用WebSocket时应该遵循以下最佳实践：</p>
+                
+                <h4>6.1 连接管理</h4>
+                <ul>
+                    <li>实现优雅的关闭机制</li>
+                    <li>使用心跳保持连接活跃</li>
+                    <li>实现自动重连机制</li>
+                    <li>处理网络切换场景</li>
+                </ul>
+                
+                <h4>6.2 消息处理</h4>
+                <ul>
+                    <li>使用二进制消息减少开销</li>
+                    <li>实现消息压缩</li>
+                    <li>使用消息队列处理积压</li>
+                    <li>实现消息确认机制</li>
+                </ul>
+                
+                <h4>6.3 安全性</h4>
+                <ul>
+                    <li>始终使用WSS（WebSocket Secure）</li>
+                    <li>实现适当的身份验证</li>
+                    <li>验证消息来源</li>
+                    <li>限制消息大小</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h3>7. 常见问题与解决方案</h3>
+                <p>开发过程中可能遇到的常见问题：</p>
+                
+                <h4>7.1 连接问题</h4>
+                <ul>
+                    <li>连接被防火墙阻止
+                        <ul>
+                            <li>解决方案：使用WSS或配置防火墙规则</li>
+                        </ul>
+                    </li>
+                    <li>连接频繁断开
+                        <ul>
+                            <li>解决方案：实现心跳机制和自动重连</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h4>7.2 性能问题</h4>
+                <ul>
+                    <li>消息延迟
+                        <ul>
+                            <li>解决方案：优化消息格式，使用二进制传输</li>
+                        </ul>
+                    </li>
+                    <li>内存泄漏
+                        <ul>
+                            <li>解决方案：正确管理连接和资源</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h4>7.3 兼容性问题</h4>
+                <ul>
+                    <li>浏览器兼容性
+                        <ul>
+                            <li>解决方案：使用polyfill或降级方案</li>
+                        </ul>
+                    </li>
+                    <li>协议版本不匹配
+                        <ul>
+                            <li>解决方案：明确指定协议版本</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
         </section>
 
         <footer>
