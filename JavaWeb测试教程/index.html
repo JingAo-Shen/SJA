@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Web项目测试教程</title>
+    <style>
+        :root {
+            --primary-color: #4a6ee0;
+            --secondary-color: #6c757d;
+            --accent-color: #f8c630;
+            --text-color: #333;
+            --background-color: #f5f7fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --code-background: #f0f0f0;
+            --link-color: #0366d6;
+            --border-color: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 20px 0 10px;
+            font-size: 1.4rem;
+        }
+
+        h4 {
+            color: var(--secondary-color);
+            margin: 15px 0 10px;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin: 10px 0 15px 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            background-color: var(--code-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: var(--code-background);
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+
+        .note {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: rgba(23, 162, 184, 0.1);
+            border-left: 4px solid var(--info-color);
+            border-radius: 3px;
+        }
+
+        .warning {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--warning-color);
+            border-radius: 3px;
+        }
+
+        .tip {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid var(--success-color);
+            border-radius: 3px;
+        }
+
+        .important {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid var(--danger-color);
+            border-radius: 3px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--background-color);
+            font-weight: bold;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .chapter {
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-color);
+            font-size: 0.9em;
+        }
+
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Java Web项目测试教程</h1>
+            <p>学习如何对Java Web项目进行全面的测试，包括API测试和性能压力测试</p>
+        </header>
+
+        <section class="chapter">
+            <h2>1. 测试概述</h2>
+            
+            <div class="section">
+                <h3>1.1 Java Web项目测试的重要性</h3>
+                <p>Java Web项目的测试是确保应用质量和性能的关键环节。对于企业级应用，完善的测试策略可以：</p>
+                <ul>
+                    <li><strong>提前发现Bug</strong>：在产品上线前发现并修复问题，降低修复成本</li>
+                    <li><strong>确保功能完整性</strong>：验证所有API和功能是否按预期工作</li>
+                    <li><strong>评估性能瓶颈</strong>：识别系统在高负载下的表现，发现性能瓶颈</li>
+                    <li><strong>验证系统稳定性</strong>：确保系统在长时间运行和高并发情况下仍保持稳定</li>
+                    <li><strong>辅助持续集成</strong>：自动化测试是CI/CD流程的重要组成部分</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>1.2 Java Web项目测试类型</h3>
+                <p>对于Java Web项目，我们通常需要进行以下几种类型的测试：</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>测试类型</th>
+                            <th>测试目标</th>
+                            <th>常用工具</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>单元测试</td>
+                            <td>验证代码单元（如方法）的逻辑正确性</td>
+                            <td>JUnit, Mockito, PowerMock</td>
+                        </tr>
+                        <tr>
+                            <td>集成测试</td>
+                            <td>验证组件之间的交互是否正常</td>
+                            <td>Spring Test, TestNG</td>
+                        </tr>
+                        <tr>
+                            <td>API测试</td>
+                            <td>验证API端点功能、性能和安全性</td>
+                            <td>Postman, RestAssured, JMeter</td>
+                        </tr>
+                        <tr>
+                            <td>性能测试</td>
+                            <td>测试系统在不同负载下的响应时间和吞吐量</td>
+                            <td>JMeter, Gatling, Locust</td>
+                        </tr>
+                        <tr>
+                            <td>负载测试</td>
+                            <td>测试系统处理预期负载的能力</td>
+                            <td>JMeter, Gatling, K6</td>
+                        </tr>
+                        <tr>
+                            <td>压力测试</td>
+                            <td>测试系统在极限负载下的行为</td>
+                            <td>JMeter, Gatling, Wrk</td>
+                        </tr>
+                        <tr>
+                            <td>安全测试</td>
+                            <td>检查系统安全漏洞</td>
+                            <td>OWASP ZAP, SonarQube</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p>在本教程中，我们将主要关注API测试和性能测试（包括负载测试和压力测试），这是Java Web项目测试中最关键的环节。</p>
+            </div>
+            
+            <div class="section">
+                <h3>1.3 测试环境准备</h3>
+                <p>在开始测试之前，我们需要准备适当的测试环境：</p>
+                <ol>
+                    <li><strong>测试环境隔离</strong>：测试应在与生产环境隔离的环境中进行，避免影响实际业务</li>
+                    <li><strong>环境配置相似</strong>：测试环境应尽可能接近生产环境，以便测试结果具有参考价值</li>
+                    <li><strong>数据准备</strong>：准备足够的测试数据，既包括正常数据也包括边界数据</li>
+                    <li><strong>监控工具</strong>：部署必要的监控工具，如JVM监控、数据库监控等</li>
+                    <li><strong>测试工具安装</strong>：安装并配置本教程将使用的测试工具</li>
+                </ol>
+                
+                <div class="note">
+                    <h4>环境准备清单</h4>
+                    <ul>
+                        <li>Java 8+（推荐Java 11或更高版本）</li>
+                        <li>Apache JMeter（用于API测试和性能测试）</li>
+                        <li>Postman（用于API测试和接口调试）</li>
+                        <li>Maven/Gradle（用于构建项目和运行测试）</li>
+                        <li>监控工具（如VisualVM、Prometheus + Grafana）</li>
+                        <li>足够的硬件资源用于压力测试</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>1.4 测试策略设计</h3>
+                <p>有效的测试策略对于测试工作的成功至关重要。以下是设计测试策略的关键点：</p>
+                <ul>
+                    <li><strong>明确测试目标</strong>：确定需要测试的具体功能、性能指标和验收标准</li>
+                    <li><strong>划分测试范围</strong>：确定测试的边界，包括哪些功能需要测试，哪些可以暂时跳过</li>
+                    <li><strong>制定测试计划</strong>：包括测试时间表、资源分配和风险管理</li>
+                    <li><strong>设计测试用例</strong>：根据需求和设计文档创建详细的测试用例</li>
+                    <li><strong>确定度量指标</strong>：明确定义成功的测试标准和关键性能指标（KPIs）</li>
+                </ul>
+                
+                <div class="tip">
+                    <h4>测试金字塔</h4>
+                    <p>遵循测试金字塔原则，确保有更多的单元测试，适量的集成测试和少量但重要的端到端测试，这样可以获得最佳的测试覆盖率和执行速度。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <h2>2. API测试</h2>
+            
+            <div class="section">
+                <h3>2.1 API测试概述</h3>
+                <p>API测试是验证应用程序编程接口（API）功能、性能、安全性和可靠性的过程。对于Java Web项目，API通常以RESTful或SOAP形式提供。</p>
+                
+                <h4>API测试的主要目标：</h4>
+                <ul>
+                    <li>验证API的功能正确性（是否按照设计规范工作）</li>
+                    <li>测试API的异常处理能力（处理错误输入和边界情况）</li>
+                    <li>确认API的响应格式和内容是否符合预期</li>
+                    <li>检查API的性能是否满足需求（响应时间、吞吐量）</li>
+                    <li>验证API的安全性（授权、认证机制）</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3>2.2 使用Postman进行API测试</h3>
+                <p>Postman是一个功能强大的API测试工具，适合开发者和测试人员使用。以下是使用Postman进行API测试的步骤：</p>
+                
+                <h4>2.2.1 安装与配置Postman</h4>
+                <ol>
+                    <li>从<a href="https://www.postman.com/downloads/" target="_blank">Postman官网</a>下载并安装应用</li>
+                    <li>创建一个Postman账户或使用现有账户登录</li>
+                    <li>创建一个新的集合（Collection）来组织相关API测试</li>
+                </ol>
+                
+                <h4>2.2.2 创建API测试用例</h4>
+                <ol>
+                    <li>在集合中创建新的请求</li>
+                    <li>选择HTTP方法（GET, POST, PUT, DELETE等）</li>
+                    <li>输入请求URL</li>
+                    <li>配置请求头（Headers）和请求参数（Body）</li>
+                    <li>如果需要认证，配置相应的认证方式（Basic, OAuth, JWT等）</li>
+                </ol>
+                
+                <div class="code-block">
+                    <pre><code>// 示例：创建一个POST请求来添加新用户
+// URL: http://localhost:8080/api/users
+// Headers: 
+//   Content-Type: application/json
+// Body:
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "securePassword123",
+  "role": "USER"
+}</code></pre>
+                </div>
+                
+                <h4>2.2.3 编写测试脚本</h4>
+                <p>Postman允许你使用JavaScript编写测试脚本，验证API响应：</p>
+                
+                <div class="code-block">
+                    <pre><code>// 在Postman的Tests标签页中添加以下脚本
+// 验证状态码
+pm.test("Status code is 201", function () {
+    pm.response.to.have.status(201);
+});
+
+// 验证响应时间
+pm.test("Response time is less than 200ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(200);
+});
+
+// 验证响应格式
+pm.test("Response is JSON", function () {
+    pm.response.to.be.json;
+});
+
+// 验证响应内容
+pm.test("User created successfully", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.success).to.eql(true);
+    pm.expect(jsonData.data.username).to.eql("testuser");
+    pm.expect(jsonData.data).to.have.property('id');
+});</code></pre>
+                </div>
+                
+                <h4>2.2.4 使用环境变量</h4>
+                <p>为了更灵活地管理测试，Postman支持环境变量：</p>
+                <ol>
+                    <li>创建不同的环境（如开发、测试、生产）</li>
+                    <li>定义环境变量（如baseUrl, authToken）</li>
+                    <li>在请求中使用这些变量: <code>{{baseUrl}}/api/users</code></li>
+                </ol>
+                
+                <h4>2.2.5 自动化测试运行</h4>
+                <p>使用Postman的Collection Runner或Newman命令行工具自动运行测试：</p>
+                
+                <div class="code-block">
+                    <pre><code># 使用Newman运行Postman集合
+npm install -g newman
+newman run your-collection.json -e your-environment.json</code></pre>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>2.3 使用RestAssured进行API测试</h3>
+                <p>RestAssured是一个Java库，专为API测试设计，可以与JUnit或TestNG集成，成为自动化测试的一部分。</p>
+                
+                <h4>2.3.1 添加依赖</h4>
+                <div class="code-block">
+                    <pre><code>&lt;!-- Maven依赖 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.rest-assured&lt;/groupId&gt;
+    &lt;artifactId&gt;rest-assured&lt;/artifactId&gt;
+    &lt;version&gt;5.3.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter-api&lt;/artifactId&gt;
+    &lt;version&gt;5.9.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+                </div>
+                
+                <h4>2.3.2 编写基本的API测试</h4>
+                <div class="code-block">
+                    <pre><code>import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+public class UserApiTest {
+    
+    @BeforeAll
+    public static void setup() {
+        baseURI = "http://localhost:8080";
+        basePath = "/api";
+    }
+    
+    @Test
+    public void testGetAllUsers() {
+        given()
+            .header("Content-Type", "application/json")
+        .when()
+            .get("/users")
+        .then()
+            .statusCode(200)
+            .body("size()", greaterThan(0))
+            .time(lessThan(1000L));
+    }
+    
+    @Test
+    public void testCreateUser() {
+        String userJson = "{\n" +
+            "  \"username\": \"testuser\",\n" +
+            "  \"email\": \"test@example.com\",\n" +
+            "  \"password\": \"securePassword123\",\n" +
+            "  \"role\": \"USER\"\n" +
+            "}";
+            
+        given()
+            .header("Content-Type", "application/json")
+            .body(userJson)
+        .when()
+            .post("/users")
+        .then()
+            .statusCode(201)
+            .body("success", equalTo(true))
+            .body("data.username", equalTo("testuser"))
+            .body("data.id", notNullValue());
+    }
+}</code></pre>
+                </div>
+                
+                <h4>2.3.3 高级测试技巧</h4>
+                <div class="code-block">
+                    <pre><code>import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class AdvancedApiTest {
+    
+    // 测试身份验证
+    @Test
+    public void testAuthenticatedEndpoint() {
+        // 先获取认证令牌
+        String token = given()
+            .contentType(ContentType.JSON)
+            .body("{ \"username\": \"admin\", \"password\": \"admin123\" }")
+        .when()
+            .post("/auth/login")
+        .then()
+            .statusCode(200)
+            .extract()
+            .path("token");
+            
+        // 使用令牌访问受保护的API
+        given()
+            .header("Authorization", "Bearer " + token)
+        .when()
+            .get("/admin/dashboard")
+        .then()
+            .statusCode(200)
+            .body("authorized", equalTo(true));
+    }
+    
+    // 测试并发请求
+    @Test
+    public void testConcurrentRequests() throws InterruptedException {
+        Map&lt;Integer, Response&gt; responses = new HashMap<>();
+        
+        // 创建10个并发请求
+        for (int i = 0; i < 10; i++) {
+            final int requestId = i;
+            new Thread(() -> {
+                Response response = given()
+                    .param("id", requestId)
+                .when()
+                    .get("/users/search");
+                    
+                synchronized (responses) {
+                    responses.put(requestId, response);
+                }
+            }).start();
+        }
+        
+        // 等待所有请求完成
+        Thread.sleep(2000);
+        
+        // 验证所有响应
+        for (Map.Entry&lt;Integer, Response&gt; entry : responses.entrySet()) {
+            entry.getValue().then().statusCode(200);
+        }
+    }
+    
+    // 文件上传测试
+    @Test
+    public void testFileUpload() {
+        File testFile = new File("src/test/resources/test-image.jpg");
+        
+        given()
+            .multiPart("file", testFile)
+            .formParam("description", "Test image upload")
+        .when()
+            .post("/upload")
+        .then()
+            .statusCode(200)
+            .body("fileName", containsString("test-image"))
+            .body("fileSize", greaterThan(0));
+    }
+}</code></pre>
+                </div>
+                
+                <div class="tip">
+                    <h4>RestAssured最佳实践</h4>
+                    <ul>
+                        <li>使用基类设置通用配置，如baseURI和默认请求头</li>
+                        <li>利用Extract功能获取响应中的值用于后续测试</li>
+                        <li>为复杂响应创建POJO类，使用反序列化简化验证</li>
+                        <li>使用日志记录请求和响应细节，便于调试</li>
+                        <li>将测试数据与测试逻辑分离，提高测试可维护性</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>2.4 API测试最佳实践</h3>
+                <ul>
+                    <li><strong>分层测试策略</strong>：从基本功能到复杂场景，逐步测试API</li>
+                    <li><strong>独立性</strong>：每个测试应该独立运行，不依赖其他测试的状态</li>
+                    <li><strong>完整覆盖</strong>：测试正常路径、错误路径和边界条件</li>
+                    <li><strong>数据驱动</strong>：使用不同的数据集运行相同的测试用例</li>
+                    <li><strong>契约测试</strong>：验证API是否符合其规范（Swagger/OpenAPI）</li>
+                    <li><strong>安全测试</strong>：验证API的安全机制，如认证和授权</li>
+                    <li><strong>自动化集成</strong>：将API测试集成到CI/CD流程中</li>
+                </ul>
+                
+                <div class="important">
+                    <h4>API测试常见陷阱</h4>
+                    <ul>
+                        <li>忽略测试依赖顺序，导致测试不稳定</li>
+                        <li>只测试正常流程，忽略异常处理</li>
+                        <li>使用硬编码的测试数据，降低测试可维护性</li>
+                        <li>过度依赖UI测试，而不是直接测试API</li>
+                        <li>忽略API契约变更，导致测试与实际API不匹配</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <h2>3. 使用EasyMock进行单元测试</h2>
+            
+            <div class="section">
+                <h3>3.1 EasyMock概述</h3>
+                <p>EasyMock是一个流行的Java单元测试框架，专门用于创建模拟对象（Mock Objects）。它能够帮助开发者隔离被测试的代码单元，通过模拟其依赖的对象来进行可控且可重复的测试。</p>
+                
+                <h4>EasyMock的主要特点：</h4>
+                <ul>
+                    <li><strong>简单易用</strong>：API设计直观，易于学习和使用</li>
+                    <li><strong>灵活性高</strong>：支持多种模拟行为和验证方式</li>
+                    <li><strong>与JUnit无缝集成</strong>：可以轻松集成到现有的JUnit测试套件中</li>
+                    <li><strong>类模拟支持</strong>：除了接口外，EasyMock也支持模拟具体类</li>
+                    <li><strong>丰富的匹配器</strong>：提供多种参数匹配方式</li>
+                </ul>
+                
+                <div class="note">
+                    <h4>EasyMock与Mockito对比</h4>
+                    <p>EasyMock和Mockito都是流行的Java模拟框架，选择哪一个通常取决于个人或团队偏好：</p>
+                    <ul>
+                        <li>EasyMock遵循"记录-回放"模式，更加显式</li>
+                        <li>Mockito采用"存根-验证"模式，语法更加简洁</li>
+                        <li>EasyMock需要显式调用replay()方法，而Mockito不需要</li>
+                        <li>两者都支持模拟类和接口，但具体API和功能略有不同</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>3.2 EasyMock环境搭建</h3>
+                <h4>3.2.1 Maven依赖配置</h4>
+                <p>在Maven项目中添加EasyMock依赖：</p>
+                
+                <div class="code-block">
+                    <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.easymock&lt;/groupId&gt;
+    &lt;artifactId&gt;easymock&lt;/artifactId&gt;
+    &lt;version&gt;5.1.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+                </div>
+                
+                <h4>3.2.2 Gradle依赖配置</h4>
+                <p>在Gradle项目中添加EasyMock依赖：</p>
+                
+                <div class="code-block">
+                    <pre><code>testImplementation 'org.easymock:easymock:5.1.0'</code></pre>
+                </div>
+                
+                <h4>3.2.3 测试环境准备</h4>
+                <p>建议与JUnit 5一起使用EasyMock，配置示例：</p>
+                
+                <div class="code-block">
+                    <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+    &lt;version&gt;5.9.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>3.3 EasyMock基本使用</h3>
+                <h4>3.3.1 模拟接口</h4>
+                <p>EasyMock最常见的用例是模拟接口。以下是一个简单的例子：</p>
+                
+                <div class="code-block">
+                    <pre><code>import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+// 被测试的服务接口
+public interface UserService {
+    User findById(long id);
+    boolean saveUser(User user);
+}
+
+// 被测试的类
+public class UserController {
+    private UserService userService;
+    
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+    
+    public String getUserName(long id) {
+        User user = userService.findById(id);
+        return user != null ? user.getName() : "未知用户";
+    }
+}
+
+// 测试类
+public class UserControllerTest {
+    @Test
+    public void testGetUserName() {
+        // 创建模拟对象
+        UserService mockUserService = mock(UserService.class);
+        
+        // 记录预期行为
+        User testUser = new User(1L, "张三");
+        expect(mockUserService.findById(1L)).andReturn(testUser);
+        expect(mockUserService.findById(2L)).andReturn(null);
+        
+        // 激活模拟对象
+        replay(mockUserService);
+        
+        // 使用模拟对象测试
+        UserController controller = new UserController(mockUserService);
+        assertEquals("张三", controller.getUserName(1L));
+        assertEquals("未知用户", controller.getUserName(2L));
+        
+        // 验证模拟对象的所有预期都被调用
+        verify(mockUserService);
+    }
+}</code></pre>
+                </div>
+                
+                <h4>3.3.2 模拟类</h4>
+                <p>EasyMock也可以模拟具体类（非接口）：</p>
+                
+                <div class="code-block">
+                    <pre><code>import static org.easymock.EasyMock.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DatabaseConnectorTest {
+    @Test
+    public void testDatabaseOperation() {
+        // 创建类模拟对象
+        Database mockDatabase = createMock(Database.class);
+        
+        // 记录预期行为
+        mockDatabase.connect("test_db");
+        expect(mockDatabase.executeQuery("SELECT * FROM users")).andReturn(new String[]{"user1", "user2"});
+        mockDatabase.disconnect();
+        
+        // 激活模拟对象
+        replay(mockDatabase);
+        
+        // 使用模拟对象
+        DatabaseConnector connector = new DatabaseConnector(mockDatabase);
+        String[] results = connector.queryUsers();
+        
+        // 验证结果
+        assertArrayEquals(new String[]{"user1", "user2"}, results);
+        
+        // 验证交互
+        verify(mockDatabase);
+    }
+}</code></pre>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>3.4 高级特性</h3>
+                
+                <h4>3.4.1 参数匹配器</h4>
+                <p>EasyMock提供多种参数匹配方式，让测试更灵活：</p>
+                
+                <div class="code-block">
+                    <pre><code>// 使用anyInt()匹配任意整数
+expect(mockService.process(anyInt())).andReturn(true);
+
+// 使用eq()匹配特定值
+expect(mockService.process(eq(100))).andReturn(true);
+
+// 使用matches()使用正则表达式匹配
+expect(mockRepository.findByEmail(matches(".*@example\\.com"))).andReturn(user);
+
+// 使用自定义匹配器
+expect(mockValidator.validate(and(notNull(), isA(User.class)))).andReturn(true);</code></pre>
+                </div>
+                
+                <h4>3.4.2 行为控制</h4>
+                <p>EasyMock允许设置模拟对象的各种行为：</p>
+                
+                <div class="code-block">
+                    <pre><code>// 模拟方法多次调用返回不同结果
+expect(mockCounter.getCount())
+    .andReturn(1)
+    .andReturn(2)
+    .andReturn(3);
+
+// 模拟方法抛出异常
+expect(mockDatabase.connect("invalid_db"))
+    .andThrow(new DatabaseException("连接失败"));
+
+// 模拟方法执行自定义逻辑
+expect(mockTransformer.transform(anyString()))
+    .andAnswer(() -> getCurrentArguments()[0].toString().toUpperCase());</code></pre>
+                </div>
+                
+                <h4>3.4.3 部分模拟</h4>
+                <p>有时我们只需要模拟对象的部分方法，其他方法保持原有行为：</p>
+                
+                <div class="code-block">
+                    <pre><code>// 创建部分模拟
+Calculator calculator = partialMockBuilder(Calculator.class)
+    .addMockedMethod("multiply")
+    .createMock();
+
+// 设置被模拟方法的行为
+expect(calculator.multiply(10, 20)).andReturn(500); // 故意返回错误结果
+replay(calculator);
+
+// 测试：模拟方法返回我们设定的值
+assertEquals(500, calculator.multiply(10, 20));
+
+// 测试：非模拟方法保持原有行为
+assertEquals(30, calculator.add(10, 20));</code></pre>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>3.5 EasyMock最佳实践</h3>
+                
+                <ol>
+                    <li><strong>只模拟直接依赖</strong>：只模拟被测类直接依赖的对象，避免过度模拟</li>
+                    <li><strong>模拟边界对象</strong>：优先模拟数据库、网络服务等外部系统</li>
+                    <li><strong>保持测试简单</strong>：一个测试方法只测试一个功能点</li>
+                    <li><strong>合理使用verify()</strong>：验证关键交互，但不要过于严格</li>
+                    <li><strong>避免模拟被测类</strong>：不要模拟正在测试的类，这会导致测试没有价值</li>
+                    <li><strong>使用setUp方法创建通用模拟</strong>：减少重复代码</li>
+                </ol>
+                
+                <div class="warning">
+                    <h4>常见陷阱</h4>
+                    <p>使用EasyMock时要避免以下常见错误：</p>
+                    <ul>
+                        <li>忘记调用replay()方法</li>
+                        <li>对同一个方法调用设置多次不同的期望</li>
+                        <li>使用错误的参数匹配器导致匹配失败</li>
+                        <li>过度指定模拟行为，使测试变得脆弱</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>3.6 实际应用案例</h3>
+                <p>以下是一个更完整的示例，展示如何在Spring Boot应用程序中使用EasyMock测试服务层：</p>
+                
+                <div class="code-block">
+                    <pre><code>import static org.easymock.EasyMock.*;
+import org.easymock.EasyMockExtension;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(EasyMockExtension.class)
+public class OrderServiceTest {
+
+    // 使用EasyMock注解简化模拟对象创建
+    @Mock
+    private OrderRepository orderRepository;
+    
+    @Mock
+    private PaymentService paymentService;
+    
+    @Mock
+    private NotificationService notificationService;
+    
+    // 标记被测试的类
+    @TestSubject
+    private OrderServiceImpl orderService = new OrderServiceImpl();
+    
+    @Test
+    public void testPlaceOrder_Success() {
+        // 准备测试数据
+        Order order = new Order();
+        order.setId(1L);
+        order.setUserId(100L);
+        order.setAmount(199.99);
+        order.setStatus(OrderStatus.PENDING);
+        
+        PaymentResult paymentResult = new PaymentResult(true, "支付成功");
+        
+        // 记录期望行为
+        expect(orderRepository.save(anyObject(Order.class))).andReturn(order);
+        expect(paymentService.processPayment(eq(100L), eq(199.99))).andReturn(paymentResult);
+        notificationService.sendOrderConfirmation(eq(1L), eq(100L));
+        expectLastCall().once();
+        
+        // 激活所有模拟对象
+        replay(orderRepository, paymentService, notificationService);
+        
+        // 执行被测试方法
+        OrderResult result = orderService.placeOrder(order);
+        
+        // 验证结果
+        assertTrue(result.isSuccess());
+        assertEquals("订单处理成功", result.getMessage());
+        assertEquals(OrderStatus.PAID, order.getStatus());
+        
+        // 验证所有交互
+        verify(orderRepository, paymentService, notificationService);
+    }
+    
+    @Test
+    public void testPlaceOrder_PaymentFailure() {
+        // 准备测试数据
+        Order order = new Order();
+        order.setId(2L);
+        order.setUserId(101L);
+        order.setAmount(299.99);
+        order.setStatus(OrderStatus.PENDING);
+        
+        PaymentResult paymentResult = new PaymentResult(false, "支付失败：余额不足");
+        
+        // 记录期望行为
+        expect(orderRepository.save(anyObject(Order.class))).andReturn(order);
+        expect(paymentService.processPayment(eq(101L), eq(299.99))).andReturn(paymentResult);
+        // 支付失败不应发送确认通知
+        
+        // 激活所有模拟对象
+        replay(orderRepository, paymentService, notificationService);
+        
+        // 执行被测试方法
+        OrderResult result = orderService.placeOrder(order);
+        
+        // 验证结果
+        assertFalse(result.isSuccess());
+        assertEquals("支付失败：余额不足", result.getMessage());
+        assertEquals(OrderStatus.PAYMENT_FAILED, order.getStatus());
+        
+        // 验证所有交互
+        verify(orderRepository, paymentService, notificationService);
+    }
+}</code></pre>
+                </div>
+            </div>
+            
+            <div class="practice-exercise">
+                <h4>实践练习：使用EasyMock测试Web应用</h4>
+                <p>完成以下任务来练习EasyMock的使用：</p>
+                <ol>
+                    <li>创建一个简单的Spring Boot Web应用，包含用户注册和登录功能</li>
+                    <li>为UserService编写至少3个测试用例，模拟UserRepository的行为</li>
+                    <li>为AuthenticationService编写测试，模拟UserService和TokenService</li>
+                    <li>使用EasyMock的参数捕获器验证传递给Repository的对象属性</li>
+                    <li>实现至少一个异常场景的测试，例如用户已存在或凭据无效</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="performance-testing">
+            <h2>5. 性能测试</h2>
+            <p>性能测试是验证系统在各种负载条件下是否能够满足性能要求的过程。对于Java Web应用，性能测试可以帮助发现瓶颈并指导优化。</p>
+            
+            <h3>5.1 使用JMeter进行负载测试</h3>
+            <p>Apache JMeter是一个强大的开源性能测试工具，广泛用于测试Web应用的负载性能。</p>
+            
+            <h4>5.1.1 JMeter基本概念</h4>
+            <ul>
+                <li><strong>测试计划（Test Plan）</strong>：整个测试的容器</li>
+                <li><strong>线程组（Thread Group）</strong>：模拟用户请求</li>
+                <li><strong>取样器（Sampler）</strong>：执行实际请求（如HTTP请求）</li>
+                <li><strong>监听器（Listener）</strong>：收集和显示结果</li>
+                <li><strong>断言（Assertion）</strong>：验证响应</li>
+                <li><strong>定时器（Timer）</strong>：控制请求之间的延迟</li>
+            </ul>
+            
+            <h4>5.1.2 创建基本的HTTP负载测试</h4>
+            <p>以下是使用JMeter创建HTTP负载测试的步骤：</p>
+            <ol>
+                <li>下载并安装Apache JMeter</li>
+                <li>启动JMeter并创建新的测试计划</li>
+                <li>添加线程组并配置用户数（线程数）和循环次数</li>
+                <li>添加HTTP请求取样器并配置目标服务器和路径</li>
+                <li>添加监听器（如"聚合报告"）来查看结果</li>
+                <li>运行测试并分析结果</li>
+            </ol>
+            
+            <p>JMeter脚本示例（XML格式）：</p>
+            <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;jmeterTestPlan version="1.2" properties="5.0"&gt;
+  &lt;hashTree&gt;
+    &lt;TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="用户API负载测试"&gt;
+      &lt;elementProp name="TestPlan.user_defined_variables" elementType="Arguments"&gt;
+        &lt;collectionProp name="Arguments.arguments"/&gt;
+      &lt;/elementProp&gt;
+    &lt;/TestPlan&gt;
+    &lt;hashTree&gt;
+      &lt;ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="用户组"&gt;
+        &lt;stringProp name="ThreadGroup.num_threads"&gt;100&lt;/stringProp&gt;
+        &lt;stringProp name="ThreadGroup.ramp_time"&gt;10&lt;/stringProp&gt;
+        &lt;boolProp name="ThreadGroup.scheduler"&gt;false&lt;/boolProp&gt;
+        &lt;stringProp name="ThreadGroup.duration"&gt;&lt;/stringProp&gt;
+        &lt;stringProp name="ThreadGroup.delay"&gt;&lt;/stringProp&gt;
+      &lt;/ThreadGroup&gt;
+      &lt;hashTree&gt;
+        &lt;HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="获取用户列表"&gt;
+          &lt;stringProp name="HTTPSampler.domain"&gt;localhost&lt;/stringProp&gt;
+          &lt;stringProp name="HTTPSampler.port"&gt;8080&lt;/stringProp&gt;
+          &lt;stringProp name="HTTPSampler.protocol"&gt;http&lt;/stringProp&gt;
+          &lt;stringProp name="HTTPSampler.path"&gt;/api/users&lt;/stringProp&gt;
+          &lt;stringProp name="HTTPSampler.method"&gt;GET&lt;/stringProp&gt;
+        &lt;/HTTPSamplerProxy&gt;
+        &lt;hashTree/&gt;
+        &lt;ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="汇总报告"&gt;
+          &lt;boolProp name="ResultCollector.error_logging"&gt;false&lt;/boolProp&gt;
+        &lt;/ResultCollector&gt;
+        &lt;hashTree/&gt;
+      &lt;/hashTree&gt;
+    &lt;/hashTree&gt;
+  &lt;/hashTree&gt;
+&lt;/jmeterTestPlan&gt;</code></pre>
+
+            <h4>5.1.3 高级JMeter特性</h4>
+            <ul>
+                <li><strong>参数化测试</strong>：使用CSV数据集配置从文件读取测试数据</li>
+                <li><strong>逻辑控制器</strong>：控制请求执行顺序</li>
+                <li><strong>BeanShell脚本</strong>：添加自定义逻辑</li>
+                <li><strong>断言</strong>：验证响应内容和状态</li>
+                <li><strong>分布式测试</strong>：在多台机器上运行测试以模拟更大的负载</li>
+            </ul>
+            
+            <h3>5.2 使用Gatling进行性能测试</h3>
+            <p>Gatling是一个高性能的负载测试工具，使用Scala DSL编写测试脚本。</p>
+            
+            <h4>5.2.1 基本Gatling测试</h4>
+            <pre><code>import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+
+class UserSimulation extends Simulation {
+
+  val httpProtocol = http
+    .baseUrl("http://localhost:8080")
+    .acceptHeader("application/json")
+    .userAgentHeader("Gatling/Performance Test")
+
+  val scn = scenario("用户API测试")
+    .exec(http("获取所有用户")
+      .get("/api/users")
+      .check(status.is(200)))
+    .pause(1)
+    .exec(http("获取单个用户")
+      .get("/api/users/1")
+      .check(status.is(200))
+      .check(jsonPath("$.username").exists))
+    .pause(1)
+
+  setUp(
+    scn.inject(
+      rampUsers(50) during (10.seconds),
+      constantUsersPerSec(20) during (20.seconds)
+    ).protocols(httpProtocol)
+  )
+}</code></pre>
+
+            <h4>5.2.2 Gatling高级场景</h4>
+            <pre><code>val browseCatalogScenario = scenario("浏览目录")
+  .exec(http("首页").get("/"))
+  .pause(2)
+  .exec(http("产品列表").get("/products"))
+  .pause(1)
+  .exec(http("产品详情").get("/products/1"))
+  .pause(3)
+
+val purchaseScenario = scenario("购买流程")
+  .exec(http("登录")
+    .post("/api/login")
+    .body(StringBody("""{"username":"user1","password":"pass1"}"""))
+    .check(jsonPath("$.token").saveAs("authToken")))
+  .pause(2)
+  .exec(http("添加到购物车")
+    .post("/api/cart/add")
+    .header("Authorization", "Bearer ${authToken}")
+    .body(StringBody("""{"productId":1,"quantity":2}"""))
+    .check(status.is(200)))
+  .pause(3)
+  .exec(http("结账")
+    .post("/api/checkout")
+    .header("Authorization", "Bearer ${authToken}")
+    .check(status.is(200)))
+
+setUp(
+  browseCatalogScenario.inject(rampUsers(500) during (60.seconds)),
+  purchaseScenario.inject(rampUsers(100) during (60.seconds))
+).protocols(httpProtocol)</code></pre>
+            
+            <h3>5.3 关键性能指标与分析</h3>
+            <p>性能测试中需要关注的关键指标包括：</p>
+            <ul>
+                <li><strong>响应时间（Response Time）</strong>：请求从发送到接收响应所需的时间
+                    <ul>
+                        <li>平均响应时间（Average）</li>
+                        <li>中位数响应时间（Median/50th percentile）</li>
+                        <li>90/95/99百分位响应时间</li>
+                    </ul>
+                </li>
+                <li><strong>吞吐量（Throughput）</strong>：系统每秒处理的请求数（TPS/RPS）</li>
+                <li><strong>错误率（Error Rate）</strong>：失败请求的百分比</li>
+                <li><strong>并发用户数（Concurrent Users）</strong>：系统同时支持的用户数</li>
+            </ul>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>指标</th>
+                        <th>良好</th>
+                        <th>可接受</th>
+                        <th>性能问题</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>平均响应时间</td>
+                        <td>&lt; 500ms</td>
+                        <td>500ms - 1s</td>
+                        <td>&gt; 1s</td>
+                    </tr>
+                    <tr>
+                        <td>95%响应时间</td>
+                        <td>&lt; 1s</td>
+                        <td>1s - 2s</td>
+                        <td>&gt; 2s</td>
+                    </tr>
+                    <tr>
+                        <td>错误率</td>
+                        <td>&lt; 0.1%</td>
+                        <td>0.1% - 1%</td>
+                        <td>&gt; 1%</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>5.4 使用Spring Boot Actuator进行监控</h3>
+            <p>Spring Boot Actuator提供了监控和管理生产环境中运行的应用程序的功能。</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <p>配置Actuator端点：</p>
+            <pre><code># application.properties
+management.endpoints.web.exposure.include=health,info,metrics,prometheus
+management.endpoint.health.show-details=always</code></pre>
+
+            <h4>5.4.1 与Prometheus和Grafana集成</h4>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-registry-prometheus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <p>Prometheus配置（prometheus.yml）：</p>
+            <pre><code>scrape_configs:
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:8080']</code></pre>
+            
+            <h3>5.5 性能优化策略</h3>
+            <p>基于性能测试结果，可以实施以下优化策略：</p>
+            <ol>
+                <li><strong>数据库优化</strong>
+                    <ul>
+                        <li>优化SQL查询</li>
+                        <li>添加适当的索引</li>
+                        <li>实施连接池</li>
+                        <li>考虑数据分片或分区</li>
+                    </ul>
+                </li>
+                <li><strong>缓存策略</strong>
+                    <ul>
+                        <li>实施应用程序级缓存（如Caffeine）</li>
+                        <li>使用分布式缓存（如Redis）</li>
+                        <li>添加HTTP缓存头</li>
+                    </ul>
+                </li>
+                <li><strong>应用程序调整</strong>
+                    <ul>
+                        <li>优化JVM参数</li>
+                        <li>实施异步处理</li>
+                        <li>使用线程池</li>
+                        <li>减少对象创建和垃圾收集压力</li>
+                    </ul>
+                </li>
+                <li><strong>基础设施优化</strong>
+                    <ul>
+                        <li>添加负载均衡</li>
+                        <li>水平扩展应用实例</li>
+                        <li>使用CDN分发静态资源</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div class="practice-exercise">
+                <h4>实践练习：性能测试与分析</h4>
+                <p>针对示例应用程序执行以下任务：</p>
+                <ol>
+                    <li>安装JMeter并创建一个测试计划，包含至少3个不同的API端点</li>
+                    <li>配置线程组以模拟100个并发用户，持续60秒</li>
+                    <li>运行测试并收集性能指标</li>
+                    <li>分析结果并确定性能瓶颈</li>
+                    <li>实施至少2项性能优化</li>
+                    <li>重新运行测试以验证优化效果</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="security-testing">
+            <h2>6. 安全测试</h2>
+            <p>安全测试识别和修复Java Web应用程序中的安全漏洞，保护系统免受恶意攻击。</p>
+            
+            <h3>6.1 OWASP Top 10安全风险</h3>
+            <p>OWASP（开放Web应用安全项目）Top 10是最关键的Web应用安全风险列表:</p>
+            
+            <ol>
+                <li><strong>注入攻击</strong>：SQL、NoSQL、命令注入等</li>
+                <li><strong>失效的身份认证</strong>：会话管理缺陷、密码弱点等</li>
+                <li><strong>敏感数据泄露</strong>：加密不足或缺失</li>
+                <li><strong>XML外部实体(XXE)</strong>：处理XML输入不当</li>
+                <li><strong>失效的访问控制</strong>：权限验证不足</li>
+                <li><strong>安全配置错误</strong>：默认配置、错误消息泄露等</li>
+                <li><strong>跨站脚本(XSS)</strong>：未验证的用户输入直接输出到页面</li>
+                <li><strong>不安全的反序列化</strong>：处理序列化数据不当</li>
+                <li><strong>使用含有已知漏洞的组件</strong>：过时的依赖项</li>
+                <li><strong>不足的日志记录和监控</strong>：缺乏审计跟踪</li>
+            </ol>
+            
+            <h3>6.2 OWASP ZAP安全扫描</h3>
+            <p>OWASP ZAP（Zed Attack Proxy）是一个开源的安全测试工具，用于发现Web应用程序中的安全漏洞。</p>
+            
+            <h4>6.2.1 基本使用步骤</h4>
+            <ol>
+                <li>下载并安装<a href="https://www.zaproxy.org/download/" target="_blank">OWASP ZAP</a></li>
+                <li>启动ZAP并配置浏览器代理设置</li>
+                <li>使用"自动扫描"功能指定目标URL</li>
+                <li>分析扫描结果并修复发现的漏洞</li>
+            </ol>
+            
+            <h4>6.2.2 集成到CI/CD流程</h4>
+            <p>使用ZAP的命令行接口自动执行安全扫描：</p>
+            
+            <pre><code>zap-cli quick-scan --self-contained \
+    --start-options "-config api.disablekey=true" \
+    --spider -r http://localhost:8080</code></pre>
+            
+            <h3>6.3 Spring Security测试</h3>
+            <p>Spring Security是Java应用程序最常用的安全框架，测试安全配置和功能是非常重要的。</p>
+            
+            <h4>6.3.1 使用Spring Security Test</h4>
+            <p>Maven依赖：</p>
+            <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.security&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-security-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <p>测试示例：</p>
+            <pre><code>import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class SecurityConfigurationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Test
+    public void publicEndpointShouldBeAccessible() throws Exception {
+        mockMvc.perform(get("/api/public"))
+               .andExpect(status().isOk());
+    }
+    
+    @Test
+    public void privateEndpointShouldRequireAuthentication() throws Exception {
+        mockMvc.perform(get("/api/admin"))
+               .andExpect(status().isUnauthorized());
+    }
+    
+    @Test
+    @WithMockUser(roles = "USER")
+    public void userCannotAccessAdminEndpoint() throws Exception {
+        mockMvc.perform(get("/api/admin"))
+               .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void adminCanAccessAdminEndpoint() throws Exception {
+        mockMvc.perform(get("/api/admin"))
+               .andExpect(status().isOk());
+    }
+}</code></pre>
+
+            <h3>6.4 安全测试最佳实践</h3>
+            <ul>
+                <li><strong>自动化验证</strong>：将安全测试集成到CI/CD流程中</li>
+                <li><strong>定期更新依赖</strong>：使用工具如OWASP Dependency Check检查漏洞</li>
+                <li><strong>渗透测试</strong>：聘请专业安全团队或使用渗透测试工具</li>
+                <li><strong>代码审查</strong>：实施安全代码审查流程</li>
+                <li><strong>安全开发培训</strong>：定期培训开发团队了解最新安全威胁</li>
+            </ul>
+            
+            <div class="vulnerability">
+                <p><strong>常见漏洞：</strong>未验证用户输入是导致安全漏洞的主要原因，始终对所有用户输入进行验证和转义，特别是在SQL查询、HTML输出和命令执行中。</p>
+            </div>
+        </section>
+
+        <section class="chapter">
+            <h2>5. 总结与实践建议</h2>
+            
+            <div class="section">
+                <h3>5.1 测试策略总结</h3>
+                <p>对于Java Web项目，一个全面的测试策略应该包括：</p>
+                <ul>
+                    <li><strong>单元测试</strong>：验证代码单元的功能</li>
+                    <li><strong>集成测试</strong>：验证组件之间的交互</li>
+                    <li><strong>API测试</strong>：验证API的功能和性能</li>
+                    <li><strong>性能测试</strong>：验证系统在各种负载下的表现</li>
+                    <li><strong>安全测试</strong>：检查潜在的安全漏洞</li>
+                    <li><strong>自动化测试</strong>：将测试集成到CI/CD流程中</li>
+                </ul>
+                
+                <div class="note">
+                    <h4>测试金字塔原则</h4>
+                    <p>遵循测试金字塔原则，从下到上依次是：</p>
+                    <ul>
+                        <li><strong>基础</strong>：单元测试（数量最多、运行最快）</li>
+                        <li><strong>中层</strong>：集成测试、API测试</li>
+                        <li><strong>顶层</strong>：端到端测试、UI测试（数量最少、运行最慢）</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>5.2 实践建议</h3>
+                <ol>
+                    <li><strong>从小做起</strong>：如果测试基础薄弱，从单元测试和关键API测试开始</li>
+                    <li><strong>自动化优先</strong>：优先自动化重复性高、稳定性好的测试用例</li>
+                    <li><strong>持续改进</strong>：定期回顾测试策略，根据项目需求调整</li>
+                    <li><strong>团队协作</strong>：测试不仅是测试人员的责任，而是整个团队的责任</li>
+                    <li><strong>关注业务价值</strong>：测试应该关注业务价值，而不仅仅是技术实现</li>
+                    <li><strong>测试数据管理</strong>：建立有效的测试数据管理策略</li>
+                    <li><strong>技能提升</strong>：持续学习新的测试工具和方法</li>
+                </ol>
+            </div>
+            
+            <div class="section">
+                <h3>5.3 推荐资源</h3>
+                <h4>工具：</h4>
+                <ul>
+                    <li><a href="https://junit.org/junit5/" target="_blank">JUnit 5</a> - Java单元测试框架</li>
+                    <li><a href="https://site.mockito.org/" target="_blank">Mockito</a> - Java模拟框架</li>
+                    <li><a href="https://rest-assured.io/" target="_blank">RestAssured</a> - API测试框架</li>
+                    <li><a href="https://jmeter.apache.org/" target="_blank">Apache JMeter</a> - 性能测试工具</li>
+                    <li><a href="https://gatling.io/" target="_blank">Gatling</a> - 高性能负载测试工具</li>
+                    <li><a href="https://www.postman.com/" target="_blank">Postman</a> - API测试工具</li>
+                    <li><a href="https://www.sonarqube.org/" target="_blank">SonarQube</a> - 代码质量管理平台</li>
+                </ul>
+                
+                <h4>书籍：</h4>
+                <ul>
+                    <li>"Effective Unit Testing" by Lasse Koskela</li>
+                    <li>"Java Testing with JUnit 5" by Catalin Tudose</li>
+                    <li>"REST API Testing with REST Assured" by Bas Dijkstra</li>
+                    <li>"Performance Testing with JMeter" by Bayo Erinle</li>
+                    <li>"Continuous Delivery" by Jez Humble and David Farley</li>
+                </ul>
+                
+                <h4>在线资源：</h4>
+                <ul>
+                    <li><a href="https://martinfowler.com/articles/practical-test-pyramid.html" target="_blank">The Practical Test Pyramid</a></li>
+                    <li><a href="https://www.baeldung.com/" target="_blank">Baeldung</a> - Java和Spring教程网站</li>
+                    <li><a href="https://testautomationu.applitools.com/" target="_blank">Test Automation University</a> - 免费测试自动化课程</li>
+                </ul>
+            </div>
+        </section>
+        
+        <footer>
+            <div class="container">
+                <p>Java Web测试教程 &copy; 2023-2024</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html> 
