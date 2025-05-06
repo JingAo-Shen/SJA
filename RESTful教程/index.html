@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful API教程 - Java 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --code-background: #f1f1f1;
+            --note-background: #e8f5e9;
+            --note-border: #4CAF50;
+            --warning-background: #FFF8E1;
+            --warning-border: #FFC107;
+            --rest-color: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h3 {
+            margin: 25px 0 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: var(--code-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .note {
+            background-color: var(--note-background);
+            border-left: 4px solid var(--note-border);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+
+        .warning {
+            background-color: var(--warning-background);
+            border-left: 4px solid var(--warning-border);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .back-to-home:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .http-method {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .get {
+            background-color: #61affe;
+        }
+        
+        .post {
+            background-color: #49cc90;
+        }
+        
+        .put {
+            background-color: #fca130;
+        }
+        
+        .delete {
+            background-color: #f93e3e;
+        }
+        
+        .patch {
+            background-color: #50e3c2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RESTful API教程</h1>
+            <p>构建标准且高效的REST风格API</p>
+        </header>
+
+        <h2>1. RESTful API概述</h2>
+        <p>REST (Representational State Transfer) 是一种软件架构风格，用于创建可扩展的Web服务。RESTful API是基于REST架构的应用程序接口，它使用HTTP协议的方法来执行操作。</p>
+        
+        <h3>1.1 REST架构的主要特点</h3>
+        <ul>
+            <li><strong>资源（Resources）</strong>：网络上的一个实体，可以是一段文本、一张图片、一首歌曲、一种服务等</li>
+            <li><strong>统一接口（Uniform Interface）</strong>：使用标准的HTTP方法如GET、POST、PUT、DELETE等</li>
+            <li><strong>无状态（Stateless）</strong>：服务端不保存客户端状态，每个请求都包含处理该请求所需的全部信息</li>
+            <li><strong>可缓存（Cacheable）</strong>：响应必须明确指出是否可以被缓存</li>
+            <li><strong>分层系统（Layered System）</strong>：客户端不应该关心是直接连接到服务器，还是连接到中间服务器</li>
+            <li><strong>按需代码（Code on Demand, 可选）</strong>：服务器可以通过发送可执行代码临时扩展客户端功能</li>
+        </ul>
+
+        <h3>1.2 REST与传统Web服务的对比</h3>
+        <table>
+            <tr>
+                <th>特性</th>
+                <th>REST</th>
+                <th>SOAP</th>
+            </tr>
+            <tr>
+                <td>协议</td>
+                <td>使用HTTP/HTTPS</td>
+                <td>独立于协议，可以使用HTTP、SMTP等</td>
+            </tr>
+            <tr>
+                <td>数据格式</td>
+                <td>通常使用JSON或XML</td>
+                <td>仅使用XML</td>
+            </tr>
+            <tr>
+                <td>带宽占用</td>
+                <td>较低</td>
+                <td>较高</td>
+            </tr>
+            <tr>
+                <td>学习曲线</td>
+                <td>简单易学</td>
+                <td>相对复杂</td>
+            </tr>
+            <tr>
+                <td>缓存</td>
+                <td>可以利用HTTP缓存</td>
+                <td>需要自定义实现</td>
+            </tr>
+            <tr>
+                <td>安全性</td>
+                <td>使用HTTPS和认证机制</td>
+                <td>内置安全标准（WS-Security）</td>
+            </tr>
+        </table>
+
+        <h2>2. RESTful API设计原则</h2>
+        
+        <h3>2.1 资源命名原则</h3>
+        <p>一个良好的RESTful API设计始于资源的命名：</p>
+        <ul>
+            <li>使用名词而非动词表示资源</li>
+            <li>使用复数形式表示集合资源</li>
+            <li>使用层次结构表示资源间的关系</li>
+            <li>避免在URI中包含动词</li>
+        </ul>
+        
+        <div class="note">
+            <p><strong>良好的资源命名示例：</strong></p>
+            <ul>
+                <li><code>/users</code> - 获取用户列表</li>
+                <li><code>/users/123</code> - 获取ID为123的用户</li>
+                <li><code>/users/123/orders</code> - 获取ID为123的用户的订单列表</li>
+                <li><code>/users/123/orders/456</code> - 获取ID为123的用户的ID为456的订单</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <p><strong>不推荐的资源命名示例：</strong></p>
+            <ul>
+                <li><code>/getUsers</code> - 在URI中使用了动词</li>
+                <li><code>/user/123/createOrder</code> - 在URI中使用了动词</li>
+                <li><code>/api/v1/getUserOrders?userId=123</code> - 混合使用路径参数和查询参数表示资源</li>
+            </ul>
+        </div>
+
+        <h3>2.2 HTTP方法的正确使用</h3>
+        <p>RESTful API充分利用HTTP方法（也称为HTTP动词）来表达对资源的操作意图：</p>
+        
+        <table>
+            <tr>
+                <th>HTTP方法</th>
+                <th>操作</th>
+                <th>描述</th>
+                <th>是否幂等</th>
+            </tr>
+            <tr>
+                <td><span class="http-method get">GET</span></td>
+                <td>读取（Read）</td>
+                <td>获取资源，不应该对资源状态有任何影响</td>
+                <td>是</td>
+            </tr>
+            <tr>
+                <td><span class="http-method post">POST</span></td>
+                <td>创建（Create）</td>
+                <td>创建新资源</td>
+                <td>否</td>
+            </tr>
+            <tr>
+                <td><span class="http-method put">PUT</span></td>
+                <td>更新（Update）</td>
+                <td>更新已存在的资源（全量更新）</td>
+                <td>是</td>
+            </tr>
+            <tr>
+                <td><span class="http-method delete">DELETE</span></td>
+                <td>删除（Delete）</td>
+                <td>删除资源</td>
+                <td>是</td>
+            </tr>
+            <tr>
+                <td><span class="http-method patch">PATCH</span></td>
+                <td>部分更新（Partial Update）</td>
+                <td>对资源进行部分更新</td>
+                <td>否</td>
+            </tr>
+        </table>
+        
+        <div class="note">
+            <p><strong>幂等性（Idempotence）</strong>是指多次执行相同的操作，结果都是相同的。例如，多次执行相同的GET请求，结果应该是一致的；多次执行相同的PUT请求，资源的状态也应该是一致的。</p>
+        </div>
+
+        <h3>2.3 HTTP状态码的正确使用</h3>
+        <p>合理使用HTTP状态码可以提供清晰的操作结果反馈：</p>
+        
+        <table>
+            <tr>
+                <th>状态码</th>
+                <th>描述</th>
+                <th>场景示例</th>
+            </tr>
+            <tr>
+                <td>200 OK</td>
+                <td>请求成功</td>
+                <td>GET请求成功返回数据</td>
+            </tr>
+            <tr>
+                <td>201 Created</td>
+                <td>资源创建成功</td>
+                <td>POST请求成功创建资源</td>
+            </tr>
+            <tr>
+                <td>204 No Content</td>
+                <td>请求成功但无返回内容</td>
+                <td>DELETE请求成功</td>
+            </tr>
+            <tr>
+                <td>400 Bad Request</td>
+                <td>客户端请求有错误</td>
+                <td>请求参数不符合要求</td>
+            </tr>
+            <tr>
+                <td>401 Unauthorized</td>
+                <td>未认证</td>
+                <td>用户未登录</td>
+            </tr>
+            <tr>
+                <td>403 Forbidden</td>
+                <td>没有权限</td>
+                <td>用户已认证但权限不足</td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>资源不存在</td>
+                <td>请求的资源不存在</td>
+            </tr>
+            <tr>
+                <td>405 Method Not Allowed</td>
+                <td>方法不允许</td>
+                <td>资源不支持该HTTP方法</td>
+            </tr>
+            <tr>
+                <td>409 Conflict</td>
+                <td>资源冲突</td>
+                <td>更新资源时版本冲突</td>
+            </tr>
+            <tr>
+                <td>429 Too Many Requests</td>
+                <td>请求过多</td>
+                <td>客户端超出了请求限制</td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>服务器内部错误</td>
+                <td>服务端代码异常</td>
+            </tr>
+        </table>
+
+        <h3>2.4 版本控制策略</h3>
+        <p>API版本控制是确保向后兼容性和平滑升级的关键。常见的版本控制策略包括：</p>
+        
+        <ul>
+            <li><strong>URI路径版本控制</strong>：如 <code>/api/v1/users</code></li>
+            <li><strong>查询参数版本控制</strong>：如 <code>/api/users?version=1</code></li>
+            <li><strong>HTTP头版本控制</strong>：如 <code>Accept: application/vnd.example.v1+json</code></li>
+            <li><strong>自定义请求头</strong>：如 <code>X-API-Version: 1</code></li>
+        </ul>
+        
+        <div class="note">
+            <p><strong>最佳实践</strong>：URI路径版本控制是最直观和常用的方式，但HTTP头版本控制更符合RESTful原则（资源不应该随版本而变化）。</p>
+        </div>
+
+        <h2>3. 使用Spring Boot构建RESTful API</h2>
+        
+        <h3>3.1 环境搭建</h3>
+        <p>以下是使用Spring Boot构建RESTful API的基本环境配置：</p>
+        
+        <h4>3.1.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-web&lt;/artifactId>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-data-jpa&lt;/artifactId>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>com.h2database&lt;/groupId>
+    &lt;artifactId>h2&lt;/artifactId>
+    &lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>org.projectlombok&lt;/groupId>
+    &lt;artifactId>lombok&lt;/artifactId>
+    &lt;optional>true&lt;/optional>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-validation&lt;/artifactId>
+&lt;/dependency></code></pre>
+
+        <h4>3.1.2 配置数据库</h4>
+        <pre><code># application.properties 或 application.yml
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.h2.console.enabled=true</code></pre>
+
+        <h3>3.2 构建RESTful API</h3>
+        
+        <h4>3.2.1 创建实体类</h4>
+        <pre><code>@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotBlank(message = "用户名不能为空")
+    private String username;
+    
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不正确")
+    private String email;
+    
+    @JsonIgnore
+    private String password;
+    
+    private LocalDateTime createdAt = LocalDateTime.now();
+}</code></pre>
+
+        <h4>3.2.2 创建仓库接口</h4>
+        <pre><code>public interface UserRepository extends JpaRepository&lt;User, Long> {
+    Optional&lt;User> findByUsername(String username);
+    boolean existsByEmail(String email);
+}</code></pre>
+
+        <h4>3.2.3 创建服务层</h4>
+        <pre><code>@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+
+    public List&lt;User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional&lt;User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public User createUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("邮箱已被使用");
+        }
+        return userRepository.save(user);
+    }
+
+    public Optional&lt;User> updateUser(Long id, User user) {
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setUsername(user.getUsername());
+                    existingUser.setEmail(user.getEmail());
+                    return userRepository.save(existingUser);
+                });
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+}</code></pre>
+
+        <h4>3.2.4 创建控制器</h4>
+        <pre><code>@RestController
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
+public class UserController {
+    private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;User>> getAllUsers() {
+        List&lt;User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity&lt;User> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;User> createUser(@Valid @RequestBody User user) {
+        User created = userService.createUser(user);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(created);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity&lt;User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
+        return userService.updateUser(id, user)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity&lt;Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+}</code></pre>
+
+        <h4>3.2.5 统一异常处理</h4>
+        <pre><code>@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map&lt;String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity&lt;Map&lt;String, String>> handleRuntimeException(RuntimeException ex) {
+        Map&lt;String, String> error = Map.of("message", ex.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;Map&lt;String, String>> handleGeneralExceptions(Exception ex) {
+        Map&lt;String, String> error = Map.of("message", "发生了一个错误");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+}</code></pre>
+
+        <h3>3.3 API文档集成</h3>
+        <p>使用Springdoc-OpenAPI集成Swagger来自动生成API文档：</p>
+        
+        <h4>3.3.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>org.springdoc&lt;/groupId>
+    &lt;artifactId>springdoc-openapi-ui&lt;/artifactId>
+    &lt;version>1.6.9&lt;/version>
+&lt;/dependency></code></pre>
+
+        <h4>3.3.2 配置OpenAPI</h4>
+        <pre><code>@Configuration
+public class OpenAPIConfig {
+    
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("用户管理API")
+                        .version("1.0")
+                        .description("用户管理系统的RESTful API文档")
+                        .contact(new Contact()
+                                .name("开发团队")
+                                .email("dev@example.com")
+                                .url("https://example.com")));
+    }
+}</code></pre>
+
+        <p>通过访问 <code>http://localhost:8080/swagger-ui.html</code> 即可查看生成的API文档。</p>
+
+        <h2>4. RESTful API进阶技术</h2>
+        
+        <h3>4.1 分页与排序</h3>
+        <p>对于返回大量数据的API，应实现分页与排序功能：</p>
+        
+        <pre><code>@GetMapping
+public ResponseEntity&lt;Page&lt;User>> getUsers(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id") String sortBy) {
+    
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+    Page&lt;User> users = userService.getUsers(pageable);
+    return ResponseEntity.ok(users);
+}</code></pre>
+
+        <h3>4.2 HATEOAS实现</h3>
+        <p>HATEOAS（Hypermedia as the Engine of Application State）是REST应用程序架构的一个约束，它使API具有自描述性。</p>
+        
+        <h4>4.2.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-hateoas&lt;/artifactId>
+&lt;/dependency></code></pre>
+
+        <h4>4.2.2 实现HATEOAS</h4>
+        <pre><code>@GetMapping("/{id}")
+public EntityModel&lt;User> getUserById(@PathVariable Long id) {
+    User user = userService.getUserById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("未找到ID为: " + id + "的用户"));
+
+    return EntityModel.of(user,
+            linkTo(methodOn(UserController.class).getUserById(id)).withSelfRel(),
+            linkTo(methodOn(UserController.class).getAllUsers()).withRel("users"));
+}</code></pre>
+
+        <h3>4.3 API限流与熔断</h3>
+        <p>为保护API免受过载，可实现限流与熔断机制：</p>
+        
+        <h4>4.3.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>org.springframework.cloud&lt;/groupId>
+    &lt;artifactId>spring-cloud-starter-circuitbreaker-resilience4j&lt;/artifactId>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-aop&lt;/artifactId>
+&lt;/dependency></code></pre>
+
+        <h4>4.3.2 配置限流器</h4>
+        <pre><code>@Configuration
+public class ResilienceConfig {
+    
+    @Bean
+    public Customizer&lt;Resilience4JCircuitBreakerFactory> defaultCustomizer() {
+        return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+                .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(3)).build())
+                .circuitBreakerConfig(CircuitBreakerConfig.custom()
+                        .slidingWindowSize(10)
+                        .failureRateThreshold(50)
+                        .waitDurationInOpenState(Duration.ofSeconds(10))
+                        .permittedNumberOfCallsInHalfOpenState(5)
+                        .build())
+                .build());
+    }
+    
+    @Bean
+    public RateLimiterRegistry rateLimiterRegistry() {
+        RateLimiterConfig config = RateLimiterConfig.custom()
+                .limitRefreshPeriod(Duration.ofSeconds(1))
+                .limitForPeriod(10)
+                .timeoutDuration(Duration.ofMillis(100))
+                .build();
+        return RateLimiterRegistry.of(config);
+    }
+}</code></pre>
+
+        <h4>4.3.3 应用限流与熔断</h4>
+        <pre><code>@GetMapping
+@RateLimiter(name = "userApi")
+@CircuitBreaker(name = "userApi", fallbackMethod = "fallbackGetAllUsers")
+public ResponseEntity&lt;List&lt;User>> getAllUsers() {
+    List&lt;User> users = userService.getAllUsers();
+    return ResponseEntity.ok(users);
+}
+
+public ResponseEntity&lt;List&lt;User>> fallbackGetAllUsers(Exception ex) {
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+            .body(Collections.emptyList());
+}</code></pre>
+
+        <h3>4.4 内容协商</h3>
+        <p>RESTful API应支持多种内容格式，如JSON和XML：</p>
+        
+        <pre><code># application.properties
+spring.mvc.contentnegotiation.favor-parameter=true
+spring.mvc.contentnegotiation.parameter-name=format
+spring.mvc.contentnegotiation.media-types.json=application/json
+spring.mvc.contentnegotiation.media-types.xml=application/xml</code></pre>
+
+        <p>添加XML支持依赖：</p>
+        <pre><code>&lt;dependency>
+    &lt;groupId>com.fasterxml.jackson.dataformat&lt;/groupId>
+    &lt;artifactId>jackson-dataformat-xml&lt;/artifactId>
+&lt;/dependency></code></pre>
+
+        <h2>5. 安全性与认证</h2>
+        
+        <h3>5.1 Spring Security集成</h3>
+        
+        <h4>5.1.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>org.springframework.boot&lt;/groupId>
+    &lt;artifactId>spring-boot-starter-security&lt;/artifactId>
+&lt;/dependency></code></pre>
+
+        <h4>5.1.2 基本配置</h4>
+        <pre><code>@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .httpBasic();
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}</code></pre>
+
+        <h3>5.2 JWT认证实现</h3>
+        
+        <h4>5.2.1 添加依赖</h4>
+        <pre><code>&lt;dependency>
+    &lt;groupId>io.jsonwebtoken&lt;/groupId>
+    &lt;artifactId>jjwt-api&lt;/artifactId>
+    &lt;version>0.11.2&lt;/version>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>io.jsonwebtoken&lt;/groupId>
+    &lt;artifactId>jjwt-impl&lt;/artifactId>
+    &lt;version>0.11.2&lt;/version>
+    &lt;scope>runtime&lt;/scope>
+&lt;/dependency>
+&lt;dependency>
+    &lt;groupId>io.jsonwebtoken&lt;/groupId>
+    &lt;artifactId>jjwt-jackson&lt;/artifactId>
+    &lt;version>0.11.2&lt;/version>
+    &lt;scope>runtime&lt;/scope>
+&lt;/dependency></code></pre>
+
+        <h4>5.2.2 JWT工具类</h4>
+        <pre><code>@Component
+public class JwtTokenProvider {
+    
+    @Value("${app.jwt.secret}")
+    private String jwtSecret;
+    
+    @Value("${app.jwt.expiration}")
+    private int jwtExpiration;
+    
+    public String generateToken(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+        
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS512)
+                .compact();
+    }
+    
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        
+        return claims.getSubject();
+    }
+    
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+}</code></pre>
+
+        <h4>5.2.3 JWT过滤器</h4>
+        <pre><code>@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, 
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String jwt = getJwtFromRequest(request);
+        
+        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            String username = tokenProvider.getUsernameFromToken(jwt);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            
+            UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+    
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+}</code></pre>
+
+        <h2>6. 最佳实践与常见错误</h2>
+        
+        <h3>6.1 性能优化</h3>
+        <ul>
+            <li><strong>适当缓存</strong>：对于频繁访问但变化不大的资源，可以使用缓存</li>
+            <li><strong>压缩响应</strong>：对大型响应启用压缩以减少传输数据量</li>
+            <li><strong>延迟加载</strong>：对于嵌套资源，提供按需加载的机制</li>
+            <li><strong>异步处理</strong>：对于耗时操作，使用异步处理方式</li>
+        </ul>
+        
+        <h3>6.2 常见设计错误</h3>
+        <ul>
+            <li><strong>忽略HTTP动词</strong>：例如使用POST执行所有操作</li>
+            <li><strong>在URL中使用动词</strong>：如<code>/api/getUsers</code>而非<code>/api/users</code></li>
+            <li><strong>忽略状态码</strong>：总是返回200状态码，在响应体中表示错误</li>
+            <li><strong>暴露敏感信息</strong>：在API响应中包含敏感数据</li>
+            <li><strong>忽略版本控制</strong>：不提供API版本管理，导致兼容性问题</li>
+            <li><strong>响应格式不一致</strong>：不同的API使用不同的响应格式</li>
+        </ul>
+        
+        <h3>6.3 安全最佳实践</h3>
+        <ul>
+            <li><strong>使用HTTPS</strong>：所有的API调用都应该通过HTTPS进行</li>
+            <li><strong>实施速率限制</strong>：防止暴力攻击和DoS攻击</li>
+            <li><strong>验证所有输入</strong>：不信任任何客户端输入</li>
+            <li><strong>实施OAuth2或JWT</strong>：用于认证和授权</li>
+            <li><strong>使用CORS</strong>：适当配置跨域资源共享</li>
+            <li><strong>定义合理的超时</strong>：防止连接耗尽</li>
+        </ul>
+        
+        <h2>7. 总结</h2>
+        <p>RESTful API设计是现代Web应用开发的基础。通过遵循REST架构风格和本教程中介绍的最佳实践，可以构建出高效、可扩展、易于理解和维护的API。</p>
+        
+        <p>关键要点回顾：</p>
+        <ul>
+            <li>REST是一种架构风格，强调资源、无状态和统一接口</li>
+            <li>良好的URI设计使用名词而非动词表示资源</li>
+            <li>合理使用HTTP方法和状态码</li>
+            <li>实现版本控制以管理API的演进</li>
+            <li>使用Spring Boot可以快速构建RESTful API</li>
+            <li>安全性、性能和文档是API设计的重要方面</li>
+        </ul>
+        
+        <div class="note">
+            <p><strong>持续学习</strong>：API设计是一个不断发展的领域，建议关注最新的RESTful API设计趋势和最佳实践，如GraphQL、API网关等技术。</p>
+        </div>
+        
+        <a href="../index.html" class="back-to-home">返回首页</a>
+    </div>
+</body>
+</html> 
