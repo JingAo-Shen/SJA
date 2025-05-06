@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonarQube 教程 - Java 学习教程</title>
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --code-background: #f1f1f1;
+            --note-background: #e8f5e9;
+            --note-border: #4CAF50;
+            --warning-background: #FFF8E1;
+            --warning-border: #FFC107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h3 {
+            margin: 25px 0 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: var(--code-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .note {
+            background-color: var(--note-background);
+            border-left: 4px solid var(--note-border);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+
+        .warning {
+            background-color: var(--warning-background);
+            border-left: 4px solid var(--warning-border);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .back-to-home:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SonarQube 教程</h1>
+            <p>代码质量与安全分析平台</p>
+        </header>
+
+        <h2>1. SonarQube 简介</h2>
+        <p>SonarQube 是一个开源的代码质量管理平台，用于持续检查和分析代码质量。它可以自动检测代码中的错误、漏洞和代码异味，帮助开发团队编写更干净、更安全的代码。</p>
+        
+        <h3>1.1 SonarQube 的主要特点</h3>
+        <ul>
+            <li><strong>多语言支持</strong>：支持超过 25 种编程语言，包括 Java、JavaScript、C#、Python、PHP 等</li>
+            <li><strong>代码质量指标</strong>：提供代码复杂度、重复代码、代码覆盖率等多种指标</li>
+            <li><strong>安全漏洞检测</strong>：能够识别代码中的安全风险和漏洞</li>
+            <li><strong>持续集成</strong>：可以集成到 CI/CD 流程中，实现自动化代码检查</li>
+            <li><strong>质量门禁</strong>：设置质量门禁（Quality Gates）来确保代码质量达到预设标准</li>
+            <li><strong>历史追踪</strong>：跟踪项目质量的历史变化，帮助团队了解代码质量趋势</li>
+        </ul>
+
+        <h2>2. SonarQube 安装与配置</h2>
+        
+        <h3>2.1 系统要求</h3>
+        <ul>
+            <li>Java JDK 11 或更高版本</li>
+            <li>数据库：PostgreSQL（推荐）、MySQL、Oracle 或 Microsoft SQL Server</li>
+            <li>至少 2GB 内存</li>
+            <li>现代 Web 浏览器</li>
+        </ul>
+
+        <h3>2.2 安装步骤</h3>
+        
+        <h4>使用 Docker 安装（推荐）</h4>
+        <p>使用 Docker 是快速启动 SonarQube 的最简单方法：</p>
+        <pre><code>docker run -d --name sonarqube -p 9000:9000 sonarqube:latest</code></pre>
+        
+        <div class="note">
+            <p><strong>注意</strong>：对于生产环境，应该使用外部数据库并进行适当的配置。</p>
+        </div>
+
+        <h4>手动安装</h4>
+        <ol>
+            <li>从 <a href="https://www.sonarqube.org/downloads/" target="_blank">SonarQube 官网</a> 下载最新版本</li>
+            <li>解压下载的文件到安装目录</li>
+            <li>配置数据库（修改 <code>conf/sonar.properties</code> 文件）</li>
+            <li>启动 SonarQube 服务：
+                <pre><code># Windows
+bin\windows-x86-64\StartSonar.bat
+
+# Linux/macOS
+bin/linux-x86-64/sonar.sh start</code></pre>
+            </li>
+        </ol>
+
+        <h3>2.3 初始配置</h3>
+        <ol>
+            <li>访问 <code>http://localhost:9000</code></li>
+            <li>使用默认管理员账号登录（用户名：admin，密码：admin）</li>
+            <li>首次登录后，系统会提示修改默认密码</li>
+            <li>配置通用设置、质量配置文件和质量门禁</li>
+        </ol>
+
+        <h2>3. 使用 SonarQube 分析 Java 项目</h2>
+        
+        <h3>3.1 使用 Maven 集成</h3>
+        <p>在 Maven 项目中添加 SonarQube 分析，需要修改 <code>pom.xml</code> 文件：</p>
+        
+        <pre><code>&lt;properties&gt;
+    &lt;sonar.host.url&gt;http://localhost:9000&lt;/sonar.host.url&gt;
+    &lt;!-- 可选：指定项目键 --&gt;
+    &lt;sonar.projectKey&gt;my-project&lt;/sonar.projectKey&gt;
+&lt;/properties&gt;</code></pre>
+
+        <p>执行分析命令：</p>
+        <pre><code>mvn clean verify sonar:sonar</code></pre>
+
+        <h3>3.2 使用 Gradle 集成</h3>
+        <p>在 Gradle 项目中添加 SonarQube 插件，修改 <code>build.gradle</code> 文件：</p>
+        
+        <pre><code>plugins {
+    id "org.sonarqube" version "3.5.0.2730"
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.projectKey", "my-project"
+    }
+}</code></pre>
+
+        <p>执行分析命令：</p>
+        <pre><code>./gradlew clean build sonarqube</code></pre>
+
+        <h3>3.3 使用 SonarScanner 分析</h3>
+        <p>对于非 Maven/Gradle 项目，可以使用 SonarScanner：</p>
+        <ol>
+            <li>下载并解压 <a href="https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/" target="_blank">SonarScanner</a></li>
+            <li>在项目根目录创建 <code>sonar-project.properties</code> 文件：
+                <pre><code>sonar.projectKey=my-project
+sonar.projectName=My Project
+sonar.sources=src
+sonar.java.binaries=target/classes
+sonar.host.url=http://localhost:9000</code></pre>
+            </li>
+            <li>执行分析命令：
+                <pre><code>sonar-scanner</code></pre>
+            </li>
+        </ol>
+
+        <h2>4. 与 CI/CD 集成</h2>
+        
+        <h3>4.1 Jenkins 集成</h3>
+        <ol>
+            <li>在 Jenkins 中安装 "SonarQube Scanner" 插件</li>
+            <li>配置 SonarQube 服务器（Jenkins 系统配置）</li>
+            <li>在 Jenkinsfile 中添加 SonarQube 分析阶段：
+                <pre><code>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+}</code></pre>
+            </li>
+        </ol>
+
+        <h3>4.2 GitLab CI 集成</h3>
+        <p>在 <code>.gitlab-ci.yml</code> 文件中添加 SonarQube 分析作业：</p>
+        <pre><code>sonarqube-analysis:
+  stage: test
+  image: maven:3.8-openjdk-11
+  script:
+    - mvn verify sonar:sonar
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN
+  only:
+    - merge_requests
+    - main</code></pre>
+
+        <h2>5. SonarQube 质量门禁</h2>
+        
+        <h3>5.1 什么是质量门禁</h3>
+        <p>质量门禁（Quality Gates）是 SonarQube 中的一个重要概念，用于定义代码质量的最低标准。只有通过质量门禁的代码才被视为"可接受"的。</p>
+        
+        <h3>5.2 配置质量门禁</h3>
+        <ol>
+            <li>在 SonarQube 仪表板中，导航到 "Quality Gates"</li>
+            <li>创建新的质量门禁或修改现有门禁</li>
+            <li>添加条件，例如：
+                <ul>
+                    <li>新代码的覆盖率必须 ≥ 80%</li>
+                    <li>新代码中的复杂度必须 < 10</li>
+                    <li>新代码中的重复行必须 < 3%</li>
+                    <li>必须没有新的漏洞</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>6. 理解 SonarQube 报告</h2>
+        
+        <h3>6.1 主要指标解析</h3>
+        <ul>
+            <li><strong>可靠性问题（Bugs）</strong>：可能导致程序错误的代码</li>
+            <li><strong>安全漏洞（Vulnerabilities）</strong>：可能被攻击者利用的安全问题</li>
+            <li><strong>代码异味（Code Smells）</strong>：与可维护性相关的问题</li>
+            <li><strong>覆盖率（Coverage）</strong>：单元测试覆盖的代码百分比</li>
+            <li><strong>重复（Duplications）</strong>：重复代码的百分比</li>
+            <li><strong>复杂度（Complexity）</strong>：代码的圈复杂度</li>
+        </ul>
+        
+        <h3>6.2 问题严重程度</h3>
+        <p>SonarQube 将问题分为以下几个严重程度：</p>
+        <ul>
+            <li><strong>阻断（Blocker）</strong>：最严重的问题，有可能导致程序崩溃或数据丢失</li>
+            <li><strong>严重（Critical）</strong>：可能导致严重问题的代码缺陷</li>
+            <li><strong>主要（Major）</strong>：影响代码质量的问题</li>
+            <li><strong>次要（Minor）</strong>：较小的代码问题</li>
+            <li><strong>信息（Info）</strong>：最轻微的问题，通常是建议性的</li>
+        </ul>
+
+        <h2>7. 最佳实践</h2>
+        
+        <h3>7.1 持续分析</h3>
+        <p>将 SonarQube 分析集成到 CI/CD 流程中，确保每次代码提交都进行质量检查。</p>
+        
+        <h3>7.2 关注新代码</h3>
+        <p>使用 SonarQube 的"新代码"功能，重点关注新添加或修改的代码质量，而不必一开始就修复所有历史问题。</p>
+        
+        <h3>7.3 团队协作</h3>
+        <p>将 SonarQube 作为团队协作工具，鼓励团队成员共同解决质量问题，而不是将其视为惩罚工具。</p>
+        
+        <h3>7.4 逐步改进</h3>
+        <p>对于遗留项目，设定逐步提高代码质量的目标，避免一开始就设置过高的质量门禁标准。</p>
+
+        <h2>8. 常见问题与解决方案</h2>
+        
+        <h3>8.1 分析失败</h3>
+        <p>常见原因：</p>
+        <ul>
+            <li>内存不足</li>
+            <li>数据库连接问题</li>
+            <li>权限配置错误</li>
+        </ul>
+        <p>解决方法：查看 SonarQube 日志，增加内存配置，检查数据库连接和权限设置。</p>
+        
+        <h3>8.2 误报处理</h3>
+        <p>如果 SonarQube 报告了误报（False Positives）：</p>
+        <ol>
+            <li>在 SonarQube 界面中标记该问题为"误报"</li>
+            <li>使用代码注释标记来抑制特定警告：
+                <pre><code>// NOSONAR: 这里解释为什么忽略此警告</code></pre>
+            </li>
+            <li>为项目创建自定义规则配置</li>
+        </ol>
+
+        <h2>9. 总结</h2>
+        <p>SonarQube 是一个强大的代码质量管理工具，它可以帮助开发团队：</p>
+        <ul>
+            <li>持续监控和改进代码质量</li>
+            <li>尽早发现并修复潜在问题</li>
+            <li>提高代码的可维护性和安全性</li>
+            <li>建立统一的质量标准</li>
+        </ul>
+        <p>通过将 SonarQube 集成到开发流程中，可以显著提高软件的稳定性、安全性和可维护性，为用户提供更高质量的产品。</p>
+        
+        <a href="../index.html" class="back-to-home">返回首页</a>
+    </div>
+</body>
+</html> 
