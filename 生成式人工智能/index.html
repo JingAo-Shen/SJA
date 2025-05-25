@@ -295,7 +295,7 @@
             </ul>
 
             <div class="image-container">
-                <img src="https://via.placeholder.com/800x400?text=生成式AI发展时间线" alt="生成式AI发展时间线">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/c7d3597ac3b7dac9e2f34ee633bf92d8.png" alt="生成式AI发展时间线">
                 <p class="caption">图 1-1: 生成式AI主要技术路线与发展历程</p>
             </div>
 
@@ -476,10 +476,6 @@ class Decoder(nn.Module):
                 <li><strong>自监督学习</strong>：从数据本身构造监督信号</li>
             </ul>
 
-            <div class="image-container">
-                <img src="https://via.placeholder.com/800x500?text=生成模型训练原理图" alt="生成模型训练原理图">
-                <p class="caption">图 2-1: 不同生成模型的训练原理对比</p>
-            </div>
 
             <h3>2.4 评估生成模型的指标</h3>
             <p>评估生成模型的质量需要多维度指标：</p>
@@ -510,8 +506,725 @@ class Decoder(nn.Module):
             </div>
         </section>
 
-        <!-- 内容太长，展示前两个章节作为示例 -->
-        <!-- 其他章节省略，实际应添加完整内容 -->
+        <section id="llm" class="content">
+            <h2>3. 大型语言模型架构</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>为什么Transformer架构能在NLP任务中取得突破性进展？</li>
+                    <li>大型语言模型的规模与性能之间是什么关系？</li>
+                    <li>如何理解大语言模型的涌现能力（Emergent Abilities）？</li>
+                    <li>大语言模型的训练过程中有哪些关键技术挑战？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+
+            <h3>3.1 Transformer架构详解</h3>
+            <p>Transformer是现代大型语言模型的基础架构，其核心特点包括：</p>
+            <ul>
+                <li><strong>自注意力机制</strong>：实现序列中任意位置的直接信息交互</li>
+                <li><strong>多头注意力</strong>：从不同表示子空间捕获信息</li>
+                <li><strong>位置编码</strong>：在无序的自注意力中注入位置信息</li>
+                <li><strong>残差连接</strong>：缓解深层网络训练困难</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw1%2Fa5055deb-0385-411d-b0bd-85b56dcf7e18%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&refer=http%3A%2F%2Fsafe-img.xhscdn.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1750748433&t=b0173b64ff25155853e3abe511c89f25" alt="Transformer架构图">
+                <p class="caption">图 3-1: Transformer模型架构示意图</p>
+            </div>
+
+            <h3>3.2 大型语言模型的关键组件</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>组件</th>
+                        <th>功能</th>
+                        <th>技术特点</th>
+                        <th>优化方向</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>词嵌入层</td>
+                        <td>将词转换为向量表示</td>
+                        <td>上下文相关的动态嵌入</td>
+                        <td>压缩词表、参数共享</td>
+                    </tr>
+                    <tr>
+                        <td>注意力层</td>
+                        <td>计算token间关联</td>
+                        <td>多头并行计算</td>
+                        <td>稀疏注意力、线性复杂度</td>
+                    </tr>
+                    <tr>
+                        <td>前馈网络</td>
+                        <td>非线性特征转换</td>
+                        <td>位置级特征处理</td>
+                        <td>激活函数优化</td>
+                    </tr>
+                    <tr>
+                        <td>归一化层</td>
+                        <td>稳定网络训练</td>
+                        <td>层归一化</td>
+                        <td>计算效率提升</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.3 预训练与微调范式</h3>
+            <p>现代大语言模型采用"预训练+微调"的训练范式：</p>
+            <ul>
+                <li><strong>预训练阶段</strong>
+                    <ul>
+                        <li>在海量文本上进行自监督学习</li>
+                        <li>掌握语言的基础知识和模式</li>
+                        <li>通常采用因果语言模型或掩码语言模型目标</li>
+                    </ul>
+                </li>
+                <li><strong>微调阶段</strong>
+                    <ul>
+                        <li>在特定任务数据上进行有监督学习</li>
+                        <li>指令微调（Instruction Tuning）</li>
+                        <li>对齐微调（Alignment Tuning）</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>3.4 规模化训练技术</h3>
+            <p>训练大型语言模型面临的主要技术挑战和解决方案：</p>
+            <ul>
+                <li><strong>分布式训练</strong>
+                    <ul>
+                        <li>数据并行：多GPU复制模型</li>
+                        <li>模型并行：模型分片到多设备</li>
+                        <li>流水线并行：层级划分计算</li>
+                    </ul>
+                </li>
+                <li><strong>混合精度训练</strong>
+                    <ul>
+                        <li>FP16/BF16计算加速</li>
+                        <li>动态损失缩放</li>
+                        <li>梯度累积</li>
+                    </ul>
+                </li>
+                <li><strong>内存优化</strong>
+                    <ul>
+                        <li>梯度检查点（Gradient Checkpointing）</li>
+                        <li>ZeRO优化器</li>
+                        <li>Offload策略</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>大语言模型正朝着更高效的训练和推理方向发展。稀疏专家混合（MoE）、参数高效微调（PEFT）、量化压缩等技术使得在有限计算资源下也能获得强大的模型能力。同时，模型架构的改进（如Flash Attention、旋转位置编码等）也在不断提升性能。</p>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">局限性</div>
+                <p>尽管大语言模型表现出强大的能力，但仍存在推理不一致、幻觉、知识时效性等问题。理解这些局限性对于安全部署和应用至关重要。同时，模型的可解释性和知识更新机制也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="diffusion" class="content">
+            <h2>4. 扩散模型与图像生成</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>扩散模型与传统生成模型有何不同？</li>
+                    <li>扩散模型的主要应用场景有哪些？</li>
+                    <li>您认为扩散模型的发展会如何改变图像生成领域？</li>
+                    <li>在扩散模型的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>扩散模型(Diffusion Model)是一种基于概率的生成模型，通过逐步去噪过程来生成数据。与传统的生成模型不同，扩散模型在训练过程中需要逐步添加噪声，而在生成过程中则需要逐步去除噪声。</p>
+
+            <h3>4.1 扩散模型的基本原理</h3>
+            <p>扩散模型的核心思想是通过一个马尔可夫链逐步去噪声，最终生成高质量的数据。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>前向过程</strong>：逐步添加噪声</li>
+                <li><strong>反向过程</strong>：逐步去除噪声</li>
+            </ul>
+
+            <pre><code># 扩散模型的基本思想示例
+# 前向过程：逐步添加噪声
+# 反向过程：逐步去除噪声
+
+import torch
+import torch.nn as nn
+
+# 定义前向过程的噪声函数
+class ForwardProcess(nn.Module):
+    def __init__(self, input_dim, noise_level):
+        super(ForwardProcess, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.noise_level = noise_level
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h + self.noise_level * torch.randn_like(h)
+
+# 定义反向过程的噪声函数
+class ReverseProcess(nn.Module):
+    def __init__(self, input_dim, noise_level):
+        super(ReverseProcess, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 512),
+            nn.ReLU(),
+            nn.Linear(512, input_dim),
+            nn.Sigmoid()  # 假设输出是图像像素值 [0,1]
+        )
+        self.noise_level = noise_level
+    
+    def forward(self, x):
+        return self.fc(x) * self.noise_level</code></pre>
+
+            <h3>4.2 扩散模型的训练与生成</h3>
+            <p>扩散模型的训练和生成过程包括：</p>
+            <ul>
+                <li><strong>训练目标</strong>：最小化去噪过程的损失</li>
+                <li><strong>生成过程</strong>：从噪声中逐步生成数据</li>
+            </ul>
+
+            <h3>4.3 扩散模型的应用场景</h3>
+            <p>扩散模型在图像生成领域有广泛应用，包括：</p>
+            <ul>
+                <li>艺术创作</li>
+                <li>设计辅助</li>
+                <li>图像编辑</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://miaobi-lite.bj.bcebos.com/miaobi/5mao/b%276LaF5YiG6L6o546HXzE3MzM5NDYwNjMuMzY3OTg1Mg%3D%3D%27/0.png" alt="扩散模型应用场景">
+                <p class="caption">图 4-1: 扩散模型</p>
+            </div>
+
+            <h3>4.4 扩散模型的局限性与挑战</h3>
+            <p>尽管扩散模型在图像生成领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>采样速度慢</strong>：由于去噪过程的逐步进行，采样速度相对较慢</li>
+                <li><strong>计算成本高</strong>：训练和生成过程中需要大量的计算资源</li>
+                <li><strong>模式崩溃</strong>：在训练过程中可能出现模式崩溃问题</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>扩散模型正朝着更高效的训练和采样方向发展。基于分数的生成模型、条件扩散模型等技术正在不断改进采样速度和计算效率。同时，扩散模型的可解释性和多样性生成能力也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="multimodal" class="content">
+            <h2>5. 多模态生成系统</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>多模态生成系统与单模态生成系统有何不同？</li>
+                    <li>多模态生成系统的应用场景有哪些？</li>
+                    <li>您认为多模态生成系统的发展会如何改变内容创作领域？</li>
+                    <li>在多模态生成系统的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>多模态生成系统(Multimodal Generative System)是指能够处理多种类型输入并生成多种类型输出的AI系统。与单模态生成系统不同，多模态生成系统能够同时处理文本、图像、音频等多种输入，并生成相应的输出。</p>
+
+            <h3>5.1 多模态生成系统的基本原理</h3>
+            <p>多模态生成系统的核心思想是通过一个统一的模型来处理多种类型的输入，并生成相应的输出。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>多模态融合</strong>：将不同类型的输入融合到一个统一的表示空间中</li>
+                <li><strong>统一生成</strong>：从统一的表示空间中生成输出</li>
+            </ul>
+
+            <pre><code># 多模态生成系统的基本思想示例
+# 多模态融合：将不同类型的输入融合到一个统一的表示空间中
+# 统一生成：从统一的表示空间中生成输出
+
+import torch
+import torch.nn as nn
+
+# 定义多模态融合模型
+class MultimodalModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(MultimodalModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>5.2 多模态生成系统的应用场景</h3>
+            <p>多模态生成系统在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本到图像生成</li>
+                <li>图像到文本生成</li>
+                <li>文本到音频生成</li>
+                <li>图像到音频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/multimodal_system_application.png" alt="多模态生成系统应用场景">
+                <p class="caption">图 5-1: 多模态生成系统在内容创作中的应用场景</p>
+            </div>
+
+            <h3>5.3 多模态生成系统的局限性与挑战</h3>
+            <p>尽管多模态生成系统在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致生成结果质量下降</li>
+                <li><strong>计算成本高</strong>：多模态生成系统需要大量的计算资源</li>
+                <li><strong>可解释性差</strong>：多模态生成系统的生成过程难以解释</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>多模态生成系统正朝着更高效的生成和解释方向发展。基于条件生成模型的多模态生成系统、基于对比学习的跨模态生成系统等技术正在不断改进生成质量和解释能力。同时，多模态生成系统的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="prompt" class="content">
+            <h2>6. 提示工程（Prompt Engineering）</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>提示工程与传统AI技术有何本质区别？</li>
+                    <li>提示工程的主要应用领域有哪些？</li>
+                    <li>您认为提示工程的发展会如何改变人类创造性工作的方式？</li>
+                    <li>在提示工程的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>提示工程(Prompt Engineering)是指在AI系统中使用自然语言提示来引导生成过程的技术。与传统的AI技术不同，提示工程能够直接与AI系统进行交互，并根据用户的具体需求生成相应的内容。</p>
+
+            <h3>6.1 提示工程的基本原理</h3>
+            <p>提示工程的核心思想是通过自然语言提示来引导生成过程。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>提示设计</strong>：根据具体需求设计自然语言提示</li>
+                <li><strong>生成过程</strong>：根据提示生成相应的内容</li>
+            </ul>
+
+            <pre><code># 提示工程的基本思想示例
+# 提示设计：根据具体需求设计自然语言提示
+# 生成过程：根据提示生成相应的内容
+
+import torch
+import torch.nn as nn
+
+# 定义提示工程模型
+class PromptModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(PromptModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>6.2 提示工程的主要应用场景</h3>
+            <p>提示工程在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本生成</li>
+                <li>图像生成</li>
+                <li>音频生成</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/prompt_engineering_application.png" alt="提示工程应用场景">
+                <p class="caption">图 6-1: 提示工程在内容创作中的应用场景</p>
+            </div>
+
+            <h3>6.3 提示工程的局限性与挑战</h3>
+            <p>尽管提示工程在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>可解释性差</strong>：提示工程的生成过程难以解释</li>
+                <li><strong>计算成本高</strong>：提示工程需要大量的计算资源</li>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致生成结果质量下降</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>提示工程正朝着更高效的生成和解释方向发展。基于条件生成模型的提示工程、基于对比学习的跨模态提示工程等技术正在不断改进生成质量和解释能力。同时，提示工程的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="finetuning" class="content">
+            <h2>7. 模型微调与定制化</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>模型微调与传统AI技术有何本质区别？</li>
+                    <li>模型微调的主要应用领域有哪些？</li>
+                    <li>您认为模型微调的发展会如何改变人类创造性工作的方式？</li>
+                    <li>在模型微调的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>模型微调(Model Finetuning)是指在预训练模型的基础上，通过少量数据进行有监督学习，以适应特定任务的技术。与传统的AI技术不同，模型微调能够根据具体任务需求对模型进行定制化。</p>
+
+            <h3>7.1 模型微调的基本原理</h3>
+            <p>模型微调的核心思想是通过少量数据进行有监督学习，以适应特定任务。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>微调目标</strong>：根据具体任务需求设计微调目标</li>
+                <li><strong>微调过程</strong>：在预训练模型的基础上进行有监督学习</li>
+            </ul>
+
+            <pre><code># 模型微调的基本思想示例
+# 微调目标：根据具体任务需求设计微调目标
+# 微调过程：在预训练模型的基础上进行有监督学习
+
+import torch
+import torch.nn as nn
+
+# 定义模型微调模型
+class FinetuningModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(FinetuningModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>7.2 模型微调的主要应用场景</h3>
+            <p>模型微调在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本生成</li>
+                <li>图像生成</li>
+                <li>音频生成</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/model_finetuning_application.png" alt="模型微调应用场景">
+                <p class="caption">图 7-1: 模型微调在内容创作中的应用场景</p>
+            </div>
+
+            <h3>7.3 模型微调的局限性与挑战</h3>
+            <p>尽管模型微调在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>可解释性差</strong>：模型微调的生成过程难以解释</li>
+                <li><strong>计算成本高</strong>：模型微调需要大量的计算资源</li>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致生成结果质量下降</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>模型微调正朝着更高效的生成和解释方向发展。基于条件生成模型的模型微调、基于对比学习的跨模态模型微调等技术正在不断改进生成质量和解释能力。同时，模型微调的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="evaluation" class="content">
+            <h2>8. 生成内容评估框架</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>生成内容评估框架与传统AI技术有何本质区别？</li>
+                    <li>生成内容评估框架的主要应用领域有哪些？</li>
+                    <li>您认为生成内容评估框架的发展会如何改变人类创造性工作的方式？</li>
+                    <li>在生成内容评估框架的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>生成内容评估框架(Generative Content Evaluation Framework)是指用于评估生成内容质量的标准和方法。与传统的AI技术不同，生成内容评估框架能够对生成内容进行全面评估，并给出相应的评分和反馈。</p>
+
+            <h3>8.1 生成内容评估框架的基本原理</h3>
+            <p>生成内容评估框架的核心思想是通过一系列标准和方法来评估生成内容的质量。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>评估标准</strong>：根据具体任务需求设计评估标准</li>
+                <li><strong>评估方法</strong>：根据评估标准对生成内容进行评估</li>
+            </ul>
+
+            <pre><code># 生成内容评估框架的基本思想示例
+# 评估标准：根据具体任务需求设计评估标准
+# 评估方法：根据评估标准对生成内容进行评估
+
+import torch
+import torch.nn as nn
+
+# 定义生成内容评估框架模型
+class EvaluationModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(EvaluationModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>8.2 生成内容评估框架的主要应用场景</h3>
+            <p>生成内容评估框架在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本生成</li>
+                <li>图像生成</li>
+                <li>音频生成</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/generative_content_evaluation_framework_application.png" alt="生成内容评估框架应用场景">
+                <p class="caption">图 8-1: 生成内容评估框架在内容创作中的应用场景</p>
+            </div>
+
+            <h3>8.3 生成内容评估框架的局限性与挑战</h3>
+            <p>尽管生成内容评估框架在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>可解释性差</strong>：生成内容评估框架的评估过程难以解释</li>
+                <li><strong>计算成本高</strong>：生成内容评估框架需要大量的计算资源</li>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致评估结果质量下降</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>生成内容评估框架正朝着更高效的评估和解释方向发展。基于条件生成模型的生成内容评估框架、基于对比学习的跨模态生成内容评估框架等技术正在不断改进评估质量和解释能力。同时，生成内容评估框架的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="applications" class="content">
+            <h2>9. 应用场景与商业化路径</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>应用场景与商业化路径与传统AI技术有何本质区别？</li>
+                    <li>应用场景与商业化路径的主要应用领域有哪些？</li>
+                    <li>您认为应用场景与商业化路径的发展会如何改变人类创造性工作的方式？</li>
+                    <li>在应用场景与商业化路径的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>应用场景与商业化路径(Application Scenarios and Commercialization Path)是指AI系统在不同场景中的应用和商业化过程。与传统的AI技术不同，应用场景与商业化路径能够将AI系统应用于实际场景，并实现商业化。</p>
+
+            <h3>9.1 应用场景与商业化路径的基本原理</h3>
+            <p>应用场景与商业化路径的核心思想是通过一系列场景和方法来实现AI系统的商业化。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>场景识别</strong>：根据具体需求识别应用场景</li>
+                <li><strong>场景适配</strong>：根据应用场景对AI系统进行适配</li>
+                <li><strong>场景实现</strong>：根据适配后的AI系统实现应用场景</li>
+            </ul>
+
+            <pre><code># 应用场景与商业化路径的基本思想示例
+# 场景识别：根据具体需求识别应用场景
+# 场景适配：根据应用场景对AI系统进行适配
+# 场景实现：根据适配后的AI系统实现应用场景
+
+import torch
+import torch.nn as nn
+
+# 定义应用场景与商业化路径模型
+class ApplicationModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(ApplicationModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>9.2 应用场景与商业化路径的主要应用场景</h3>
+            <p>应用场景与商业化路径在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本生成</li>
+                <li>图像生成</li>
+                <li>音频生成</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/application_scenarios_and_commercialization_path_application.png" alt="应用场景与商业化路径应用场景">
+                <p class="caption">图 9-1: 应用场景与商业化路径在内容创作中的应用场景</p>
+            </div>
+
+            <h3>9.3 应用场景与商业化路径的局限性与挑战</h3>
+            <p>尽管应用场景与商业化路径在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>可解释性差</strong>：应用场景与商业化路径的实现过程难以解释</li>
+                <li><strong>计算成本高</strong>：应用场景与商业化路径需要大量的计算资源</li>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致实现结果质量下降</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>应用场景与商业化路径正朝着更高效的实现和解释方向发展。基于条件生成模型的应用场景与商业化路径、基于对比学习的跨模态应用场景与商业化路径等技术正在不断改进实现质量和解释能力。同时，应用场景与商业化路径的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
+
+        <section id="ethics" class="content">
+            <h2>10. 伦理与安全考量</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #2E7D32; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>伦理与安全考量与传统AI技术有何本质区别？</li>
+                    <li>伦理与安全考量主要应用领域有哪些？</li>
+                    <li>您认为伦理与安全考量的发展会如何改变人类创造性工作的方式？</li>
+                    <li>在伦理与安全考量的应用过程中，人类的角色是什么？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+            
+            <p>伦理与安全考量(Ethics and Security Consideration)是指在AI系统开发和应用过程中，考虑伦理和安全问题的技术和方法。与传统的AI技术不同，伦理与安全考量能够确保AI系统的安全性和可靠性。</p>
+
+            <h3>10.1 伦理与安全考量的基本原理</h3>
+            <p>伦理与安全考量的核心思想是通过一系列原则和方法来确保AI系统的安全性和可靠性。这个过程可以表示为：</p>
+            <ul>
+                <li><strong>伦理原则</strong>：根据伦理原则设计AI系统</li>
+                <li><strong>安全方法</strong>：根据安全方法确保AI系统的安全性和可靠性</li>
+            </ul>
+
+            <pre><code># 伦理与安全考量的基本思想示例
+# 伦理原则：根据伦理原则设计AI系统
+# 安全方法：根据安全方法确保AI系统的安全性和可靠性
+
+import torch
+import torch.nn as nn
+
+# 定义伦理与安全考量模型
+class EthicsModel(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(EthicsModel, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU()
+        )
+        self.output_dim = output_dim
+    
+    def forward(self, x):
+        h = self.fc(x)
+        return h
+
+# 定义输出层
+class OutputLayer(nn.Module):
+    def __init__(self, hidden_dim, output_dim):
+        super(OutputLayer, self).__init__()
+        self.fc = nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        return self.fc(x)</code></pre>
+
+            <h3>10.2 伦理与安全考量的主要应用场景</h3>
+            <p>伦理与安全考量在内容创作领域有广泛应用，包括：</p>
+            <ul>
+                <li>文本生成</li>
+                <li>图像生成</li>
+                <li>音频生成</li>
+                <li>视频生成</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="https://i-blog.csdnimg.cn/blog_migrate/ethics_and_security_consideration_application.png" alt="伦理与安全考量应用场景">
+                <p class="caption">图 10-1: 伦理与安全考量在内容创作中的应用场景</p>
+            </div>
+
+            <h3>10.3 伦理与安全考量的局限性与挑战</h3>
+            <p>尽管伦理与安全考量在内容创作领域表现出色，但仍面临一些局限性和挑战：</p>
+            <ul>
+                <li><strong>可解释性差</strong>：伦理与安全考量的实现过程难以解释</li>
+                <li><strong>计算成本高</strong>：伦理与安全考量需要大量的计算资源</li>
+                <li><strong>模态间不一致性</strong>：不同模态之间的信息不一致性可能导致实现结果质量下降</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">技术趋势</div>
+                <p>伦理与安全考量正朝着更高效的实现和解释方向发展。基于条件生成模型的伦理与安全考量、基于对比学习的跨模态伦理与安全考量等技术正在不断改进实现质量和解释能力。同时，伦理与安全考量的可扩展性和可解释性也是重要的研究方向。</p>
+            </div>
+        </section>
 
         <p>本教程的其他章节正在开发中，包括：</p>
         <ul>

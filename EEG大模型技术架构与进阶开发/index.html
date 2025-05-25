@@ -241,6 +241,7 @@
                 <li><a href="#interpretability">8. 模型解释性与可视化</a></li>
                 <li><a href="#deployment">9. 医疗级应用部署与验证</a></li>
                 <li><a href="#future">10. 未来发展趋势</a></li>
+                <li><a href="#signal-acquisition">11. 脑电信号采集</a></li>
             </ul>
         </div>
 
@@ -289,6 +290,52 @@
                 <li><strong>精神疾病评估</strong>：抑郁症、精神分裂症的辅助诊断</li>
                 <li><strong>药物研发</strong>：评估中枢神经系统药物的作用机制和效果</li>
             </ul>
+
+            <h3>1.4 脑电信号采集：从大脑到数据</h3>
+            <p>脑电信号采集就像是在"倾听"大脑的声音。想象一下，当我们在思考、感受或行动时，大脑中的神经元会产生微弱的电信号，这些信号就像是一首复杂的交响乐，而脑电采集设备就是我们的"录音机"。</p>
+
+            <h4>1.4.1 采集设备：大脑的"录音机"</h4>
+            <p>现代脑电采集设备主要分为以下几类：</p>
+            <ul>
+                <li><strong>专业医疗设备</strong>：就像医院里的"专业录音棚"，能提供最清晰、最准确的"录音"效果</li>
+                <li><strong>便携式设备</strong>：类似于"随身听"，方便携带，适合日常使用</li>
+                <li><strong>干电极设备</strong>：不需要使用导电膏，就像"无线麦克风"，使用更加便捷</li>
+            </ul>
+
+            <h4>1.4.2 电极：大脑的"麦克风"</h4>
+            <p>电极就像是放置在我们头皮上的"麦克风"，它们按照特定的规则排列：</p>
+            <ul>
+                <li><strong>标准配置</strong>：就像钢琴的琴键排列，遵循国际10-20系统</li>
+                <li><strong>电极类型</strong>：从传统的"湿电极"（需要导电膏）到现代的"干电极"（无需导电膏）</li>
+                <li><strong>通道数量</strong>：从简单的几个"麦克风"到复杂的"麦克风阵列"（64个或更多）</li>
+            </ul>
+
+            <h4>1.4.3 采集过程：一场精心的"录音"</h4>
+            <p>采集脑电信号就像是在进行一场精心的录音：</p>
+            <ul>
+                <li><strong>准备工作</strong>：确保"录音环境"安静无干扰，就像录音棚需要隔音</li>
+                <li><strong>设备调试</strong>：检查每个"麦克风"是否工作正常</li>
+                <li><strong>信号采集</strong>：以每秒数百次的速度记录大脑的"声音"</li>
+                <li><strong>质量控制</strong>：实时监控"录音"质量，确保信号清晰</li>
+            </ul>
+
+            <div class="tip">
+                <p class="tip-title">趣味知识</p>
+                <ul>
+                    <li>脑电信号的强度非常微弱，大约只有10-100微伏，比一节电池的电压小100万倍</li>
+                    <li>现代脑电设备可以同时记录数百个通道的数据，就像同时使用数百个麦克风录音</li>
+                    <li>最早的脑电记录是在1924年完成的，当时的设备比现在简单得多</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <p class="warning-title">小贴士</p>
+                <ul>
+                    <li>采集脑电信号时，受试者需要保持安静，就像录音时需要保持安静一样</li>
+                    <li>环境中的电磁干扰会影响信号质量，就像录音时会有背景噪音</li>
+                    <li>不同的情绪状态会产生不同的脑电模式，就像不同的音乐会产生不同的声音</li>
+                </ul>
+            </div>
 
             <div class="tip">
                 <div class="tip-title">研究前沿</div>
@@ -454,12 +501,207 @@ clean_data = epochs.get_data()</code></pre>
             </div>
         </section>
 
-        <!-- 内容太长，展示前两个章节作为示例 -->
-        <!-- 其他章节省略，实际应添加完整内容 -->
+        <section id="representation" class="content">
+            <h2>3. 深度学习表征学习架构</h2>
+            
+            <div class="reflection-questions">
+                <h4 style="color: #3366cc; margin-top: 0;">学习前思考</h4>
+                <ol>
+                    <li>为什么传统的特征工程方法难以充分利用EEG数据中的信息？</li>
+                    <li>深度学习如何自动学习EEG数据的层次化特征表示？</li>
+                    <li>不同的神经网络架构在处理EEG数据时各有什么优势？</li>
+                    <li>如何设计网络结构以更好地捕捉EEG信号的时空特征？</li>
+                </ol>
+                <p style="font-style: italic; margin-bottom: 0;">在学习本章内容前，请先思考以上问题。带着问题学习，能够帮助您更好地理解和掌握知识点。</p>
+            </div>
+
+            <h3>3.1 EEG表征学习的基本原理</h3>
+            <p>表征学习旨在自动发现数据中的有效特征表示，对于EEG数据尤其重要：</p>
+            <ul>
+                <li><strong>层次化特征</strong>：从低层的时域/频域特征到高层的认知状态表示</li>
+                <li><strong>端到端学习</strong>：避免人工特征工程的主观性和局限性</li>
+                <li><strong>多尺度表示</strong>：同时捕捉不同时间尺度的脑电活动模式</li>
+                <li><strong>空间关系建模</strong>：学习电极之间的拓扑关系和交互模式</li>
+            </ul>
+
+            <h3>3.2 主流深度学习架构</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>架构类型</th>
+                        <th>特点</th>
+                        <th>优势</th>
+                        <th>适用场景</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CNN</td>
+                        <td>局部感受野、权重共享</td>
+                        <td>空间特征提取、计算效率高</td>
+                        <td>空间模式识别、运动想象</td>
+                    </tr>
+                    <tr>
+                        <td>RNN/LSTM</td>
+                        <td>序列建模、长期依赖</td>
+                        <td>时序动态建模、状态跟踪</td>
+                        <td>连续状态预测、异常检测</td>
+                    </tr>
+                    <tr>
+                        <td>Transformer</td>
+                        <td>自注意力机制、并行计算</td>
+                        <td>长距离依赖、全局建模</td>
+                        <td>复杂认知任务、跨模态融合</td>
+                    </tr>
+                    <tr>
+                        <td>图神经网络</td>
+                        <td>电极拓扑建模、消息传递</td>
+                        <td>空间关系建模、动态适应</td>
+                        <td>功能连接分析、网络动力学</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.3 创新网络结构设计</h3>
+            
+            <h4>3.3.1 时空分离架构</h4>
+            <pre><code># 时空分离的神经网络架构示例
+import torch
+import torch.nn as nn
+
+class SpatioTemporalEEGNet(nn.Module):
+    def __init__(self, num_channels, num_timepoints, num_classes):
+        super(SpatioTemporalEEGNet, self).__init__()
+        
+        # 空间特征提取
+        self.spatial = nn.Sequential(
+            nn.Conv2d(1, 16, (num_channels, 1)),
+            nn.BatchNorm2d(16),
+            nn.ELU(),
+            nn.AdaptiveAvgPool2d((1, num_timepoints))
+        )
+        
+        # 时间特征提取
+        self.temporal = nn.Sequential(
+            nn.Conv2d(16, 32, (1, 25)),
+            nn.BatchNorm2d(32),
+            nn.ELU(),
+            nn.AdaptiveAvgPool2d((1, num_timepoints // 4))
+        )
+        
+        # 分类层
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(32 * (num_timepoints // 4), 64),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(64, num_classes)
+        )
+    
+    def forward(self, x):
+        # x shape: (batch, 1, channels, time)
+        x = self.spatial(x)
+        x = self.temporal(x)
+        x = self.classifier(x)
+        return x</code></pre>
+
+            <h4>3.3.2 多分支融合架构</h4>
+            <pre><code># 多分支融合网络架构示例
+class MultiBranchEEGNet(nn.Module):
+    def __init__(self, num_channels, num_timepoints, num_classes):
+        super(MultiBranchEEGNet, self).__init__()
+        
+        # 时域分支
+        self.time_branch = nn.Sequential(
+            nn.Conv2d(1, 16, (1, 25)),
+            nn.BatchNorm2d(16),
+            nn.ELU()
+        )
+        
+        # 频域分支
+        self.freq_branch = nn.Sequential(
+            nn.Conv2d(1, 16, (1, 50)),
+            nn.BatchNorm2d(16),
+            nn.ELU()
+        )
+        
+        # 空间分支
+        self.spatial_branch = nn.Sequential(
+            nn.Conv2d(1, 16, (num_channels, 1)),
+            nn.BatchNorm2d(16),
+            nn.ELU()
+        )
+        
+        # 特征融合
+        self.fusion = nn.Sequential(
+            nn.Conv2d(48, 32, (1, 1)),
+            nn.BatchNorm2d(32),
+            nn.ELU(),
+            nn.AdaptiveAvgPool2d((1, num_timepoints // 4))
+        )
+        
+        # 分类层
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(32 * (num_timepoints // 4), 64),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(64, num_classes)
+        )
+    
+    def forward(self, x):
+        # 多分支特征提取
+        time_features = self.time_branch(x)
+        freq_features = self.freq_branch(x)
+        spatial_features = self.spatial_branch(x)
+        
+        # 特征融合
+        combined = torch.cat([time_features, freq_features, spatial_features], dim=1)
+        fused = self.fusion(combined)
+        
+        # 分类
+        output = self.classifier(fused)
+        return output</code></pre>
+
+            <h3>3.4 高级优化策略</h3>
+            <ul>
+                <li><strong>残差连接</strong>：缓解梯度消失问题，便于训练深层网络</li>
+                <li><strong>注意力机制</strong>：自适应加权重要特征</li>
+                <li><strong>正则化技术</strong>：
+                    <ul>
+                        <li>Dropout：防止过拟合</li>
+                        <li>BatchNorm：加速训练收敛</li>
+                        <li>L1/L2正则化：控制模型复杂度</li>
+                    </ul>
+                </li>
+                <li><strong>多任务学习</strong>：同时优化多个相关任务，提高特征的通用性</li>
+            </ul>
+
+            <div class="tip">
+                <div class="tip-title">架构设计建议</div>
+                <p>在设计EEG深度学习架构时，应考虑以下几点：</p>
+                <ul>
+                    <li>保持网络结构的可解释性，便于理解学到的特征</li>
+                    <li>考虑计算效率，使模型能在实时系统中部署</li>
+                    <li>设计适应性机制，处理不同受试者的个体差异</li>
+                    <li>融入领域知识，如脑区功能分区信息</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <div class="warning-title">常见陷阱</div>
+                <p>设计EEG深度学习架构时需要注意避免：</p>
+                <ul>
+                    <li>过度复杂的网络结构可能导致过拟合</li>
+                    <li>忽视EEG数据的时空特性</li>
+                    <li>未考虑实际应用场景的计算资源限制</li>
+                    <li>过分依赖单一架构，忽视不同架构的互补性</li>
+                </ul>
+            </div>
+        </section>
 
         <p>本教程的其他章节正在开发中，包括：</p>
         <ul>
-            <li>深度学习表征学习架构</li>
             <li>自监督学习框架</li>
             <li>时空特征提取网络</li>
             <li>多模态数据融合策略</li>
