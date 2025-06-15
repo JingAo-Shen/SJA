@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java 学习教程</title>
+    <title>教授个人主页 - 计算机科学与技术</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #6DB33F;
-            --secondary-color: #5A9E2F;
-            --background-color: #f5f5f5;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
             --text-color: #333;
-            --card-background: #ffffff;
-            --hover-color: #E8F5E9;
-            --beginner-color: #4CAF50;
-            --intermediate-color: #FFC107;
-            --advanced-color: #F44336;
+            --text-light: #666;
+            --background-color: #ffffff;
+            --section-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 4px 20px rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -24,833 +30,642 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
         }
 
-        .container {
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-            background-color: var(--card-background);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .category-header {
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 0.5rem;
-            font-size: 1.8rem;
-        }
-
-        .category-description {
-            margin-bottom: 2rem;
-            color: #555;
-            font-size: 1.1rem;
-        }
-
-        .tutorial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        .nav-links {
+            display: flex;
+            list-style: none;
             gap: 2rem;
-            margin-top: 2rem;
         }
 
-        .tutorial-card {
-            background-color: var(--card-background);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 主要内容区域 */
+        .hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .tutorial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .tutorial-card h2 {
-            color: var(--primary-color);
+        .hero h1 {
+            font-size: 3.5rem;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
         }
 
-        .tutorial-card p {
-            color: #666;
-            margin-bottom: 1rem;
-        }
-
-        .tutorial-card ul {
-            list-style-type: none;
+        .hero .subtitle {
+            font-size: 1.3rem;
             margin-bottom: 1.5rem;
+            opacity: 0.9;
+            font-weight: 300;
         }
 
-        .tutorial-card li {
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
+        .hero .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* 内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section:nth-child(even) {
+            background-color: var(--section-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 研究领域 */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .research-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .research-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-secondary);
+        }
+
+        .research-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .research-card i {
+            font-size: 3rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .research-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .research-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .research-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .research-card a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* 课程展示 */
+        .course-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
             position: relative;
         }
 
-        .tutorial-card li:before {
-            content: "•";
-            color: var(--primary-color);
-            position: absolute;
-            left: 0;
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
         }
 
-        .tutorial-card a {
+        .course-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .course-semester {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
+        }
+
+        .course-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-content {
+            padding: 2rem;
+        }
+
+        .course-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--section-bg);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .course-link {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-primary);
             color: white;
             text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
-        .tutorial-card a:hover {
-            background-color: var(--secondary-color);
+        .course-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
         }
 
-        .difficulty-badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 0.3rem 0.7rem;
+        /* 联系方式 */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-card i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .contact-card p {
+            color: var(--text-light);
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--primary-color);
             color: white;
-            font-size: 0.8rem;
-            border-bottom-left-radius: 8px;
+            text-align: center;
+            padding: 2rem 0;
         }
 
-        .beginner {
-            background-color: var(--beginner-color);
-        }
-
-        .intermediate {
-            background-color: var(--intermediate-color);
-        }
-
-        .advanced {
-            background-color: var(--advanced-color);
-        }
-
-        .prerequisites {
-            font-size: 0.85rem;
-            color: #777;
-            font-style: italic;
-            margin-top: 1rem;
-            border-top: 1px dashed #ddd;
-            padding-top: 0.5rem;
-        }
-
-        .search-bar {
-            display: flex;
-            max-width: 600px;
-            margin: 2rem auto;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 0.7rem;
-            border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
-            font-size: 1rem;
-        }
-
-        .search-bar button {
-            padding: 0.7rem 1.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-        }
-
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
+            .nav-container {
+                padding: 0 1rem;
             }
-
-            h1 {
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
                 font-size: 2rem;
             }
-
-            .tutorial-grid {
+            
+            .research-grid,
+            .contact-grid {
                 grid-template-columns: 1fr;
             }
+
+            .course-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(52, 152, 219, 0.2);
+            z-index: 1001;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <header>
+    <!-- 滚动进度条 -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">申京傲 主页</div>
+            <ul class="nav-links">
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#research">研究领域</a></li>
+                <li><a href="#courses">教学课程</a></li>
+                <li><a href="#contact">联系方式</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主页横幅 -->
+    <section class="hero" id="about">
+        <div class="hero-content">
+            <div class="profile-image">
+                <img src="assets/images/profile.jpg" alt="申京傲教授" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+            </div>
+            <h1>申京傲</h1>
+            <p class="subtitle">计算机科学与技术 | 高级工程师</p>
+            <p class="description">
+                致力于人工智能、分布式系统和软件工程领域的研究与教学工作。
+                拥有丰富的学术研究经验和工程实践背景。
+            </p>
+        </div>
+    </section>
+
+    <!-- 研究领域 -->
+    <section class="section" id="research">
         <div class="container">
-            <h1>Java 学习教程</h1>
-            <p class="subtitle">全面的 Java 技术学习资源</p>
-            <div class="search-bar">
-                <input type="text" id="search" placeholder="搜索教程...">
-                <button onclick="searchTutorials()">搜索</button>
+            <div class="section-header">
+                <h2 class="section-title">研究领域</h2>
+                <p class="section-subtitle">专注于计算机科学前沿技术的研究与应用</p>
+            </div>
+            <div class="research-grid">
+                <div class="research-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>智能化自学网站</h3>
+                    <p>"一点自学"平台的设计与开发，集成学生自学、教师课堂管理、学习进度跟踪、学生评价管理等功能，构建智能化教育生态系统。</p>
+                </div>
+                <div class="research-card">
+                    <i class="fas fa-eye"></i>
+                    <h3>计算机视觉</h3>
+                    <p>专注于视障人群智能辅助系统的研发，以及多模态模型在文档处理中的应用，致力于提升视觉障碍者的生活质量和文档处理效率。</p>
+                </div>
+                <div class="research-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>机器狗算法</h3>
+                    <p>基于宇树科技Go2机器狗平台的算法研究与开发，探索四足机器人在复杂环境下的运动控制、路径规划和智能交互技术。</p>
+                </div>
+                <div class="research-card">
+                    <i class="fas fa-user-friends"></i>
+                    <h3>数字人交互</h3>
+                    <p>研究数字人技术在人机交互中的应用，包括虚拟形象生成、自然语言处理、情感计算等技术，构建更自然的人机交互体验。</p>
+                </div>
+            </div>
+
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="container">
-        <h2 class="category-header">基础入门</h2>
-        <p class="category-description">开始您的 Java 学习之旅，掌握核心概念和基础知识。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge beginner">入门</div>
-                <h2>Java SE 教程</h2>
-                <p>Java SE 是 Java 平台标准版，提供了完整的 Java 核心 API，是学习 Java 编程的基础。</p>
-                <ul>
-                    <li>Java 基础语法</li>
-                    <li>数据类型与变量</li>
-                    <li>面向对象编程</li>
-                    <li>集合框架</li>
-                    <li>异常处理</li>
-                    <li>多线程编程</li>
-                    <li>反射与注解</li>
-                    <li>Lambda 表达式</li>
-                </ul>
-                <a href="JavaSE教程/index.html">开始学习</a>
+            <!-- 教学课程 -->
+        <section class="section" id="courses">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">教学课程</h2>
+                    <p class="section-subtitle">全面的计算机技术教学体系，培养学生的实践能力</p>
+                </div>
+                <div class="research-grid">
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-semester">2024-2025学年第1学期</div>
+                            <h3>计算机组成原理</h3>
+                            <p>计算机硬件系统基础课程</p>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number">8</div>
+                                    <div class="stat-label">主要章节</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">64</div>
+                                    <div class="stat-label">总学时</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">4</div>
+                                    <div class="stat-label">学分</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                                本课程是计算机科学与技术专业的核心基础课程，主要介绍计算机系统的基本组成、
+                                工作原理和设计方法，为后续专业课程学习奠定坚实基础。
+                            </p>
+                            <a href="课程-计算机组成原理-2024-2025-1/index.html" class="course-link">
+                                <i class="fas fa-microchip"></i> 进入课程学习
+                            </a>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-semester">2024-2025学年第2学期</div>
+                            <h3>行业领域开发Spring Boot</h3>
+                            <p>企业级Java开发实践课程</p>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number">33</div>
+                                    <div class="stat-label">教程模块</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">120+</div>
+                                    <div class="stat-label">学时</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">5</div>
+                                    <div class="stat-label">技术层次</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                                本课程全面覆盖Spring Boot在行业领域开发中的应用，从基础框架到分布式系统，
+                                从开发工具到部署实践，帮助学生掌握现代企业级Java开发的核心技能。
+                            </p>
+                            <a href="课程-行业领域开发SpringBoot-2024-2025-2/index.html" class="course-link">
+                                <i class="fas fa-play"></i> 进入课程学习
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="tutorial-card">
-                <div class="difficulty-badge beginner">入门</div>
-                <h2>Git 教程</h2>
-                <p>Git 是一个分布式版本控制系统，用于跟踪代码变更并支持团队协作开发。</p>
-                <ul>
-                    <li>Git 基础</li>
-                    <li>分支管理</li>
-                    <li>远程仓库</li>
-                    <li>工作流程</li>
-                    <li>高级技巧</li>
-                </ul>
-                <a href="Git教程/index.html">开始学习</a>
+    <!-- 联系方式 -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">联系方式</h2>
+                <p class="section-subtitle">欢迎学术交流与合作</p>
             </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge beginner">入门</div>
-                <h2>Maven 教程</h2>
-                <p>Maven 是一个项目管理和构建自动化工具，用于 Java 项目的依赖管理和构建。</p>
-                <ul>
-                    <li>Maven 基础</li>
-                    <li>POM 文件</li>
-                    <li>依赖管理</li>
-                    <li>生命周期</li>
-                    <li>插件使用</li>
-                </ul>
-                <a href="Maven教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE 基础</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge beginner">入门</div>
-                <h2>MySQL 教程</h2>
-                <p>MySQL 是世界上最受欢迎的开源关系型数据库管理系统，提供了强大的数据存储和管理功能。</p>
-                <ul>
-                    <li>基础概念</li>
-                    <li>SQL 语句</li>
-                    <li>数据类型</li>
-                    <li>索引优化</li>
-                    <li>查询优化</li>
-                    <li>性能调优</li>
-                    <li>安全管理</li>
-                </ul>
-                <a href="MySQL教程/index.html">开始学习</a>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>WebSocket 教程</h2>
-                <p>WebSocket 是一种提供全双工通信的网络协议，使服务器和客户端可以实时交互数据。</p>
-                <ul>
-                    <li>WebSocket 基础</li>
-                    <li>与 HTTP 的对比</li>
-                    <li>客户端与服务端实现</li>
-                    <li>Java WebSocket 整合</li>
-                    <li>安全与最佳实践</li>
-                </ul>
-                <a href="WebSocket教程/index.html">开始学习</a>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>邮箱</h3>
+                    <p>shenjingao@gdust.edu.cn</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>办公地址</h3>
+                    <p>松山湖校区 L3-1001</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>办公时间</h3>
+                    <p>周一至周五 9:00-17:00</p>
+                </div>
             </div>
         </div>
+    </section>
 
-        <h2 class="category-header">框架与开发</h2>
-        <p class="category-description">学习主流的 Java 开发框架，提高开发效率和代码质量。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Spring 框架教程</h2>
-                <p>Spring 框架是一个功能强大的 Java 开发框架，提供了全面的企业级应用开发支持。</p>
-                <ul>
-                    <li>IoC 容器</li>
-                    <li>AOP 编程</li>
-                    <li>Bean 管理</li>
-                    <li>依赖注入</li>
-                    <li>事务管理</li>
-                    <li>Spring MVC</li>
-                    <li>数据访问</li>
-                    <li>安全框架</li>
-                </ul>
-                <a href="Spring框架教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE, Maven</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Spring Boot 教程</h2>
-                <p>Spring Boot 是一个用于简化 Spring 应用开发的框架，它提供了自动配置、独立运行等特性。</p>
-                <ul>
-                    <li>Spring Boot 基础</li>
-                    <li>自动配置</li>
-                    <li>Web 开发</li>
-                    <li>数据访问</li>
-                    <li>安全配置</li>
-                </ul>
-                <a href="SpringBoot教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring 框架</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>MyBatis 教程</h2>
-                <p>MyBatis 是一款优秀的持久层框架，支持自定义 SQL、存储过程以及高级映射，并集成了 MyBatis Plus 增强功能。</p>
-                <ul>
-                    <li>基础配置</li>
-                    <li>XML 映射</li>
-                    <li>动态 SQL</li>
-                    <li>注解开发</li>
-                    <li>高级特性</li>
-                    <li>MyBatis Plus</li>
-                    <li>最佳实践</li>
-                </ul>
-                <a href="MyBatis教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE, MySQL</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Spring Boot Thymeleaf 教程</h2>
-                <p>Thymeleaf 是一个现代的服务器端 Java 模板引擎，与 Spring Boot 完美集成。</p>
-                <ul>
-                    <li>Thymeleaf 基础</li>
-                    <li>模板语法</li>
-                    <li>布局系统</li>
-                    <li>表单处理</li>
-                    <li>国际化支持</li>
-                </ul>
-                <a href="SpringBootThymeleaf教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Spring Boot 支付宝教程</h2>
-                <p>集成支付宝支付功能到 Spring Boot 应用中，包括沙箱环境配置、支付接口实现和回调处理。</p>
-                <ul>
-                    <li>支付宝沙箱环境配置</li>
-                    <li>支付宝 SDK 整合</li>
-                    <li>支付接口实现</li>
-                    <li>同步回调与异步通知</li>
-                    <li>订单查询与支付验证</li>
-                    <li>生产环境部署建议</li>
-                </ul>
-                <a href="SpringBoot支付宝教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Scrum敏捷开发教程</h2>
-                <p>Scrum是流行的敏捷开发框架，用于高效管理复杂的产品开发过程，提高团队协作和产品质量。</p>
-                <ul>
-                    <li>敏捷开发基础与Scrum核心原则</li>
-                    <li>Scrum角色、工件与仪式</li>
-                    <li>Sprint计划与执行</li>
-                    <li>用户故事与任务管理</li>
-                    <li>多团队Scrum扩展</li>
-                    <li>DevOps与Scrum结合</li>
-                    <li>Java团队Scrum实践</li>
-                </ul>
-                <a href="Scrum敏捷开发教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：软件开发基础</div>
-            </div>
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 申京傲 个人主页. 版权所有.</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">致力于计算机科学教育与研究</p>
         </div>
-
-        <h2 class="category-header">安全与性能</h2>
-        <p class="category-description">学习保障应用安全与提升系统性能的关键技术。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Spring Security 教程</h2>
-                <p>Spring Security 是一个功能强大的安全框架，为 Spring 应用提供全面的安全解决方案。</p>
-                <ul>
-                    <li>认证机制</li>
-                    <li>授权控制</li>
-                    <li>安全配置</li>
-                    <li>OAuth2 集成</li>
-                    <li>JWT 支持</li>
-                </ul>
-                <a href="SpringSecurity教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>单点登录教程</h2>
-                <p>单点登录(SSO)是一种认证机制，使用户只需登录一次，就可以访问多个相关但彼此独立的系统或应用。</p>
-                <ul>
-                    <li>SSO核心概念与原理</li>
-                    <li>基于CAS的SSO实现</li>
-                    <li>基于JWT的SSO实现</li>
-                    <li>基于OAuth2/OIDC的SSO实现</li>
-                    <li>Spring Security整合</li>
-                    <li>安全最佳实践</li>
-                </ul>
-                <a href="单点登录教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot, Spring Security</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>SonarQube 教程</h2>
-                <p>SonarQube 是一个开源的代码质量管理平台，用于持续检查和分析代码质量、安全漏洞和代码异味。</p>
-                <ul>
-                    <li>安装与配置</li>
-                    <li>项目分析与集成</li>
-                    <li>代码质量指标</li>
-                    <li>与 CI/CD 集成</li>
-                    <li>质量门禁设置</li>
-                    <li>安全漏洞检测</li>
-                    <li>最佳实践</li>
-                </ul>
-                <a href="SonarQube教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE, Maven/Gradle</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>软件测试教程</h2>
-                <p>软件测试是保障代码质量的关键环节，掌握测试技能可以帮助开发人员编写更可靠、健壮的代码。</p>
-                <ul>
-                    <li>单元测试基础</li>
-                    <li>测试驱动开发(TDD)</li>
-                    <li>使用JUnit和Mockito</li>
-                    <li>集成测试与功能测试</li>
-                    <li>Web应用测试</li>
-                    <li>测试最佳实践</li>
-                    <li>CI/CD中的测试</li>
-                </ul>
-                <a href="软件测试教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>多级缓存教程</h2>
-                <p>多级缓存是一种优化系统性能的架构模式，通过分层缓存数据，显著提高高并发系统的响应速度和吞吐量。</p>
-                <ul>
-                    <li>多级缓存架构设计</li>
-                    <li>本地缓存与分布式缓存</li>
-                    <li>Spring Cache框架应用</li>
-                    <li>缓存一致性策略</li>
-                    <li>缓存穿透、击穿、雪崩</li>
-                    <li>性能监控与优化</li>
-                    <li>实战案例分析</li>
-                </ul>
-                <a href="多级缓存教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot, Redis基础</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Web安全教程</h2>
-                <p>全面的Web安全指南，为后端开发人员讲解常见安全漏洞和防护策略，帮助构建更安全的应用程序。</p>
-                <ul>
-                    <li>OWASP Top 10安全风险</li>
-                    <li>身份认证与授权</li>
-                    <li>安全编码最佳实践</li>
-                    <li>SQL注入与XSS防护</li>
-                    <li>数据加密与保护</li>
-                    <li>API安全策略</li>
-                    <li>安全测试与部署</li>
-                </ul>
-                <a href="Web安全教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>缓存教程</h2>
-                <p>缓存是提高应用响应速度和减轻数据库负担的重要技术，包括本地缓存和远程缓存的实现与应用。</p>
-                <ul>
-                    <li>缓存基本原理</li>
-                    <li>Java 缓存 API</li>
-                    <li>Ehcache 实现</li>
-                    <li>Caffeine 缓存</li>
-                    <li>缓存策略与模式</li>
-                    <li>缓存一致性问题</li>
-                </ul>
-                <a href="缓存教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>SpringBoot缓存教程</h2>
-                <p>缓存是提高应用性能的重要手段，本教程介绍各种缓存技术和最佳实践。</p>
-                <ul>
-                    <li>Spring Boot 缓存概述</li>
-                    <li>快速入门</li>
-                    <li>缓存提供者</li>
-                    <li>缓存注解</li>
-                    <li>缓存配置</li>
-                    <li>缓存策略</li>
-                    <li>分布式缓存</li>
-                    <li>缓存监控</li>
-                    <li>最佳实践</li>
-                </ul>
-                <a href="SpringBoot缓存教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot, 缓存基础</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>HTTPS 教程</h2>
-                <p>HTTPS 是 HTTP 协议的安全版本，通过加密与证书机制保障网络通信的安全性。</p>
-                <ul>
-                    <li>HTTPS 协议原理</li>
-                    <li>加密算法基础</li>
-                    <li>数字证书与 PKI</li>
-                    <li>TLS/SSL 握手过程</li>
-                    <li>安全特性与防御</li>
-                    <li>常见攻击与防御</li>
-                    <li>部署与最佳实践</li>
-                </ul>
-                <a href="HTTPS教程/index.html">开始学习</a>
-            </div>
-        </div>
-
-        <h2 class="category-header">Web 服务与工具</h2>
-        <p class="category-description">学习构建和调试 Web 应用的关键工具和服务。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>RESTful API教程</h2>
-                <p>RESTful API是现代Web应用的标准通信方式，掌握REST架构风格可以帮助你设计出高效、可扩展的API。</p>
-                <ul>
-                    <li>REST架构原则</li>
-                    <li>资源设计与命名</li>
-                    <li>HTTP方法与状态码</li>
-                    <li>使用Spring Boot构建RESTful API</li>
-                    <li>API文档与测试</li>
-                    <li>安全认证与授权</li>
-                    <li>性能优化与最佳实践</li>
-                </ul>
-                <a href="RESTful教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE, Spring Boot基础</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Nginx 教程</h2>
-                <p>Nginx 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。</p>
-                <ul>
-                    <li>Nginx 基础概念</li>
-                    <li>安装与配置</li>
-                    <li>虚拟主机配置</li>
-                    <li>反向代理与负载均衡</li>
-                    <li>静态资源处理</li>
-                    <li>HTTPS 配置</li>
-                    <li>性能优化</li>
-                    <li>安全最佳实践</li>
-                </ul>
-                <a href="Nginx教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：了解基本的 Web 知识</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Docker 教程</h2>
-                <p>Docker 是一个开源的容器化平台，用于打包、分发和运行应用程序，确保应用在不同环境中一致运行。</p>
-                <ul>
-                    <li>容器基础概念</li>
-                    <li>Docker 安装与配置</li>
-                    <li>镜像与容器操作</li>
-                    <li>Dockerfile 编写</li>
-                    <li>Docker Compose</li>
-                    <li>数据持久化</li>
-                    <li>网络配置</li>
-                    <li>开发与生产实践</li>
-                </ul>
-                <a href="Docker教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：基本的命令行知识</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>Fiddler 教程</h2>
-                <p>Fiddler 是一个强大的 HTTP 调试代理工具，用于捕获、检查和修改 HTTP/HTTPS 请求和响应。</p>
-                <ul>
-                    <li>安装与配置</li>
-                    <li>基本使用</li>
-                    <li>HTTP/HTTPS 请求分析</li>
-                    <li>请求拦截与修改</li>
-                    <li>性能分析</li>
-                    <li>常见应用场景</li>
-                    <li>高级功能</li>
-                </ul>
-                <a href="Fiddler教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：了解基本的 HTTP 协议</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>RabbitMQ 教程</h2>
-                <p>RabbitMQ 是一个开源的消息队列系统，用于实现应用程序之间的异步通信。</p>
-                <ul>
-                    <li>消息队列基础</li>
-                    <li>交换机类型</li>
-                    <li>队列绑定</li>
-                    <li>消息确认</li>
-                    <li>死信队列</li>
-                </ul>
-                <a href="RabbitMQ教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java SE, Spring 框架基础</div>
-            </div>
-            
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>用户注册激活教程</h2>
-                <p>学习如何通过短信或邮件实现安全可靠的用户注册与账号激活功能。</p>
-                <ul>
-                    <li>注册流程设计</li>
-                    <li>邮件验证与激活</li>
-                    <li>短信验证实现</li>
-                    <li>安全与合规考虑</li>
-                    <li>用户体验优化</li>
-                    <li>常见问题处理</li>
-                    <li>多种编程语言实现</li>
-                </ul>
-                <a href="用户注册激活教程/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Web开发基础, 数据库</div>
-            </div>
-        </div>
-
-        <h2 class="category-header">分布式系统</h2>
-        <p class="category-description">深入学习构建可扩展、高可用分布式系统的核心技术。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>分布式架构</h2>
-                <p>分布式架构是构建大规模可扩展系统的基础，包括微服务、服务发现、配置中心等关键技术。</p>
-                <ul>
-                    <li>分布式理论基础</li>
-                    <li>CAP 与 BASE 理论</li>
-                    <li>微服务架构</li>
-                    <li>服务发现与注册</li>
-                    <li>配置中心</li>
-                    <li>API 网关</li>
-                    <li>服务熔断与降级</li>
-                    <li>分布式事务</li>
-                </ul>
-                <a href="分布式架构/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Spring Boot, 微服务基础</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>分布式缓存</h2>
-                <p>分布式缓存解决了大规模系统的数据访问性能问题，提供高可用、可扩展的缓存服务。</p>
-                <ul>
-                    <li>Redis 基础与高级特性</li>
-                    <li>缓存集群设计</li>
-                    <li>缓存一致性策略</li>
-                    <li>数据分片与复制</li>
-                    <li>缓存穿透与雪崩防护</li>
-                    <li>热点数据处理</li>
-                    <li>监控与运维</li>
-                </ul>
-                <a href="分布式缓存/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：缓存教程, Spring Boot</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>分布式锁</h2>
-                <p>分布式锁是保障分布式系统中数据一致性和处理并发控制的关键机制。</p>
-                <ul>
-                    <li>分布式锁基本原理</li>
-                    <li>基于 Redis 的分布式锁</li>
-                    <li>基于 Zookeeper 的分布式锁</li>
-                    <li>基于数据库的分布式锁</li>
-                    <li>锁的可重入性实现</li>
-                    <li>死锁防护策略</li>
-                    <li>性能优化技巧</li>
-                </ul>
-                <a href="分布式锁/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：Java 多线程, Redis/Zookeeper</div>
-            </div>
-        </div>
-
-        <h2 class="category-header">高并发场景</h2>
-        <p class="category-description">学习处理高并发、大流量互联网应用的专业技术。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>秒杀</h2>
-                <p>秒杀系统是典型的高并发场景，需要处理短时间内的大量用户请求，对系统架构提出极高要求。</p>
-                <ul>
-                    <li>秒杀系统设计原则</li>
-                    <li>前端限流策略</li>
-                    <li>缓存预热与库存控制</li>
-                    <li>消息队列异步处理</li>
-                    <li>分布式锁应用</li>
-                    <li>防刷与风控</li>
-                    <li>性能优化最佳实践</li>
-                </ul>
-                <a href="秒杀/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：分布式缓存, 分布式锁, RabbitMQ</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>排行榜</h2>
-                <p>排行榜是互联网应用中常见的功能，需要高效处理大量数据的实时排序与展示。</p>
-                <ul>
-                    <li>排行榜系统设计</li>
-                    <li>基于 Redis 的实现</li>
-                    <li>实时计算与更新策略</li>
-                    <li>大数据量处理技巧</li>
-                    <li>分区与分片处理</li>
-                    <li>数据一致性保障</li>
-                    <li>性能优化与扩展</li>
-                </ul>
-                <a href="排行榜/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：分布式缓存, Redis 高级特性</div>
-            </div>
-        </div>
-
-        <h2 class="category-header">AI与科研技术</h2>
-        <p class="category-description">探索人工智能前沿技术在科学研究和医疗领域的应用，从理论到实践。</p>
-        <div class="tutorial-grid">
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>EEG大模型技术架构与进阶开发</h2>
-                <p>探索脑电图(EEG)大模型的核心技术架构，从表征学习到多模态融合，建立有效的神经信号分析系统。</p>
-                <ul>
-                    <li>EEG数据特性与预处理技术</li>
-                    <li>深度学习表征学习架构</li>
-                    <li>自监督学习框架</li>
-                    <li>时空特征提取网络</li>
-                    <li>多模态数据融合策略</li>
-                    <li>注意力机制在EEG中的应用</li>
-                    <li>模型解释性与可视化</li>
-                    <li>医疗级应用部署与验证</li>
-                </ul>
-                <a href="EEG大模型技术架构与进阶开发/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：深度学习基础, Python编程</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge intermediate">进阶</div>
-                <h2>AI赋能科研培训及创新研究方法</h2>
-                <p>掌握如何将人工智能技术应用于科学研究的各个环节，提高研究效率并开辟创新研究方法。</p>
-                <ul>
-                    <li>科研数据挖掘与分析</li>
-                    <li>实验设计与优化</li>
-                    <li>自动化文献综述工具</li>
-                    <li>可重复性科研框架</li>
-                    <li>数据驱动假设生成</li>
-                    <li>科研过程自动化</li>
-                    <li>跨学科研究方法论</li>
-                    <li>科研伦理与AI应用</li>
-                </ul>
-                <a href="AI赋能科研培训及创新研究方法/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：基础统计学, 科研方法论</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>生成式人工智能</h2>
-                <p>深入了解生成式AI技术的原理与应用，包括大型语言模型、扩散模型和多模态生成系统的开发与部署。</p>
-                <ul>
-                    <li>生成模型理论基础</li>
-                    <li>大型语言模型架构</li>
-                    <li>扩散模型与图像生成</li>
-                    <li>多模态生成系统</li>
-                    <li>提示工程（Prompt Engineering）</li>
-                    <li>模型微调与定制化</li>
-                    <li>生成内容评估框架</li>
-                    <li>应用场景与商业化路径</li>
-                    <li>伦理与安全考量</li>
-                </ul>
-                <a href="生成式人工智能/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：深度学习, NLP基础, 计算机视觉</div>
-            </div>
-
-            <div class="tutorial-card">
-                <div class="difficulty-badge advanced">高级</div>
-                <h2>AI for Science：近地小行星雷达建模图像生成</h2>
-                <p>探索如何应用AI技术解决天文学中的实际问题，特别是近地小行星的雷达建模和图像生成算法。</p>
-                <ul>
-                    <li>天文数据特性与处理</li>
-                    <li>雷达信号处理基础</li>
-                    <li>3D模型构建算法</li>
-                    <li>基于物理的渲染技术</li>
-                    <li>生成对抗网络在天文图像中的应用</li>
-                    <li>小行星特征提取与分析</li>
-                    <li>深度学习在天体识别中的应用</li>
-                    <li>高精度预测模型构建</li>
-                </ul>
-                <a href="AI_for_Science科学研究/index.html">开始学习</a>
-                <div class="prerequisites">先修课程：计算机视觉, 深度学习, 信号处理</div>
-            </div>
-        </div>
-    </main>
+    </footer>
 
     <script>
-        function searchTutorials() {
-            const searchInput = document.getElementById('search').value.toLowerCase();
-            const tutorialCards = document.querySelectorAll('.tutorial-card');
-            
-            tutorialCards.forEach(card => {
-                const title = card.querySelector('h2').textContent.toLowerCase();
-                const description = card.querySelector('p').textContent.toLowerCase();
-                const listItems = Array.from(card.querySelectorAll('li')).map(li => li.textContent.toLowerCase());
-                
-                const content = title + ' ' + description + ' ' + listItems.join(' ');
-                
-                if (content.includes(searchInput) || searchInput === '') {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
+        // 滚动进度条
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scrollProgress').style.width = scrolled + '%';
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
-        }
+        });
     </script>
 </body>
 </html>

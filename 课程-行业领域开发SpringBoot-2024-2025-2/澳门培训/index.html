@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>澳门培训项目 - 申京傲</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-color: #ffffff;
+            --section-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 25px rgba(0,0,0,0.15);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* 主要内容 */
+        .hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 培训项目网格 */
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .training-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .training-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-secondary);
+        }
+
+        .training-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .training-card i {
+            font-size: 3rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .training-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .training-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .training-card a {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .training-card a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .training-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">澳门培训项目</div>
+            <a href="../../index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> 返回主页
+            </a>
+        </div>
+    </nav>
+
+    <!-- 主页横幅 -->
+    <section class="hero">
+        <div class="container">
+            <h1>澳门培训项目</h1>
+            <p>专业的人工智能与科学研究培训课程，涵盖前沿技术与实践应用</p>
+        </div>
+    </section>
+
+    <!-- 培训项目 -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">培训课程</h2>
+                <p class="section-subtitle">四大核心培训方向，全面提升技术能力</p>
+            </div>
+            <div class="training-grid">
+                <div class="training-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>生成式人工智能</h3>
+                    <p>深入研究大型语言模型、扩散模型和多模态生成系统的开发与应用，探索AI技术在创新领域的前沿应用。涵盖GPT、DALL-E、Stable Diffusion等主流模型的原理与实践。</p>
+                    <a href="生成式人工智能/index.html">
+                        <i class="fas fa-play"></i> 开始学习
+                    </a>
+                </div>
+                <div class="training-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>AI for Science</h3>
+                    <p>将人工智能技术应用于科学研究，特别是在近地小行星雷达建模、科研方法创新等领域的探索。学习如何用AI解决复杂的科学问题。</p>
+                    <a href="AI_for_Science科学研究/index.html">
+                        <i class="fas fa-play"></i> 开始学习
+                    </a>
+                </div>
+                <div class="training-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>AI赋能科研培训</h3>
+                    <p>研究如何将人工智能技术应用于科学研究的各个环节，提高研究效率并开辟创新研究方法。包括数据分析、实验设计、论文写作等方面的AI应用。</p>
+                    <a href="AI赋能科研培训及创新研究方法/index.html">
+                        <i class="fas fa-play"></i> 开始学习
+                    </a>
+                </div>
+                <div class="training-card">
+                    <i class="fas fa-wave-square"></i>
+                    <h3>EEG大模型技术架构</h3>
+                    <p>探索脑电图大模型的核心技术架构，从表征学习到多模态融合，建立有效的神经信号分析系统。涵盖脑机接口、神经网络分析等前沿技术。</p>
+                    <a href="EEG大模型技术架构与进阶开发/index.html">
+                        <i class="fas fa-play"></i> 开始学习
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 申京傲 澳门培训项目. 版权所有.</p>
+        </div>
+    </footer>
+</body>
+</html> 

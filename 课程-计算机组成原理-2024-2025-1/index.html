@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算机组成原理 - 2024-2025-1学期</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-color: #A23B72;
+            --accent-color: #F18F01;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E3F2FD;
+            --beginner-color: #4CAF50;
+            --intermediate-color: #FFC107;
+            --advanced-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .course-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .content-section {
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .coming-soon i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .coming-soon h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .coming-soon p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .course-objectives {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .objective-card {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .objective-card i {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .objective-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .objective-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .course-outline {
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .outline-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .outline-item i {
+            color: var(--primary-color);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .outline-item span {
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            .course-stats { grid-template-columns: 1fr; }
+            .course-objectives { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> 返回主页
+    </a>
+
+    <header>
+        <div class="container">
+            <h1>计算机组成原理</h1>
+            <p class="subtitle">2024-2025学年第1学期</p>
+            <div class="course-info">
+                <h3><i class="fas fa-microchip"></i> 课程介绍</h3>
+                <p>本课程是计算机科学与技术专业的核心基础课程，主要介绍计算机系统的基本组成、工作原理和设计方法。通过本课程的学习，学生将深入理解计算机硬件系统的结构和功能，为后续的专业课程学习奠定坚实基础。</p>
+                
+                <div class="course-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">64</div>
+                        <div class="stat-label">总学时</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">学分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">16</div>
+                        <div class="stat-label">教学周</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">主要章节</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 课程目标 -->
+        <div class="content-section">
+            <h2 class="section-title">课程目标</h2>
+            <div class="course-objectives">
+                <div class="objective-card">
+                    <i class="fas fa-cogs"></i>
+                    <h4>理解计算机系统结构</h4>
+                    <p>掌握计算机系统的基本组成，理解各部件之间的相互关系和协调工作原理。</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-memory"></i>
+                    <h4>掌握存储系统原理</h4>
+                    <p>深入理解存储器层次结构、缓存机制和虚拟存储技术的工作原理。</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-microchip"></i>
+                    <h4>学习处理器设计</h4>
+                    <p>了解CPU的内部结构、指令执行过程和流水线技术的基本原理。</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h4>理解I/O系统</h4>
+                    <p>掌握输入输出系统的组织方式、中断机制和DMA技术的应用。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程大纲 -->
+        <div class="content-section">
+            <h2 class="section-title">课程大纲</h2>
+            <div class="course-outline">
+                <div class="outline-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>第1章：计算机系统概述</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-binary"></i>
+                    <span>第2章：数据的表示和运算</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-memory"></i>
+                    <span>第3章：存储器层次结构</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-code"></i>
+                    <span>第4章：指令系统</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>第5章：中央处理器</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-bus-alt"></i>
+                    <span>第6章：总线</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-hdd"></i>
+                    <span>第7章：输入输出系统</span>
+                </div>
+                <div class="outline-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>第8章：系统综合与性能评价</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 教学内容待添加 -->
+        <div class="content-section">
+            <h2 class="section-title">教学内容</h2>
+            <div class="coming-soon">
+                <i class="fas fa-tools"></i>
+                <h3>内容正在准备中</h3>
+                <p>课程教学资料和实验内容正在整理中，敬请期待...</p>
+            </div>
+        </div>
+
+        <!-- 实验环境 -->
+        <div class="content-section">
+            <h2 class="section-title">实验环境</h2>
+            <div class="course-objectives">
+                <div class="objective-card">
+                    <i class="fas fa-desktop"></i>
+                    <h4>Logisim仿真</h4>
+                    <p>使用Logisim进行数字电路设计和仿真实验。</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-code"></i>
+                    <h4>汇编语言编程</h4>
+                    <p>通过汇编语言编程理解指令执行过程。</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>性能分析工具</h4>
+                    <p>使用专业工具分析计算机系统性能指标。</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
