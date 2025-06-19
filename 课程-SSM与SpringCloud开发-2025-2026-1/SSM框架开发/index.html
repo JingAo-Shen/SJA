@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM框架开发课程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5E9;
+            --beginner-color: #4CAF50;
+            --intermediate-color: #FFC107;
+            --advanced-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 0.7rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .category-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .tutorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tutorial-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tutorial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .tutorial-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .tutorial-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .tutorial-card a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .tutorial-card a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.3rem 0.7rem;
+            color: white;
+            font-size: 0.8rem;
+            border-bottom-left-radius: 8px;
+        }
+
+        .beginner { background-color: var(--beginner-color); }
+        .intermediate { background-color: var(--intermediate-color); }
+        .advanced { background-color: var(--advanced-color); }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            .tutorial-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> 返回学期
+    </a>
+
+    <header>
+        <div class="container">
+            <h1>SSM框架开发</h1>
+            <p class="subtitle">Spring + SpringMVC + MyBatis 企业级开发</p>
+            <div class="course-info">
+                <h3><i class="fas fa-graduation-cap"></i> 课程介绍</h3>
+                <p>深入学习Spring、SpringMVC、MyBatis三大框架的整合应用，掌握企业级Java开发的核心技术栈。从依赖注入、AOP编程到MVC模式、数据持久化，构建完整的单体应用开发能力。</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="搜索教程...">
+                <button onclick="searchTutorials()">搜索</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="category-header">
+            <i class="fas fa-layer-group"></i> 基础框架
+        </h2>
+
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge beginner">入门</div>
+                <h2><i class="fas fa-leaf"></i> Spring核心框架</h2>
+                <p>学习Spring IoC容器、依赖注入、Bean管理等核心概念，掌握Spring框架的基础知识和使用方法。</p>
+                <a href="Spring核心框架/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge beginner">入门</div>
+                <h2><i class="fas fa-cut"></i> Spring AOP</h2>
+                <p>深入理解面向切面编程，学习切点、通知、织入等概念，实现日志、事务等横切关注点的模块化。</p>
+                <a href="SpringAOP/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-globe"></i> SpringMVC框架</h2>
+                <p>掌握SpringMVC的MVC模式，学习控制器、视图解析器、数据绑定等Web开发核心技术。</p>
+                <a href="SpringMVC框架/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-database"></i> MyBatis持久层</h2>
+                <p>学习MyBatis的SQL映射、动态SQL、缓存机制等特性，实现灵活高效的数据访问层。</p>
+                <a href="MyBatis持久层/index.html">开始学习</a>
+            </div>
+        </div>
+
+        <h2 class="category-header">
+            <i class="fas fa-cogs"></i> 框架整合
+        </h2>
+
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-puzzle-piece"></i> SSM整合配置</h2>
+                <p>学习Spring、SpringMVC、MyBatis三大框架的整合配置，包括XML配置和注解配置两种方式。</p>
+                <a href="SSM整合配置/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-exchange-alt"></i> 事务管理</h2>
+                <p>掌握Spring的声明式事务管理，学习事务的传播行为、隔离级别等高级特性。</p>
+                <a href="事务管理/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2><i class="fas fa-shield-alt"></i> Spring Security</h2>
+                <p>学习Spring Security安全框架，实现用户认证、授权、密码加密等安全功能。</p>
+                <a href="SpringSecurity/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2><i class="fas fa-chart-line"></i> 性能优化</h2>
+                <p>学习SSM应用的性能优化技巧，包括SQL优化、缓存策略、连接池配置等。</p>
+                <a href="性能优化/index.html">开始学习</a>
+            </div>
+        </div>
+
+        <h2 class="category-header">
+            <i class="fas fa-project-diagram"></i> 项目实战
+        </h2>
+
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-users"></i> 用户管理系统</h2>
+                <p>构建完整的用户管理系统，包括用户注册、登录、CRUD操作、权限控制等功能。</p>
+                <a href="用户管理系统/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2><i class="fas fa-shopping-cart"></i> 电商管理平台</h2>
+                <p>开发电商后台管理系统，涵盖商品管理、订单处理、库存管理等复杂业务逻辑。</p>
+                <a href="电商管理平台/index.html">开始学习</a>
+            </div>
+
+            <div class="tutorial-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2><i class="fas fa-blog"></i> 博客系统</h2>
+                <p>构建功能完整的博客系统，包括文章发布、评论管理、标签分类、搜索功能等。</p>
+                <a href="博客系统/index.html">开始学习</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchTutorials() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const tutorials = document.querySelectorAll('.tutorial-card');
+            
+            tutorials.forEach(tutorial => {
+                const title = tutorial.querySelector('h2').textContent.toLowerCase();
+                const content = tutorial.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    tutorial.style.display = 'block';
+                } else {
+                    tutorial.style.display = 'none';
+                }
+            });
+        }
+
+        // 搜索框回车事件
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchTutorials();
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM与Spring Cloud开发 - 2025-2026-1学期</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6DB33F;
+            --secondary-color: #5A9E2F;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --hover-color: #E8F5E9;
+            --beginner-color: #4CAF50;
+            --intermediate-color: #FFC107;
+            --advanced-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 0.7rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .category-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .course-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .course-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-card .description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .course-features {
+            margin-bottom: 1.5rem;
+        }
+
+        .course-features h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .course-features ul {
+            margin-left: 1rem;
+        }
+
+        .course-features li {
+            margin-bottom: 0.3rem;
+            color: #666;
+        }
+
+
+
+        .course-card a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .course-card a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.3rem 0.7rem;
+            color: white;
+            font-size: 0.8rem;
+            border-bottom-left-radius: 8px;
+        }
+
+        .intermediate { background-color: var(--intermediate-color); }
+        .advanced { background-color: var(--advanced-color); }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .learning-path {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border-left: 4px solid #2196F3;
+        }
+
+        .learning-path h3 {
+            color: #2196F3;
+            margin-bottom: 1rem;
+        }
+
+        .learning-path p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            .course-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> 返回主页
+    </a>
+
+    <header>
+        <div class="container">
+            <h1>SSM与Spring Cloud开发</h1>
+            <p class="subtitle">2025-2026学年第1学期</p>
+            <div class="course-info">
+                <h3><i class="fas fa-graduation-cap"></i> 学期介绍</h3>
+                <p>本学期包含两门核心课程：SSM框架开发和Spring Cloud微服务开发。从传统的单体应用架构深入到现代的微服务架构，帮助学生全面掌握企业级Java开发的完整技术栈。</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="搜索课程...">
+                <button onclick="searchCourses()">搜索</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="learning-path">
+            <h3><i class="fas fa-route"></i> 学习路径建议</h3>
+            <p>
+                建议学习顺序：<strong>SSM框架开发</strong> → <strong>Spring Cloud微服务开发</strong><br>
+                先掌握Spring生态的基础框架整合，再进入分布式微服务架构的学习。
+                每门课程都有配套的实战项目，帮助理论与实践相结合。
+            </p>
+        </div>
+
+        <h2 class="category-header">
+            <i class="fas fa-layer-group"></i> 本学期课程
+        </h2>
+
+        <div class="course-grid">
+            <div class="course-card">
+                <div class="difficulty-badge intermediate">中级</div>
+                <h2><i class="fas fa-cubes"></i> SSM框架开发</h2>
+                <div class="description">
+                    深入学习Spring、SpringMVC、MyBatis三大框架的整合应用，掌握企业级Java开发的核心技术栈。
+                    从依赖注入、AOP编程到MVC模式、数据持久化，构建完整的单体应用开发能力。
+                </div>
+                
+
+
+                <div class="course-features">
+                    <h4>主要内容：</h4>
+                    <ul>
+                        <li>Spring IoC容器与依赖注入</li>
+                        <li>Spring AOP面向切面编程</li>
+                        <li>SpringMVC Web开发</li>
+                        <li>MyBatis数据持久化</li>
+                        <li>SSM框架整合实战</li>
+                    </ul>
+                </div>
+
+                <a href="SSM框架开发/index.html">
+                    <i class="fas fa-play"></i> 开始学习
+                </a>
+            </div>
+
+            <div class="course-card">
+                <div class="difficulty-badge advanced">高级</div>
+                <h2><i class="fas fa-cloud"></i> Spring Cloud微服务开发</h2>
+                <div class="description">
+                    全面掌握Spring Cloud微服务生态系统，学习服务发现、配置管理、熔断器、网关等微服务核心组件，
+                    构建可扩展、高可用的分布式系统架构。
+                </div>
+
+
+
+                <div class="course-features">
+                    <h4>主要内容：</h4>
+                    <ul>
+                        <li>微服务架构设计原理</li>
+                        <li>Eureka服务注册与发现</li>
+                        <li>Spring Cloud Gateway网关</li>
+                        <li>Hystrix熔断器与降级</li>
+                        <li>分布式配置与链路追踪</li>
+                    </ul>
+                </div>
+
+                <a href="SpringCloud微服务开发/index.html">
+                    <i class="fas fa-rocket"></i> 开始学习
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchCourses() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const courses = document.querySelectorAll('.course-card');
+            
+            courses.forEach(course => {
+                const title = course.querySelector('h2').textContent.toLowerCase();
+                const content = course.querySelector('.description').textContent.toLowerCase();
+                const features = course.querySelector('.course-features').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm) || features.includes(searchTerm)) {
+                    course.style.display = 'block';
+                } else {
+                    course.style.display = 'none';
+                }
+            });
+        }
+
+        // 搜索框回车事件
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCourses();
+            }
+        });
+    </script>
+</body>
+</html> 
