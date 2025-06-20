@@ -34,28 +34,53 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
+            margin-top: 15px;
         }
         
         .control-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .control-btn:hover::before {
+            left: 100%;
         }
         
         .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
         
         .control-btn.active {
-            background: linear-gradient(135deg, #fd79a8, #e84393);
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.3);
+        }
+        
+        .control-btn.active:hover {
+            box-shadow: 0 6px 25px rgba(254, 202, 87, 0.5);
         }
         
         #knowledge-graph {
@@ -66,41 +91,105 @@
         
         .tooltip {
             position: absolute;
-            background: rgba(0,0,0,0.9);
+            background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(30,30,30,0.95));
             color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 15px 18px;
+            border-radius: 12px;
+            font-size: 13px;
             pointer-events: none;
             z-index: 1001;
-            max-width: 300px;
-            line-height: 1.4;
+            max-width: 320px;
+            line-height: 1.5;
             display: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background: rgba(0,0,0,0.95);
+            transform: rotate(45deg);
+            border-right: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
         
         .legend {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.8);
-            padding: 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            max-width: 200px;
+            background: rgba(0,0,0,0.85);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 240px;
+            transition: all 0.3s ease;
+        }
+        
+        .legend:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .legend h4 {
+            margin-bottom: 15px;
+            color: #feca57;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .legend h4:hover {
+            color: #ff9ff3;
+        }
+        
+        .legend-content {
+            transition: all 0.3s ease;
+        }
+        
+        .legend.collapsed .legend-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
         }
         
         .legend-item {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            font-size: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            padding: 5px 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .legend-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
         }
         
         .legend-color {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            margin-right: 8px;
+            margin-right: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .legend-item:hover .legend-color {
+            transform: scale(1.2);
+            border-color: rgba(255,255,255,0.6);
         }
         
         .info-panel {
@@ -114,19 +203,114 @@
             max-width: 250px;
             display: none;
         }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.85);
+            padding: 12px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 200px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-item .icon {
+            font-size: 14px;
+        }
+        
+        .help-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 3000;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .help-panel h3 {
+            color: #feca57;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .help-section {
+            margin-bottom: 20px;
+        }
+        
+        .help-section h4 {
+            color: #ff9ff3;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .help-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .help-key {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🧠 Java全栈开发知识图谱</h1>
         <div class="controls">
-            <button class="control-btn active" onclick="showAllNodes()">显示全部</button>
-            <button class="control-btn" onclick="filterByCategory('核心语言')">Java核心</button>
-            <button class="control-btn" onclick="filterByCategory('Web开发')">Web开发</button>
-            <button class="control-btn" onclick="filterByCategory('框架技术')">框架技术</button>
-            <button class="control-btn" onclick="filterByCategory('微服务')">微服务</button>
-            <button class="control-btn" onclick="resetGraph()">重置</button>
-            <a href="../index.html" class="control-btn" style="text-decoration: none;">返回首页</a>
+            <input type="text" id="searchInput" placeholder="🔍 搜索知识点..." style="
+                width: 100%;
+                padding: 12px 15px;
+                margin-bottom: 15px;
+                border: 1px solid rgba(255,255,255,0.3);
+                border-radius: 25px;
+                background: rgba(255,255,255,0.1);
+                color: white;
+                font-size: 13px;
+                outline: none;
+                transition: all 0.3s ease;
+            " onkeyup="searchNodes(this.value)">
+            <button class="control-btn active" onclick="showAllNodes()">🌐 显示全部</button>
+            <button class="control-btn" onclick="filterByCategory('核心语言')">☕ Java核心</button>
+            <button class="control-btn" onclick="filterByCategory('Web开发')">🌐 Web开发</button>
+            <button class="control-btn" onclick="filterByCategory('数据处理')">🗄️ 数据处理</button>
+            <button class="control-btn" onclick="filterByCategory('框架技术')">🏗️ 框架技术</button>
+            <button class="control-btn" onclick="filterByCategory('微服务')">🔧 微服务</button>
+            <button class="control-btn" onclick="filterByCategory('工具部署')">🛠️ 工具部署</button>
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin: 15px 0; padding-top: 15px;">
+                <button class="control-btn" onclick="resetGraph()">🔄 重置视图</button>
+                <button class="control-btn" onclick="toggleSimpleMode()" id="simple-mode-btn">⚡ 简化模式</button>
+                <button class="control-btn" onclick="toggleHelp()">❓ 快捷键帮助</button>
+                <a href="../index.html" class="control-btn" style="text-decoration: none;">🏠 返回首页</a>
+            </div>
         </div>
     </div>
     
@@ -134,39 +318,41 @@
     
     <div class="tooltip" id="tooltip"></div>
     
-            <div class="legend">
-            <h4 style="margin-bottom: 10px;">节点类型</h4>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #ff6b6b;"></div>
-                <span>核心语言</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #4ecdc4;"></div>
-                <span>Web开发</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #45b7d1;"></div>
-                <span>数据处理</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #96ceb4;"></div>
-                <span>框架技术</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #feca57;"></div>
-                <span>微服务</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #ff9ff3;"></div>
-                <span>工具部署</span>
-            </div>
-            
-            <h4 style="margin: 15px 0 10px 0;">操作指南</h4>
-            <div style="font-size: 11px; line-height: 1.5;">
-                <div>🖱️ 滚轮缩放</div>
-                <div>🖐️ 拖拽平移</div>
-                <div>👆 点击节点学习</div>
-                <div>🎯 悬停查看详情</div>
+            <div class="legend" id="legend">
+            <h4 onclick="toggleLegend()">📊 节点类型 <span id="legend-toggle">▼</span></h4>
+            <div class="legend-content" id="legend-content">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff6b6b;"></div>
+                    <span>核心语言</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecdc4;"></div>
+                    <span>Web开发</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #45b7d1;"></div>
+                    <span>数据处理</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #96ceb4;"></div>
+                    <span>框架技术</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #feca57;"></div>
+                    <span>微服务</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff9ff3;"></div>
+                    <span>工具部署</span>
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; cursor: default;">🎮 快速操作</h4>
+                <div style="font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.8);">
+                    <div>🖱️ 滚轮缩放 / 拖拽平移</div>
+                    <div>👆 单击查看 / 双击学习</div>
+                    <div>🎯 悬停详情 / 右键菜单</div>
+                    <div>⌨️ F1帮助 / Ctrl+F搜索</div>
+                </div>
             </div>
         </div>
     
@@ -174,6 +360,109 @@
         <h4 id="node-title"></h4>
         <p id="node-description"></p>
         <div id="node-relations"></div>
+    </div>
+    
+    <div class="status-bar" id="status-bar">
+        <div class="status-item">
+            <span class="icon">📊</span>
+            <span id="node-count">节点: 0</span>
+        </div>
+        <div class="status-item">
+            <span class="icon">🔗</span>
+            <span id="link-count">连接: 0</span>
+        </div>
+        <div class="status-item">
+            <span class="icon">🔍</span>
+            <span id="zoom-level">缩放: 100%</span>
+        </div>
+    </div>
+    
+    <div class="help-panel" id="help-panel">
+        <h3>🎮 操作指南</h3>
+        
+        <div class="help-section">
+            <h4>🖱️ 鼠标操作</h4>
+            <div class="help-item">
+                <span>单击节点</span>
+                <span>显示详细信息</span>
+            </div>
+            <div class="help-item">
+                <span>双击节点</span>
+                <span>打开学习页面</span>
+            </div>
+            <div class="help-item">
+                <span>右键节点</span>
+                <span>显示上下文菜单</span>
+            </div>
+            <div class="help-item">
+                <span>滚轮</span>
+                <span>缩放视图</span>
+            </div>
+            <div class="help-item">
+                <span>拖拽空白处</span>
+                <span>平移视图</span>
+            </div>
+            <div class="help-item">
+                <span>悬停节点</span>
+                <span>显示提示信息</span>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <h4>⌨️ 键盘快捷键</h4>
+            <div class="help-item">
+                <span>搜索功能</span>
+                <span class="help-key">Ctrl + F</span>
+            </div>
+            <div class="help-item">
+                <span>清空搜索</span>
+                <span class="help-key">ESC</span>
+            </div>
+            <div class="help-item">
+                <span>向上移动</span>
+                <span class="help-key">↑</span>
+            </div>
+            <div class="help-item">
+                <span>向下移动</span>
+                <span class="help-key">↓</span>
+            </div>
+            <div class="help-item">
+                <span>向左移动</span>
+                <span class="help-key">←</span>
+            </div>
+            <div class="help-item">
+                <span>向右移动</span>
+                <span class="help-key">→</span>
+            </div>
+            <div class="help-item">
+                <span>显示帮助</span>
+                <span class="help-key">F1</span>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <h4>🎯 使用技巧</h4>
+            <div class="help-item">
+                <span>按类别筛选</span>
+                <span>点击控制面板按钮</span>
+            </div>
+            <div class="help-item">
+                <span>快速搜索</span>
+                <span>输入关键词</span>
+            </div>
+            <div class="help-item">
+                <span>查看连接</span>
+                <span>右键 → 查找相关</span>
+            </div>
+            <div class="help-item">
+                <span>重置视图</span>
+                <span>点击重置按钮</span>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="control-btn" onclick="toggleHelp()">关闭帮助</button>
+        </div>
     </div>
     
     <script>
@@ -206,25 +495,25 @@
                 // Web开发层
                 {id: "HTTP", name: "HTTP协议", category: "Web开发", level: 1,
                  description: "超文本传输协议，无状态", 
-                 link: "HTTP协议.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "Servlet", name: "Servlet", category: "Web开发", level: 2,
                  description: "Java Web应用核心组件", 
-                 link: "Servlet.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "JSP", name: "JSP", category: "Web开发", level: 3,
                  description: "Java服务器页面技术", 
-                 link: "JSP.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "Filter", name: "过滤器", category: "Web开发", level: 3,
                  description: "请求拦截处理", 
-                 link: "过滤器.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "Session", name: "会话管理", category: "Web开发", level: 3,
                  description: "用户状态保持", 
-                 link: "会话管理.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "AJAX", name: "AJAX", category: "Web开发", level: 4,
                  description: "异步JavaScript和XML", 
-                 link: "AJAX.html"},
+                 link: "../Java-Web基础/index.html"},
                 {id: "JSON", name: "JSON", category: "Web开发", level: 2,
                  description: "轻量级数据交换格式", 
-                 link: "JSON.html"},
+                 link: "../Java-Web基础/index.html"},
                 
                 // 数据处理层
                 {id: "JDBC", name: "JDBC", category: "数据处理", level: 2,
@@ -369,9 +658,40 @@
                 {id: "Testing", name: "软件测试", category: "工具部署", level: 3,
                  description: "Java Web应用测试", 
                  link: "../软件测试教程/index.html"},
+                {id: "JavaWebTesting", name: "JavaWeb测试", category: "工具部署", level: 4,
+                 description: "Java Web应用专项测试", 
+                 link: "../JavaWeb测试教程/index.html"},
                 {id: "SonarQube", name: "代码质量", category: "工具部署", level: 3,
                  description: "代码质量检测与分析", 
-                 link: "../SonarQube教程/index.html"}
+                 link: "../SonarQube教程/index.html"},
+                
+                // Web开发基础技术
+                {id: "JavaWeb", name: "Java Web基础", category: "Web开发", level: 2,
+                 description: "Java Web开发基础技术", 
+                 link: "../Java-Web基础/index.html"},
+                
+                // Spring框架核心
+                {id: "SpringCore", name: "Spring框架核心", category: "框架技术", level: 3,
+                 description: "Spring框架核心概念和机制", 
+                 link: "../Spring框架核心/index.html"},
+                
+                // 缓存技术完善
+                {id: "SpringBootCache", name: "SpringBoot缓存", category: "框架技术", level: 5,
+                 description: "SpringBoot缓存集成", 
+                 link: "../SpringBoot缓存教程/index.html"},
+                {id: "CacheBasic", name: "缓存基础", category: "数据处理", level: 3,
+                 description: "缓存技术基础概念", 
+                 link: "../缓存教程/index.html"},
+                
+                // 分布式架构
+                {id: "DistributedArch", name: "分布式架构", category: "微服务", level: 5,
+                 description: "分布式系统架构设计", 
+                 link: "../分布式架构/index.html"},
+                
+                // MySQL优化
+                {id: "MySQLOptimization", name: "MySQL优化", category: "数据处理", level: 4,
+                 description: "MySQL数据库性能优化", 
+                 link: "../MySQL优化/index.html"}
             ],
             
             // 定义节点间的语义关系
@@ -464,7 +784,18 @@
                 
                 // 开发工具关系
                 {source: "HTTP", target: "Fiddler", relation: "调试工具", type: "debuggedBy"},
-                {source: "Git", target: "Scrum", relation: "配合", type: "collaborates"}
+                {source: "Git", target: "Scrum", relation: "配合", type: "collaborates"},
+                
+                // 新增节点关系
+                {source: "Java", target: "JavaWeb", relation: "扩展为", type: "extends"},
+                {source: "JavaWeb", target: "HTTP", relation: "基于", type: "basedOn"},
+                {source: "JavaWeb", target: "Servlet", relation: "包含", type: "contains"},
+                {source: "Spring", target: "SpringCore", relation: "核心", type: "coreFeature"},
+                {source: "SpringBoot", target: "SpringBootCache", relation: "集成", type: "integrates"},
+                {source: "CacheBasic", target: "Cache", relation: "扩展为", type: "extends"},
+                {source: "MySQL", target: "MySQLOptimization", relation: "优化", type: "optimizes"},
+                {source: "Microservices", target: "DistributedArch", relation: "实现", type: "implements"},
+                {source: "Testing", target: "JavaWebTesting", relation: "专项", type: "specializes"}
             ]
         };
         
@@ -626,6 +957,18 @@
         function updateTransform() {
             zoomContainer.setAttribute('transform', 
                 `translate(${currentTranslateX}, ${currentTranslateY}) scale(${currentScale})`);
+            updateStatusBar();
+        }
+        
+        function updateStatusBar() {
+            const visibleNodes = nodes.filter(node => 
+                node.element.style.display !== 'none').length;
+            const visibleLinks = links.filter(link => 
+                link.element.style.display !== 'none').length;
+            
+            document.getElementById('node-count').textContent = `节点: ${visibleNodes}/${nodes.length}`;
+            document.getElementById('link-count').textContent = `连接: ${visibleLinks}/${links.length}`;
+            document.getElementById('zoom-level').textContent = `缩放: ${Math.round(currentScale * 100)}%`;
         }
 
         function initializeGraph() {
@@ -657,14 +1000,12 @@
                 // 添加事件监听
                 circle.addEventListener('mouseenter', (e) => showTooltip(e, node));
                 circle.addEventListener('mouseleave', hideTooltip);
-                circle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (node.link) {
-                        window.open(node.link, '_blank');
-                    } else {
-                        showNodeInfo(node);
-                    }
-                });
+                
+                // 使用新的双击处理函数
+                addDoubleClickHandler(circle, node);
+                
+                // 添加右键菜单
+                addContextMenu(circle, node);
                 
                 zoomContainer.appendChild(circle);
                 node.element = circle;
@@ -863,6 +1204,8 @@
                            targetNode.category === category;
                 link.element.style.display = show ? 'block' : 'none';
             });
+            
+            updateStatusBar();
         }
         
         function showAllNodes() {
@@ -878,6 +1221,8 @@
             links.forEach(link => {
                 link.element.style.display = 'block';
             });
+            
+            updateStatusBar();
         }
         
         function resetGraph() {
@@ -894,9 +1239,323 @@
             startSimulation();
         }
         
+        // 搜索功能
+        function searchNodes(query) {
+            const searchTerm = query.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                showAllNodes();
+                return;
+            }
+            
+            let foundNodes = [];
+            
+            nodes.forEach(node => {
+                const matches = node.name.toLowerCase().includes(searchTerm) ||
+                               node.description.toLowerCase().includes(searchTerm) ||
+                               node.category.toLowerCase().includes(searchTerm);
+                
+                if (matches) {
+                    foundNodes.push(node);
+                    node.element.style.display = 'block';
+                    node.labelElement.style.display = 'block';
+                    // 高亮匹配的节点
+                    node.element.style.stroke = '#feca57';
+                    node.element.style.strokeWidth = '3px';
+                } else {
+                    node.element.style.display = 'none';
+                    node.labelElement.style.display = 'none';
+                    node.element.style.stroke = 'none';
+                    node.element.style.strokeWidth = '0px';
+                }
+            });
+            
+            // 显示相关连接
+            links.forEach(link => {
+                const sourceVisible = foundNodes.some(n => n.id === link.source);
+                const targetVisible = foundNodes.some(n => n.id === link.target);
+                link.element.style.display = (sourceVisible && targetVisible) ? 'block' : 'none';
+            });
+            
+            // 如果只找到一个节点，自动居中显示
+            if (foundNodes.length === 1) {
+                centerOnNode(foundNodes[0]);
+            }
+            
+            updateStatusBar();
+        }
+        
+        // 居中显示节点
+        function centerOnNode(node) {
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            currentTranslateX = centerX - node.x * currentScale;
+            currentTranslateY = centerY - node.y * currentScale;
+            updateTransform();
+        }
+        
+        // 添加键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Ctrl + F 聚焦搜索框
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // ESC 清空搜索或关闭帮助
+            if (e.key === 'Escape') {
+                const helpPanel = document.getElementById('help-panel');
+                if (helpPanel.style.display === 'block') {
+                    toggleHelp();
+                } else {
+                    document.getElementById('searchInput').value = '';
+                    showAllNodes();
+                }
+            }
+            
+            // F1 显示帮助
+            if (e.key === 'F1') {
+                e.preventDefault();
+                toggleHelp();
+            }
+            
+            // 方向键移动视图
+            const moveDistance = 50;
+            switch(e.key) {
+                case 'ArrowUp':
+                    currentTranslateY += moveDistance;
+                    updateTransform();
+                    break;
+                case 'ArrowDown':
+                    currentTranslateY -= moveDistance;
+                    updateTransform();
+                    break;
+                case 'ArrowLeft':
+                    currentTranslateX += moveDistance;
+                    updateTransform();
+                    break;
+                case 'ArrowRight':
+                    currentTranslateX -= moveDistance;
+                    updateTransform();
+                    break;
+            }
+        });
+        
+        // 搜索框样式优化
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('focus', () => {
+            searchInput.style.background = 'rgba(255,255,255,0.2)';
+            searchInput.style.borderColor = '#feca57';
+        });
+        
+        searchInput.addEventListener('blur', () => {
+            searchInput.style.background = 'rgba(255,255,255,0.1)';
+            searchInput.style.borderColor = 'rgba(255,255,255,0.3)';
+        });
+        
+        // 添加节点双击功能 - 快速跳转到学习页面
+        function addDoubleClickHandler(circle, node) {
+            let clickCount = 0;
+            circle.addEventListener('click', (e) => {
+                clickCount++;
+                setTimeout(() => {
+                    if (clickCount === 1) {
+                        // 单击 - 显示信息
+                        showNodeInfo(node);
+                    } else if (clickCount === 2) {
+                        // 双击 - 跳转到学习页面
+                        if (node.link) {
+                            window.open(node.link, '_blank');
+                        }
+                    }
+                    clickCount = 0;
+                }, 300);
+            });
+        }
+        
+        // 添加右键菜单功能
+        function addContextMenu(element, node) {
+            element.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showContextMenu(e, node);
+            });
+        }
+        
+        function showContextMenu(event, node) {
+            // 创建右键菜单
+            const existingMenu = document.getElementById('contextMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            const menu = document.createElement('div');
+            menu.id = 'contextMenu';
+            menu.style.cssText = `
+                position: fixed;
+                left: ${event.clientX}px;
+                top: ${event.clientY}px;
+                background: rgba(0,0,0,0.9);
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 8px;
+                padding: 8px 0;
+                z-index: 2000;
+                min-width: 150px;
+                backdrop-filter: blur(10px);
+            `;
+            
+            const menuItems = [
+                { text: '📖 查看详情', action: () => showNodeInfo(node) },
+                { text: '🔗 打开学习页面', action: () => window.open(node.link, '_blank') },
+                { text: '🎯 居中显示', action: () => centerOnNode(node) },
+                { text: '🔍 查找相关', action: () => findRelatedNodes(node) }
+            ];
+            
+            menuItems.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.textContent = item.text;
+                menuItem.style.cssText = `
+                    padding: 8px 16px;
+                    cursor: pointer;
+                    font-size: 13px;
+                    color: white;
+                    transition: background 0.2s;
+                `;
+                
+                menuItem.addEventListener('mouseenter', () => {
+                    menuItem.style.background = 'rgba(255,255,255,0.1)';
+                });
+                
+                menuItem.addEventListener('mouseleave', () => {
+                    menuItem.style.background = 'transparent';
+                });
+                
+                menuItem.addEventListener('click', () => {
+                    item.action();
+                    menu.remove();
+                });
+                
+                menu.appendChild(menuItem);
+            });
+            
+            document.body.appendChild(menu);
+            
+            // 点击其他地方关闭菜单
+            setTimeout(() => {
+                document.addEventListener('click', () => {
+                    if (menu.parentNode) {
+                        menu.remove();
+                    }
+                }, { once: true });
+            }, 100);
+        }
+        
+        // 查找相关节点
+        function findRelatedNodes(node) {
+            const relatedIds = new Set();
+            relatedIds.add(node.id);
+            
+            // 找到所有直接连接的节点
+            links.forEach(link => {
+                if (link.source === node.id) {
+                    relatedIds.add(link.target);
+                } else if (link.target === node.id) {
+                    relatedIds.add(link.source);
+                }
+            });
+            
+            // 显示相关节点
+            nodes.forEach(n => {
+                if (relatedIds.has(n.id)) {
+                    n.element.style.display = 'block';
+                    n.labelElement.style.display = 'block';
+                    n.element.style.stroke = '#ff9ff3';
+                    n.element.style.strokeWidth = '2px';
+                } else {
+                    n.element.style.display = 'none';
+                    n.labelElement.style.display = 'none';
+                }
+            });
+            
+            // 显示相关连接
+            links.forEach(link => {
+                const show = relatedIds.has(link.source) && relatedIds.has(link.target);
+                link.element.style.display = show ? 'block' : 'none';
+            });
+        }
+        
+        // 帮助面板切换
+        function toggleHelp() {
+            const helpPanel = document.getElementById('help-panel');
+            if (helpPanel.style.display === 'block') {
+                helpPanel.style.display = 'none';
+            } else {
+                helpPanel.style.display = 'block';
+            }
+        }
+        
+        // 图例折叠切换
+        function toggleLegend() {
+            const legend = document.getElementById('legend');
+            const toggle = document.getElementById('legend-toggle');
+            
+            if (legend.classList.contains('collapsed')) {
+                legend.classList.remove('collapsed');
+                toggle.textContent = '▼';
+            } else {
+                legend.classList.add('collapsed');
+                toggle.textContent = '▶';
+            }
+        }
+        
+        // 简化模式切换
+        let isSimpleMode = false;
+        function toggleSimpleMode() {
+            isSimpleMode = !isSimpleMode;
+            const btn = document.getElementById('simple-mode-btn');
+            
+            if (isSimpleMode) {
+                btn.textContent = '🎨 完整模式';
+                btn.classList.add('active');
+                
+                // 隐藏连线，只显示核心节点
+                links.forEach(link => {
+                    link.element.style.display = 'none';
+                });
+                
+                // 只显示level 1-2的重要节点
+                nodes.forEach(node => {
+                    if (node.level <= 2) {
+                        node.element.style.display = 'block';
+                        node.labelElement.style.display = 'block';
+                        // 增大核心节点
+                        node.element.setAttribute('r', 12 + node.level * 3);
+                    } else {
+                        node.element.style.display = 'none';
+                        node.labelElement.style.display = 'none';
+                    }
+                });
+                
+            } else {
+                btn.textContent = '⚡ 简化模式';
+                btn.classList.remove('active');
+                
+                // 恢复所有元素
+                showAllNodes();
+                
+                // 恢复节点大小
+                nodes.forEach(node => {
+                    node.element.setAttribute('r', 8 + node.level * 2);
+                });
+            }
+            
+            updateStatusBar();
+        }
+        
         // 初始化图谱
         initializeGraph();
         initializeZoomAndPan();
+        updateStatusBar();
         
         // 响应式处理
         window.addEventListener('resize', () => {

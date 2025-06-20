@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>负载均衡 - 学习资料</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.1);
+            margin: 20px 0;
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .learning-path {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .path-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #feca57;
+            transition: all 0.3s ease;
+        }
+        
+        .path-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .resources {
+            margin-top: 30px;
+        }
+        
+        .resource-link {
+            display: inline-block;
+            margin: 10px 15px 10px 0;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← 返回知识图谱</a>
+    
+    <div class="header">
+        <h1>⚖️ 负载均衡</h1>
+        <p>Ribbon客户端负载均衡</p>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <h2>🎯 学习目标</h2>
+            <ul>
+                <li>理解负载均衡的概念和重要性</li>
+                <li>掌握Ribbon客户端负载均衡的使用</li>
+                <li>学会不同负载均衡策略的配置</li>
+                <li>了解负载均衡在微服务中的应用</li>
+            </ul>
+        </div>
+        
+        <div class="content-section">
+            <h2>📚 学习路径</h2>
+            <div class="learning-path">
+                <div class="path-item">
+                    <h3>1. 负载均衡概念</h3>
+                    <p>什么是负载均衡，解决的问题</p>
+                    <small>⏱️ 预计学习时间：1天</small>
+                </div>
+                <div class="path-item">
+                    <h3>2. Ribbon基础</h3>
+                    <p>Ribbon的工作原理和基本配置</p>
+                    <small>⏱️ 预计学习时间：2天</small>
+                </div>
+                <div class="path-item">
+                    <h3>3. 负载均衡策略</h3>
+                    <p>轮询、随机、权重等策略配置</p>
+                    <small>⏱️ 预计学习时间：3天</small>
+                </div>
+                <div class="path-item">
+                    <h3>4. 自定义策略</h3>
+                    <p>实现自定义负载均衡策略</p>
+                    <small>⏱️ 预计学习时间：1周</small>
+                </div>
+                <div class="path-item">
+                    <h3>5. 健康检查</h3>
+                    <p>服务实例健康状态监控</p>
+                    <small>⏱️ 预计学习时间：3天</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>🔗 学习资源</h2>
+            <div class="resources">
+                <a href="服务注册.html" class="resource-link">服务注册</a>
+                <a href="../SpringCloud微服务开发/index.html" class="resource-link">SpringCloud教程</a>
+                <a href="#" class="resource-link">Ribbon实战</a>
+                <a href="#" class="resource-link">性能测试</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

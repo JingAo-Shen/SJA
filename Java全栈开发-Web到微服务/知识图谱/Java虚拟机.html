@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java虚拟机 - 学习资料</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.1);
+            margin: 20px 0;
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .learning-path {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .path-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+            transition: all 0.3s ease;
+        }
+        
+        .path-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .resources {
+            margin-top: 30px;
+        }
+        
+        .resource-link {
+            display: inline-block;
+            margin: 10px 15px 10px 0;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← 返回知识图谱</a>
+    
+    <div class="header">
+        <h1>🔧 Java虚拟机 (JVM)</h1>
+        <p>字节码执行环境，垃圾回收，内存管理</p>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <h2>🎯 学习目标</h2>
+            <ul>
+                <li>理解JVM的内存结构和运行原理</li>
+                <li>掌握垃圾回收机制和调优</li>
+                <li>了解类加载机制和字节码执行</li>
+                <li>能够进行JVM性能监控和调优</li>
+            </ul>
+        </div>
+        
+        <div class="content-section">
+            <h2>📚 学习路径</h2>
+            <div class="learning-path">
+                <div class="path-item">
+                    <h3>1. JVM内存结构</h3>
+                    <p>堆内存、栈内存、方法区、程序计数器等</p>
+                    <small>⏱️ 预计学习时间：1周</small>
+                </div>
+                <div class="path-item">
+                    <h3>2. 类加载机制</h3>
+                    <p>类加载器、双亲委派模型、类加载过程</p>
+                    <small>⏱️ 预计学习时间：1周</small>
+                </div>
+                <div class="path-item">
+                    <h3>3. 垃圾回收</h3>
+                    <p>GC算法、垃圾收集器、内存泄漏排查</p>
+                    <small>⏱️ 预计学习时间：2周</small>
+                </div>
+                <div class="path-item">
+                    <h3>4. 性能调优</h3>
+                    <p>JVM参数调优、内存分析、性能监控工具</p>
+                    <small>⏱️ 预计学习时间：2周</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>🔗 学习资源</h2>
+            <div class="resources">
+                <a href="../JavaSE教程/index.html" class="resource-link">JavaSE基础</a>
+                <a href="#" class="resource-link">JVM官方文档</a>
+                <a href="#" class="resource-link">内存分析工具</a>
+                <a href="#" class="resource-link">性能调优实战</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
