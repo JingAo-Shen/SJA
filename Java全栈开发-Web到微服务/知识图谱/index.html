@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java全栈开发知识图谱</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+        
+        #knowledge-graph {
+            width: 100vw;
+            height: 100vh;
+            margin-top: 80px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1001;
+            max-width: 300px;
+            line-height: 1.4;
+            display: none;
+        }
+        
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 200px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .info-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 250px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Java全栈开发知识图谱</h1>
+        <div class="controls">
+            <button class="control-btn active" onclick="showAllNodes()">显示全部</button>
+            <button class="control-btn" onclick="filterByCategory('核心语言')">Java核心</button>
+            <button class="control-btn" onclick="filterByCategory('Web开发')">Web开发</button>
+            <button class="control-btn" onclick="filterByCategory('框架技术')">框架技术</button>
+            <button class="control-btn" onclick="filterByCategory('微服务')">微服务</button>
+            <button class="control-btn" onclick="resetGraph()">重置</button>
+            <a href="../index.html" class="control-btn" style="text-decoration: none;">返回首页</a>
+        </div>
+    </div>
+    
+    <div id="knowledge-graph"></div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+            <div class="legend">
+            <h4 style="margin-bottom: 10px;">节点类型</h4>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>核心语言</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4;"></div>
+                <span>Web开发</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #45b7d1;"></div>
+                <span>数据处理</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #96ceb4;"></div>
+                <span>框架技术</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #feca57;"></div>
+                <span>微服务</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff9ff3;"></div>
+                <span>工具部署</span>
+            </div>
+            
+            <h4 style="margin: 15px 0 10px 0;">操作指南</h4>
+            <div style="font-size: 11px; line-height: 1.5;">
+                <div>🖱️ 滚轮缩放</div>
+                <div>🖐️ 拖拽平移</div>
+                <div>👆 点击节点学习</div>
+                <div>🎯 悬停查看详情</div>
+            </div>
+        </div>
+    
+    <div class="info-panel" id="info-panel">
+        <h4 id="node-title"></h4>
+        <p id="node-description"></p>
+        <div id="node-relations"></div>
+    </div>
+    
+    <script>
+        // 知识图谱数据 - 真实的语义关系网络
+        const knowledgeData = {
+            nodes: [
+                // 核心语言层
+                {id: "Java", name: "Java语言", category: "核心语言", level: 1, 
+                 description: "面向对象的编程语言，平台无关性，强类型", 
+                 link: "Java语言.html"},
+                {id: "OOP", name: "面向对象", category: "核心语言", level: 2,
+                 description: "封装、继承、多态三大特性", 
+                 link: "面向对象.html"},
+                {id: "JVM", name: "Java虚拟机", category: "核心语言", level: 2,
+                 description: "字节码执行环境，垃圾回收，内存管理", 
+                 link: "Java虚拟机.html"},
+                {id: "Collection", name: "集合框架", category: "核心语言", level: 3,
+                 description: "List、Set、Map等数据结构", 
+                 link: "集合框架.html"},
+                {id: "Thread", name: "多线程", category: "核心语言", level: 3,
+                 description: "并发编程，同步机制，线程池", 
+                 link: "多线程.html"},
+                {id: "Reflection", name: "反射机制", category: "核心语言", level: 4,
+                 description: "运行时获取类信息，动态调用", 
+                 link: "反射机制.html"},
+                {id: "Annotation", name: "注解", category: "核心语言", level: 4,
+                 description: "元数据标记，代码配置", 
+                 link: "注解.html"},
+                
+                // Web开发层
+                {id: "HTTP", name: "HTTP协议", category: "Web开发", level: 1,
+                 description: "超文本传输协议，无状态", 
+                 link: "HTTP协议.html"},
+                {id: "Servlet", name: "Servlet", category: "Web开发", level: 2,
+                 description: "Java Web应用核心组件", 
+                 link: "Servlet.html"},
+                {id: "JSP", name: "JSP", category: "Web开发", level: 3,
+                 description: "Java服务器页面技术", 
+                 link: "JSP.html"},
+                {id: "Filter", name: "过滤器", category: "Web开发", level: 3,
+                 description: "请求拦截处理", 
+                 link: "过滤器.html"},
+                {id: "Session", name: "会话管理", category: "Web开发", level: 3,
+                 description: "用户状态保持", 
+                 link: "会话管理.html"},
+                {id: "AJAX", name: "AJAX", category: "Web开发", level: 4,
+                 description: "异步JavaScript和XML", 
+                 link: "AJAX.html"},
+                {id: "JSON", name: "JSON", category: "Web开发", level: 2,
+                 description: "轻量级数据交换格式", 
+                 link: "JSON.html"},
+                
+                // 数据处理层
+                {id: "JDBC", name: "JDBC", category: "数据处理", level: 2,
+                 description: "Java数据库连接API", 
+                 link: "../JavaSE教程/index.html"},
+                {id: "MySQL", name: "MySQL", category: "数据处理", level: 1,
+                 description: "关系型数据库管理系统", 
+                 link: "../MySQL教程/index.html"},
+                {id: "MyBatis", name: "MyBatis", category: "数据处理", level: 3,
+                 description: "持久层框架，SQL映射", 
+                 link: "../MyBatis教程/index.html"},
+                {id: "Transaction", name: "事务管理", category: "数据处理", level: 3,
+                 description: "ACID特性，数据一致性", 
+                 link: "../MyBatis教程/index.html"},
+                {id: "ConnectionPool", name: "连接池", category: "数据处理", level: 4,
+                 description: "数据库连接复用", 
+                 link: "../MySQL教程/index.html"},
+                
+                // 框架技术层
+                {id: "Spring", name: "Spring框架", category: "框架技术", level: 3,
+                 description: "企业级应用开发框架", 
+                 link: "Spring框架.html"},
+                {id: "IoC", name: "控制反转", category: "框架技术", level: 4,
+                 description: "对象创建和依赖管理", 
+                 link: "控制反转.html"},
+                {id: "AOP", name: "面向切面", category: "框架技术", level: 4,
+                 description: "横切关注点分离", 
+                 link: "面向切面.html"},
+                {id: "SpringMVC", name: "Spring MVC", category: "框架技术", level: 4,
+                 description: "MVC Web框架", 
+                 link: "../Spring框架教程/index.html"},
+                {id: "SSM", name: "SSM框架", category: "框架技术", level: 4,
+                 description: "Spring+SpringMVC+MyBatis整合", 
+                 link: "../SSM框架开发/index.html"},
+                {id: "SpringBoot", name: "Spring Boot", category: "框架技术", level: 5,
+                 description: "简化Spring配置", 
+                 link: "../SpringBoot教程/index.html"},
+                {id: "AutoConfig", name: "自动配置", category: "框架技术", level: 5,
+                 description: "约定优于配置", 
+                 link: "../SpringBoot教程/index.html"},
+                {id: "Thymeleaf", name: "Thymeleaf", category: "Web开发", level: 4,
+                 description: "Java模板引擎", 
+                 link: "../SpringBootThymeleaf教程/index.html"},
+                {id: "Pay", name: "支付集成", category: "Web开发", level: 5,
+                 description: "支付宝支付集成", 
+                 link: "../SpringBoot支付宝教程/index.html"},
+                {id: "UserActivation", name: "用户激活", category: "Web开发", level: 4,
+                 description: "用户注册激活流程", 
+                 link: "../用户注册激活教程/index.html"},
+                {id: "RESTful", name: "RESTful API", category: "Web开发", level: 4,
+                 description: "REST架构风格API设计", 
+                 link: "../RESTful教程/index.html"},
+                {id: "Scrum", name: "敏捷开发", category: "工具部署", level: 2,
+                 description: "Scrum敏捷开发方法", 
+                 link: "../Scrum敏捷开发教程/index.html"},
+                {id: "Fiddler", name: "抓包工具", category: "工具部署", level: 2,
+                 description: "HTTP抓包分析工具", 
+                 link: "../Fiddler教程/index.html"},
+                
+                // 微服务层
+                {id: "Microservices", name: "微服务架构", category: "微服务", level: 5,
+                 description: "分布式系统架构模式", 
+                 link: "微服务架构.html"},
+                {id: "SpringCloud", name: "Spring Cloud", category: "微服务", level: 6,
+                 description: "微服务开发框架", 
+                 link: "../SpringCloud微服务开发/index.html"},
+                {id: "Eureka", name: "服务注册", category: "微服务", level: 6,
+                 description: "服务注册与发现", 
+                 link: "服务注册.html"},
+                {id: "Ribbon", name: "负载均衡", category: "微服务", level: 6,
+                 description: "客户端负载均衡", 
+                 link: "负载均衡.html"},
+                {id: "Hystrix", name: "断路器", category: "微服务", level: 6,
+                 description: "服务熔断降级", 
+                 link: "断路器.html"},
+                {id: "Gateway", name: "网关", category: "微服务", level: 6,
+                 description: "API统一入口", 
+                 link: "网关.html"},
+                {id: "Config", name: "配置中心", category: "微服务", level: 6,
+                 description: "集中配置管理", 
+                 link: "配置中心.html"},
+                
+                // 工具部署层
+                {id: "Maven", name: "Maven", category: "工具部署", level: 2,
+                 description: "项目管理构建工具", 
+                 link: "../Maven教程/index.html"},
+                {id: "Git", name: "Git", category: "工具部署", level: 2,
+                 description: "分布式版本控制", 
+                 link: "../Git教程/index.html"},
+                {id: "Docker", name: "Docker", category: "工具部署", level: 5,
+                 description: "容器化技术", 
+                 link: "../Docker教程/index.html"},
+                {id: "Nginx", name: "Nginx", category: "工具部署", level: 3,
+                 description: "Web服务器反向代理", 
+                 link: "../Nginx教程/index.html"},
+                {id: "Redis", name: "Redis", category: "工具部署", level: 4,
+                 description: "内存数据库缓存", 
+                 link: "../Redis缓存与数据库数据不一致/index.html"},
+                
+                // 安全与认证层
+                {id: "Security", name: "Spring Security", category: "框架技术", level: 4,
+                 description: "Spring安全框架，认证与授权", 
+                 link: "../SpringSecurity教程/index.html"},
+                {id: "SSO", name: "单点登录", category: "Web开发", level: 5,
+                 description: "Single Sign-On单点登录", 
+                 link: "../单点登录教程/index.html"},
+                {id: "WebSecurity", name: "Web安全", category: "Web开发", level: 4,
+                 description: "Web应用安全防护", 
+                 link: "../Web安全教程/index.html"},
+                {id: "HTTPS", name: "HTTPS", category: "Web开发", level: 3,
+                 description: "安全超文本传输协议", 
+                 link: "../HTTPS教程/index.html"},
+                
+                // 消息队列与异步通信
+                {id: "RabbitMQ", name: "RabbitMQ", category: "微服务", level: 5,
+                 description: "消息队列中间件", 
+                 link: "../RabbitMQ教程/index.html"},
+                {id: "WebSocket", name: "WebSocket", category: "Web开发", level: 4,
+                 description: "全双工通信协议", 
+                 link: "../WebSocket教程/index.html"},
+                
+                // 缓存与性能优化
+                {id: "Cache", name: "缓存技术", category: "数据处理", level: 4,
+                 description: "多级缓存架构", 
+                 link: "../多级缓存教程/index.html"},
+                {id: "DistributedCache", name: "分布式缓存", category: "微服务", level: 5,
+                 description: "分布式缓存架构", 
+                 link: "../分布式缓存/index.html"},
+                {id: "DistributedLock", name: "分布式锁", category: "微服务", level: 5,
+                 description: "分布式环境下的并发控制", 
+                 link: "../分布式锁/index.html"},
+                
+                // 高并发场景
+                {id: "Seckill", name: "秒杀系统", category: "微服务", level: 6,
+                 description: "高并发秒杀业务场景", 
+                 link: "../秒杀/index.html"},
+                {id: "Ranking", name: "排行榜", category: "微服务", level: 5,
+                 description: "实时排行榜系统", 
+                 link: "../排行榜/index.html"},
+                
+                // 测试与质量保证
+                {id: "Testing", name: "软件测试", category: "工具部署", level: 3,
+                 description: "Java Web应用测试", 
+                 link: "../软件测试教程/index.html"},
+                {id: "SonarQube", name: "代码质量", category: "工具部署", level: 3,
+                 description: "代码质量检测与分析", 
+                 link: "../SonarQube教程/index.html"}
+            ],
+            
+            // 定义节点间的语义关系
+            links: [
+                // Java核心依赖关系
+                {source: "Java", target: "OOP", relation: "基于", type: "implements"},
+                {source: "Java", target: "JVM", relation: "运行于", type: "runsOn"},
+                {source: "OOP", target: "Collection", relation: "包含", type: "contains"},
+                {source: "Java", target: "Thread", relation: "支持", type: "supports"},
+                {source: "Java", target: "Reflection", relation: "提供", type: "provides"},
+                {source: "Java", target: "Annotation", relation: "支持", type: "supports"},
+                
+                // Web开发关系
+                {source: "Java", target: "Servlet", relation: "扩展为", type: "extends"},
+                {source: "HTTP", target: "Servlet", relation: "实现", type: "implements"},
+                {source: "Servlet", target: "JSP", relation: "集成", type: "integrates"},
+                {source: "Servlet", target: "Filter", relation: "使用", type: "uses"},
+                {source: "HTTP", target: "Session", relation: "管理", type: "manages"},
+                {source: "JSP", target: "AJAX", relation: "支持", type: "supports"},
+                {source: "AJAX", target: "JSON", relation: "传输", type: "transfers"},
+                
+                // 数据处理关系
+                {source: "Java", target: "JDBC", relation: "提供", type: "provides"},
+                {source: "JDBC", target: "MySQL", relation: "连接", type: "connects"},
+                {source: "JDBC", target: "MyBatis", relation: "封装为", type: "wrappedBy"},
+                {source: "JDBC", target: "Transaction", relation: "支持", type: "supports"},
+                {source: "JDBC", target: "ConnectionPool", relation: "优化为", type: "optimizedBy"},
+                
+                // Spring框架关系
+                {source: "Reflection", target: "IoC", relation: "实现基础", type: "enables"},
+                {source: "Annotation", target: "IoC", relation: "配置方式", type: "configures"},
+                {source: "IoC", target: "Spring", relation: "核心特性", type: "coreFeature"},
+                {source: "AOP", target: "Spring", relation: "核心特性", type: "coreFeature"},
+                {source: "Spring", target: "SpringMVC", relation: "包含", type: "contains"},
+                {source: "Servlet", target: "SpringMVC", relation: "基于", type: "basedOn"},
+                {source: "Spring", target: "SpringBoot", relation: "简化为", type: "simplifiedBy"},
+                {source: "Annotation", target: "AutoConfig", relation: "驱动", type: "drives"},
+                {source: "MyBatis", target: "Spring", relation: "集成", type: "integrates"},
+                {source: "Spring", target: "SSM", relation: "组成", type: "composes"},
+                {source: "SpringMVC", target: "SSM", relation: "组成", type: "composes"},
+                {source: "MyBatis", target: "SSM", relation: "组成", type: "composes"},
+                
+                // 微服务关系
+                {source: "SpringBoot", target: "Microservices", relation: "支持", type: "supports"},
+                {source: "Microservices", target: "SpringCloud", relation: "实现框架", type: "implementedBy"},
+                {source: "SpringCloud", target: "Eureka", relation: "包含", type: "contains"},
+                {source: "SpringCloud", target: "Ribbon", relation: "包含", type: "contains"},
+                {source: "SpringCloud", target: "Hystrix", relation: "包含", type: "contains"},
+                {source: "SpringCloud", target: "Gateway", relation: "包含", type: "contains"},
+                {source: "SpringCloud", target: "Config", relation: "包含", type: "contains"},
+                {source: "Eureka", target: "Ribbon", relation: "配合", type: "collaborates"},
+                {source: "Ribbon", target: "Hystrix", relation: "保护", type: "protects"},
+                
+                // 工具集成关系
+                {source: "Maven", target: "SpringBoot", relation: "构建", type: "builds"},
+                {source: "Git", target: "Maven", relation: "管理", type: "manages"},
+                {source: "Docker", target: "Microservices", relation: "部署", type: "deploys"},
+                {source: "Nginx", target: "SpringBoot", relation: "代理", type: "proxies"},
+                {source: "Redis", target: "Session", relation: "存储", type: "stores"},
+                {source: "Redis", target: "SpringBoot", relation: "缓存", type: "caches"},
+                
+                // 安全与认证关系
+                {source: "Spring", target: "Security", relation: "集成", type: "integrates"},
+                {source: "Security", target: "SSO", relation: "实现", type: "implements"},
+                {source: "HTTPS", target: "WebSecurity", relation: "保障", type: "secures"},
+                {source: "HTTP", target: "HTTPS", relation: "升级为", type: "upgrades"},
+                
+                // 消息队列关系
+                {source: "SpringBoot", target: "RabbitMQ", relation: "集成", type: "integrates"},
+                {source: "Microservices", target: "RabbitMQ", relation: "使用", type: "uses"},
+                {source: "HTTP", target: "WebSocket", relation: "升级为", type: "upgrades"},
+                
+                // 缓存与性能关系
+                {source: "Redis", target: "Cache", relation: "实现", type: "implements"},
+                {source: "Cache", target: "DistributedCache", relation: "扩展为", type: "extends"},
+                {source: "Redis", target: "DistributedLock", relation: "实现", type: "implements"},
+                {source: "DistributedCache", target: "Seckill", relation: "支持", type: "supports"},
+                {source: "DistributedLock", target: "Seckill", relation: "保护", type: "protects"},
+                {source: "Redis", target: "Ranking", relation: "实现", type: "implements"},
+                
+                // 测试质量关系
+                {source: "SpringBoot", target: "Testing", relation: "支持", type: "supports"},
+                {source: "Maven", target: "SonarQube", relation: "集成", type: "integrates"},
+                
+                // Spring Boot生态关系
+                {source: "SpringBoot", target: "Thymeleaf", relation: "集成", type: "integrates"},
+                {source: "SpringBoot", target: "Pay", relation: "支持", type: "supports"},
+                {source: "SpringMVC", target: "RESTful", relation: "实现", type: "implements"},
+                {source: "Session", target: "UserActivation", relation: "管理", type: "manages"},
+                
+                // 开发工具关系
+                {source: "HTTP", target: "Fiddler", relation: "调试工具", type: "debuggedBy"},
+                {source: "Git", target: "Scrum", relation: "配合", type: "collaborates"}
+            ]
+        };
+        
+        // 颜色映射
+        const colorMap = {
+            "核心语言": "#ff6b6b",
+            "Web开发": "#4ecdc4", 
+            "数据处理": "#45b7d1",
+            "框架技术": "#96ceb4",
+            "微服务": "#feca57",
+            "工具部署": "#ff9ff3"
+        };
+        
+        // 关系类型颜色
+        const relationColors = {
+            "implements": "#e74c3c",
+            "extends": "#f39c12", 
+            "contains": "#2ecc71",
+            "uses": "#3498db",
+            "supports": "#9b59b6"
+        };
+        
+        // 创建SVG画布
+        const width = window.innerWidth;
+        const height = window.innerHeight - 80;
+        
+        const svg = document.createElement('div');
+        svg.innerHTML = `
+            <svg width="${width}" height="${height}" style="background: transparent;">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                     refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+                    </marker>
+                </defs>
+                <g class="zoom-container"></g>
+            </svg>
+        `;
+        document.getElementById('knowledge-graph').appendChild(svg.firstElementChild);
+        
+        // 缩放和平移状态
+        let currentScale = 1;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+        let isDragging = false;
+        let dragStart = {x: 0, y: 0};
+        
+        const svgElement = document.querySelector('#knowledge-graph svg');
+        const zoomContainer = document.querySelector('.zoom-container');
+        
+        // 使用原生JavaScript实现简化版力导向图
+        let nodes = [...knowledgeData.nodes];
+        let links = [...knowledgeData.links];
+        
+        // 固定节点位置 - 根据类别和层级计算
+        function initializeFixedPositions() {
+            const categories = ["核心语言", "Web开发", "数据处理", "框架技术", "微服务", "工具部署"];
+            const categoryPositions = {
+                "核心语言": {centerX: width * 0.2, centerY: height * 0.3, radius: 120},
+                "Web开发": {centerX: width * 0.5, centerY: height * 0.2, radius: 140},
+                "数据处理": {centerX: width * 0.8, centerY: height * 0.3, radius: 100},
+                "框架技术": {centerX: width * 0.3, centerY: height * 0.6, radius: 150},
+                "微服务": {centerX: width * 0.7, centerY: height * 0.7, radius: 160},
+                "工具部署": {centerX: width * 0.5, centerY: height * 0.8, radius: 120}
+            };
+            
+            // 按类别分组节点
+            const nodesByCategory = {};
+            categories.forEach(cat => nodesByCategory[cat] = []);
+            
+            nodes.forEach(node => {
+                if (nodesByCategory[node.category]) {
+                    nodesByCategory[node.category].push(node);
+                }
+            });
+            
+            // 为每个类别的节点分配固定位置
+            Object.keys(nodesByCategory).forEach(category => {
+                const categoryNodes = nodesByCategory[category];
+                const pos = categoryPositions[category];
+                
+                if (pos && categoryNodes.length > 0) {
+                    categoryNodes.forEach((node, index) => {
+                        // 根据节点在类别中的索引和层级计算角度
+                        const angle = (index / categoryNodes.length) * 2 * Math.PI;
+                        const levelRadius = pos.radius * (0.3 + node.level * 0.15);
+                        
+                        // 使用节点ID的哈希值作为种子，确保位置固定
+                        const hash = node.id.split('').reduce((a, b) => {
+                            a = ((a << 5) - a) + b.charCodeAt(0);
+                            return a & a;
+                        }, 0);
+                        const randomOffset = (Math.abs(hash) % 100) / 100;
+                        
+                        node.x = pos.centerX + Math.cos(angle + randomOffset) * levelRadius;
+                        node.y = pos.centerY + Math.sin(angle + randomOffset) * levelRadius;
+                        
+                        // 确保节点在画布范围内
+                        node.x = Math.max(30, Math.min(width - 30, node.x));
+                        node.y = Math.max(30, Math.min(height - 30, node.y));
+                        
+                        node.vx = 0;
+                        node.vy = 0;
+                    });
+                }
+            });
+        }
+        
+        initializeFixedPositions();
+        
+        // 创建节点和连线的SVG元素
+        // svgElement 已在上面定义
+        
+        // 添加缩放和拖拽事件
+        function initializeZoomAndPan() {
+            // 鼠标滚轮缩放
+            svgElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = svgElement.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const scaleFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.max(0.3, Math.min(3, currentScale * scaleFactor));
+                
+                if (newScale !== currentScale) {
+                    const scaleChange = newScale / currentScale;
+                    currentTranslateX = mouseX - (mouseX - currentTranslateX) * scaleChange;
+                    currentTranslateY = mouseY - (mouseY - currentTranslateY) * scaleChange;
+                    currentScale = newScale;
+                    updateTransform();
+                }
+            });
+            
+            // 鼠标拖拽平移
+            svgElement.addEventListener('mousedown', (e) => {
+                if (e.target === svgElement || e.target.classList.contains('zoom-container')) {
+                    isDragging = true;
+                    dragStart.x = e.clientX - currentTranslateX;
+                    dragStart.y = e.clientY - currentTranslateY;
+                    svgElement.style.cursor = 'grabbing';
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    currentTranslateX = e.clientX - dragStart.x;
+                    currentTranslateY = e.clientY - dragStart.y;
+                    updateTransform();
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                svgElement.style.cursor = 'default';
+            });
+        }
+        
+        function updateTransform() {
+            zoomContainer.setAttribute('transform', 
+                `translate(${currentTranslateX}, ${currentTranslateY}) scale(${currentScale})`);
+        }
+
+        function initializeGraph() {
+            // 清空现有元素
+            zoomContainer.querySelectorAll('.link, .node, .label').forEach(el => el.remove());
+            
+            // 创建连线
+            links.forEach(link => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('class', 'link');
+                line.setAttribute('stroke', relationColors[link.type] || '#999');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('opacity', '0.6');
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                zoomContainer.appendChild(line);
+                link.element = line;
+            });
+            
+            // 创建节点
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('class', 'node');
+                circle.setAttribute('r', 8 + node.level * 2);
+                circle.setAttribute('fill', colorMap[node.category]);
+                circle.setAttribute('stroke', '#fff');
+                circle.setAttribute('stroke-width', '2');
+                circle.style.cursor = 'pointer';
+                
+                // 添加事件监听
+                circle.addEventListener('mouseenter', (e) => showTooltip(e, node));
+                circle.addEventListener('mouseleave', hideTooltip);
+                circle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (node.link) {
+                        window.open(node.link, '_blank');
+                    } else {
+                        showNodeInfo(node);
+                    }
+                });
+                
+                zoomContainer.appendChild(circle);
+                node.element = circle;
+                
+                // 创建标签
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('class', 'label');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dy', '0.35em');
+                text.setAttribute('font-size', '10px');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-weight', 'bold');
+                text.style.pointerEvents = 'none';
+                text.textContent = node.name;
+                zoomContainer.appendChild(text);
+                node.labelElement = text;
+            });
+            
+            // 开始力导向布局动画
+            startSimulation();
+        }
+        
+        function startSimulation() {
+            let alpha = 0.3; // 降低初始强度，因为已有固定布局
+            const alphaDecay = 0.05; // 加快收敛速度
+            
+            function tick() {
+                // 力计算
+                applyForces();
+                
+                // 更新位置
+                updatePositions();
+                
+                alpha *= (1 - alphaDecay);
+                if (alpha > 0.005) { // 更早停止动画
+                    requestAnimationFrame(tick);
+                }
+            }
+            
+            tick();
+        }
+        
+        function applyForces() {
+            // 轻微的中心引力，保持整体布局
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            nodes.forEach(node => {
+                node.vx += (centerX - node.x) * 0.00005; // 减弱中心引力
+                node.vy += (centerY - node.y) * 0.00005;
+            });
+            
+            // 节点间排斥力 - 防止重叠
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i];
+                    const b = nodes[j];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 80) { // 减小排斥范围
+                        const force = 200 / (distance * distance); // 减弱排斥力
+                        const fx = (dx / distance) * force;
+                        const fy = (dy / distance) * force;
+                        
+                        a.vx -= fx;
+                        a.vy -= fy;
+                        b.vx += fx;
+                        b.vy += fy;
+                    }
+                }
+            }
+            
+            // 连线引力 - 保持连接关系
+            links.forEach(link => {
+                const source = nodes.find(n => n.id === link.source);
+                const target = nodes.find(n => n.id === link.target);
+                
+                if (source && target) {
+                    const dx = target.x - source.x;
+                    const dy = target.y - source.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const force = distance * 0.0005; // 减弱连线引力
+                    
+                    const fx = (dx / distance) * force;
+                    const fy = (dy / distance) * force;
+                    
+                    source.vx += fx;
+                    source.vy += fy;
+                    target.vx -= fx;
+                    target.vy -= fy;
+                }
+            });
+        }
+        
+        function updatePositions() {
+            nodes.forEach(node => {
+                node.vx *= 0.9; // 阻尼
+                node.vy *= 0.9;
+                
+                node.x += node.vx;
+                node.y += node.vy;
+                
+                // 边界检查
+                node.x = Math.max(20, Math.min(width - 20, node.x));
+                node.y = Math.max(20, Math.min(height - 20, node.y));
+                
+                // 更新SVG元素位置
+                if (node.element) {
+                    node.element.setAttribute('cx', node.x);
+                    node.element.setAttribute('cy', node.y);
+                }
+                if (node.labelElement) {
+                    node.labelElement.setAttribute('x', node.x);
+                    node.labelElement.setAttribute('y', node.y);
+                }
+            });
+            
+            // 更新连线
+            links.forEach(link => {
+                const source = nodes.find(n => n.id === link.source);
+                const target = nodes.find(n => n.id === link.target);
+                
+                if (source && target && link.element) {
+                    link.element.setAttribute('x1', source.x);
+                    link.element.setAttribute('y1', source.y);
+                    link.element.setAttribute('x2', target.x);
+                    link.element.setAttribute('y2', target.y);
+                }
+            });
+        }
+        
+        function showTooltip(event, node) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'block';
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY - 10) + 'px';
+            tooltip.innerHTML = `
+                <strong>${node.name}</strong><br>
+                分类: ${node.category}<br>
+                层级: ${node.level}<br>
+                ${node.description}
+            `;
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        function showNodeInfo(node) {
+            const panel = document.getElementById('info-panel');
+            document.getElementById('node-title').textContent = node.name;
+            document.getElementById('node-description').textContent = node.description;
+            
+            // 显示相关连接
+            const relations = links.filter(link => 
+                link.source === node.id || link.target === node.id
+            );
+            
+            const relationsHtml = relations.map(link => {
+                const isSource = link.source === node.id;
+                const otherNode = isSource ? link.target : link.source;
+                const direction = isSource ? '→' : '←';
+                return `<div>${direction} ${link.relation} ${otherNode}</div>`;
+            }).join('');
+            
+            document.getElementById('node-relations').innerHTML = 
+                `<h5>关系连接:</h5>${relationsHtml}`;
+            
+            panel.style.display = 'block';
+            
+            // 5秒后自动隐藏
+            setTimeout(() => {
+                panel.style.display = 'none';
+            }, 5000);
+        }
+        
+        function filterByCategory(category) {
+            // 更新按钮状态
+            document.querySelectorAll('.control-btn').forEach(btn => 
+                btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 过滤显示
+            nodes.forEach(node => {
+                const show = node.category === category;
+                node.element.style.display = show ? 'block' : 'none';
+                node.labelElement.style.display = show ? 'block' : 'none';
+            });
+            
+            links.forEach(link => {
+                const sourceNode = nodes.find(n => n.id === link.source);
+                const targetNode = nodes.find(n => n.id === link.target);
+                const show = sourceNode.category === category && 
+                           targetNode.category === category;
+                link.element.style.display = show ? 'block' : 'none';
+            });
+        }
+        
+        function showAllNodes() {
+            document.querySelectorAll('.control-btn').forEach(btn => 
+                btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            nodes.forEach(node => {
+                node.element.style.display = 'block';
+                node.labelElement.style.display = 'block';
+            });
+            
+            links.forEach(link => {
+                link.element.style.display = 'block';
+            });
+        }
+        
+        function resetGraph() {
+            // 重置到固定的初始位置
+            initializeFixedPositions();
+            
+            // 重置缩放和平移
+            currentScale = 1;
+            currentTranslateX = 0;
+            currentTranslateY = 0;
+            updateTransform();
+            
+            // 重新开始布局动画
+            startSimulation();
+        }
+        
+        // 初始化图谱
+        initializeGraph();
+        initializeZoomAndPan();
+        
+        // 响应式处理
+        window.addEventListener('resize', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html> 

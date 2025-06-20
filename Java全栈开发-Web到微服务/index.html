@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java全栈开发 - Web到微服务学习路径</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.8;
+            margin-bottom: 3rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .tech-tags {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .tech-tag {
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 加载动画 */
+        .container {
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        返回主页
+    </a>
+
+    <div class="container">
+        <h1 class="main-title">🚀 Java全栈开发</h1>
+        <p class="subtitle">从Web基础到微服务架构的完整学习路径</p>
+        
+        <p class="description">
+            通过交互式知识图谱探索Java全栈开发的完整技术体系，
+            从核心语言特性到企业级微服务架构，每个知识点都有详细的学习资料和实战案例。
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-code feature-icon"></i>
+                <div class="feature-title">Java核心</div>
+                <div class="feature-desc">面向对象、集合框架、多线程、JVM原理</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-globe feature-icon"></i>
+                <div class="feature-title">Web开发</div>
+                <div class="feature-desc">Servlet、JSP、Spring MVC、RESTful API</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-leaf feature-icon"></i>
+                <div class="feature-title">Spring生态</div>
+                <div class="feature-desc">Spring Boot、Spring Security、Spring Data</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-cloud feature-icon"></i>
+                <div class="feature-title">微服务</div>
+                <div class="feature-desc">Spring Cloud、服务治理、分布式架构</div>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="知识图谱/index.html" class="btn-primary">
+                <i class="fas fa-sitemap"></i>
+                进入知识图谱
+            </a>
+            <a href="#" class="btn-secondary" onclick="showResourcesInfo()">
+                <i class="fas fa-book"></i>
+                查看所有资源
+            </a>
+        </div>
+
+        <div class="tech-tags">
+            <span class="tech-tag">Java SE</span>
+            <span class="tech-tag">Spring Boot</span>
+            <span class="tech-tag">Spring Cloud</span>
+            <span class="tech-tag">MyBatis</span>
+            <span class="tech-tag">MySQL</span>
+            <span class="tech-tag">Redis</span>
+            <span class="tech-tag">Docker</span>
+            <span class="tech-tag">微服务</span>
+        </div>
+    </div>
+
+    <script>
+        function showResourcesInfo() {
+            alert('所有学习资源已整合到知识图谱中，点击相应的知识点节点即可访问详细的学习材料！');
+        }
+
+        // 自动跳转到知识图谱（可选）
+        // setTimeout(() => {
+        //     window.location.href = '知识图谱/index.html';
+        // }, 3000);
+    </script>
+</body>
+</html> 

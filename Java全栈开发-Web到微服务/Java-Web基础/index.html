@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Web基础 - 从零开始的Web开发</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .breadcrumb {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .breadcrumb a {
+            color: #ffeb3b;
+            text-decoration: none;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .chapter-list {
+            list-style: none;
+        }
+        
+        .chapter-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .chapter-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .chapter-item.active {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .chapter-number {
+            font-weight: bold;
+            color: #1976d2;
+        }
+        
+        .chapter-item.active .chapter-number {
+            color: #ffeb3b;
+        }
+        
+        .knowledge-points {
+            background: #f0f8ff;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .practical-project {
+            background: linear-gradient(135deg, #ff7675, #fd79a8);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 Java Web基础</h1>
+            <p>构建现代Web应用的基石</p>
+        </div>
+        
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> > Java Web基础
+        </div>
+        
+        <div class="content-grid">
+            <div class="sidebar">
+                <h3>📚 学习章节</h3>
+                <ul class="chapter-list">
+                    <li class="chapter-item active" data-chapter="1">
+                        <span class="chapter-number">第1章</span>
+                        <div>Web开发概述</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="2">
+                        <span class="chapter-number">第2章</span>
+                        <div>HTTP协议详解</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="3">
+                        <span class="chapter-number">第3章</span>
+                        <div>Servlet核心技术</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="4">
+                        <span class="chapter-number">第4章</span>
+                        <div>JSP动态网页</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="5">
+                        <span class="chapter-number">第5章</span>
+                        <div>Session与Cookie</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="6">
+                        <span class="chapter-number">第6章</span>
+                        <div>Filter与Listener</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="7">
+                        <span class="chapter-number">第7章</span>
+                        <div>AJAX与JSON</div>
+                    </li>
+                    <li class="chapter-item" data-chapter="8">
+                        <span class="chapter-number">第8章</span>
+                        <div>综合实战项目</div>
+                    </li>
+                </ul>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 25%"></div>
+                </div>
+                <p style="text-align: center; margin-top: 10px;">学习进度: 25%</p>
+            </div>
+            
+            <div class="main-content">
+                <div id="chapter-content">
+                    <h2>第1章：Web开发概述</h2>
+                    
+                    <div class="knowledge-points">
+                        <h3>🎯 本章重点</h3>
+                        <ul>
+                            <li>理解Web应用的工作原理</li>
+                            <li>掌握B/S架构与C/S架构的区别</li>
+                            <li>了解Web服务器与应用服务器</li>
+                            <li>熟悉常见的Web开发技术栈</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>🌍 Web应用基础概念</h3>
+                    <p>Web应用程序是运行在Web服务器上，通过浏览器访问的应用程序。它基于HTTP协议进行通信，采用B/S（Browser/Server）架构模式。</p>
+                    
+                    <h4>B/S架构特点：</h4>
+                    <ul>
+                        <li><strong>客户端</strong>：浏览器，负责展示用户界面和用户交互</li>
+                        <li><strong>服务器端</strong>：Web服务器，处理业务逻辑和数据存储</li>
+                        <li><strong>通信协议</strong>：HTTP/HTTPS协议</li>
+                        <li><strong>优势</strong>：跨平台、易维护、部署简单</li>
+                    </ul>
+                    
+                    <h3>🚀 Java Web技术栈</h3>
+                    <div class="code-example">
+<pre>
+Java Web开发技术栈：
+
+前端技术：
+├── HTML5     (结构)
+├── CSS3      (样式)
+├── JavaScript (交互)
+└── AJAX      (异步通信)
+
+后端技术：
+├── Servlet   (核心组件)
+├── JSP       (视图技术)  
+├── Filter    (过滤器)
+├── Listener  (监听器)
+└── JSTL      (标签库)
+
+服务器：
+├── Tomcat    (轻量级)
+├── Jetty     (嵌入式)
+└── Undertow  (高性能)
+</pre>
+                    </div>
+                    
+                    <h3>📋 开发环境搭建</h3>
+                    <ol>
+                        <li><strong>JDK安装</strong>：Java 8或更高版本</li>
+                        <li><strong>IDE选择</strong>：IntelliJ IDEA 或 Eclipse</li>
+                        <li><strong>Web服务器</strong>：Apache Tomcat 9.x</li>
+                        <li><strong>构建工具</strong>：Maven 或 Gradle</li>
+                        <li><strong>数据库</strong>：MySQL 8.0</li>
+                    </ol>
+                    
+                    <div class="practical-project">
+                        <h3>🎯 实战练习：创建第一个Web项目</h3>
+                        <p>在本章结束后，您将能够：</p>
+                        <ul>
+                            <li>搭建完整的Java Web开发环境</li>
+                            <li>创建一个简单的Web项目</li>
+                            <li>编写第一个Servlet程序</li>
+                            <li>部署并运行Web应用</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <a href="../index.html" class="nav-btn">← 返回课程首页</a>
+                    <a href="#" class="nav-btn" onclick="nextChapter()">下一章：HTTP协议 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const chapters = {
+            1: {
+                title: "第1章：Web开发概述",
+                content: `
+                    <div class="knowledge-points">
+                        <h3>🎯 本章重点</h3>
+                        <ul>
+                            <li>理解Web应用的工作原理</li>
+                            <li>掌握B/S架构与C/S架构的区别</li>
+                            <li>了解Web服务器与应用服务器</li>
+                            <li>熟悉常见的Web开发技术栈</li>
+                        </ul>
+                    </div>
+                `
+            },
+            2: {
+                title: "第2章：HTTP协议详解",
+                content: `
+                    <div class="knowledge-points">
+                        <h3>🎯 本章重点</h3>
+                        <ul>
+                            <li>HTTP协议的工作原理</li>
+                            <li>请求方法：GET、POST、PUT、DELETE</li>
+                            <li>状态码的含义和使用</li>
+                            <li>HTTP头信息的作用</li>
+                        </ul>
+                    </div>
+                    <h3>📡 HTTP协议基础</h3>
+                    <p>HTTP（HyperText Transfer Protocol）是Web的基础协议，定义了客户端和服务器之间如何通信。</p>
+                `
+            },
+            3: {
+                title: "第3章：Servlet核心技术",
+                content: `
+                    <div class="knowledge-points">
+                        <h3>🎯 本章重点</h3>
+                        <ul>
+                            <li>Servlet的生命周期</li>
+                            <li>HttpServletRequest和HttpServletResponse</li>
+                            <li>Servlet配置方式</li>
+                            <li>ServletContext应用域</li>
+                        </ul>
+                    </div>
+                    <h3>⚙️ Servlet简介</h3>
+                    <p>Servlet是运行在Web服务器中的Java程序，用于处理HTTP请求并生成动态响应。</p>
+                `
+            }
+        };
+        
+        function switchChapter(chapterNum) {
+            document.querySelectorAll('.chapter-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-chapter="${chapterNum}"]`).classList.add('active');
+            
+            const chapter = chapters[chapterNum];
+            if (chapter) {
+                document.getElementById('chapter-content').innerHTML = 
+                    `<h2>${chapter.title}</h2>${chapter.content}`;
+            }
+            
+            // 更新进度条
+            const progress = (chapterNum / Object.keys(chapters).length) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            document.querySelector('.progress-bar + p').textContent = `学习进度: ${Math.round(progress)}%`;
+        }
+        
+        function nextChapter() {
+            const current = document.querySelector('.chapter-item.active');
+            const currentNum = parseInt(current.dataset.chapter);
+            if (currentNum < Object.keys(chapters).length) {
+                switchChapter(currentNum + 1);
+            }
+        }
+        
+        // 绑定章节点击事件
+        document.querySelectorAll('.chapter-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const chapterNum = parseInt(this.dataset.chapter);
+                switchChapter(chapterNum);
+            });
+        });
+    </script>
+</body>
+</html> 
