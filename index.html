@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>申京傲 主页 - 计算机 | 人工智能</title>
+    <title>申京傲 主页 - 计算机 | 人工智能 | 软件开发实战</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -18,8 +19,11 @@
             --border-color: #e0e0e0;
             --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
             --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
             --shadow-medium: 0 4px 20px rgba(0,0,0,0.15);
+            --shadow-heavy: 0 8px 30px rgba(0,0,0,0.2);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -84,10 +88,26 @@
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
+            position: relative;
         }
 
         .nav-links a:hover {
             color: var(--secondary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* 主要内容区域 */
@@ -98,6 +118,17 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
         }
 
         .hero-content {
@@ -142,6 +173,13 @@
             align-items: center;
             justify-content: center;
             background: #f0f0f0;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-heavy);
         }
 
         .social-links {
@@ -163,11 +201,12 @@
             text-decoration: none;
             transition: var(--transition);
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .social-links a:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.1);
         }
 
         /* 内容区域 */
@@ -361,6 +400,80 @@
             box-shadow: var(--shadow-light);
         }
 
+        /* 软件开发课程样式 */
+        .dev-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .dev-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .dev-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid var(--secondary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
         /* 联系方式 */
         .contact-grid {
             display: grid;
@@ -377,6 +490,12 @@
             box-shadow: var(--shadow-light);
             text-align: center;
             border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
         }
 
         .contact-card i {
@@ -440,6 +559,24 @@
             .course-stats {
                 grid-template-columns: 1fr;
             }
+
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item::after {
+                left: 21px;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0%;
+            }
         }
 
         /* 滚动指示器 */
@@ -459,6 +596,50 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+
+        /* 动画效果 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -475,6 +656,7 @@
                 <li><a href="#about">关于我</a></li>
                 <li><a href="#research">研究领域</a></li>
                 <li><a href="#courses">教学内容</a></li>
+                <li><a href="#dev-guide">软件开发实战</a></li>
                 <li><a href="#contact">联系方式</a></li>
             </ul>
         </div>
@@ -483,7 +665,7 @@
     <!-- 主页横幅 -->
     <section class="hero" id="about">
         <div class="hero-content">
-            <div class="profile-image">
+            <div class="profile-image floating">
                 <img src="assets/images/profile.jpg" alt="申京傲教授" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             </div>
             <h1>申京傲</h1>
@@ -491,99 +673,256 @@
             <p class="description">
                 致力于人工智能和软件工程领域的研究与教学工作。
                 拥有丰富的学术研究经验和工程实践背景。
-                
             </p>
+            <div class="social-links">
+                <a href="#research" title="研究领域"><i class="fas fa-microscope"></i></a>
+                <a href="#courses" title="教学内容"><i class="fas fa-graduation-cap"></i></a>
+                <a href="#dev-guide" title="软件开发实战"><i class="fas fa-code"></i></a>
+                <a href="#contact" title="联系方式"><i class="fas fa-envelope"></i></a>
+            </div>
         </div>
     </section>
 
     <!-- 研究领域 -->
     <section class="section" id="research">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header fade-in">
                 <h2 class="section-title">研究领域</h2>
                 <p class="section-subtitle">专注于计算机科学前沿技术的研究与应用</p>
             </div>
             <div class="research-grid">
-                <div class="research-card">
+                <div class="research-card fade-in">
                     <i class="fas fa-graduation-cap"></i>
                     <h3>智能化自学网站</h3>
                     <p>"一点自学"平台的设计与开发，集成学生自学、教师课堂管理、学习进度跟踪、学生评价管理等功能，构建智能化教育生态系统。</p>
                 </div>
-                <div class="research-card">
+                <div class="research-card fade-in">
                     <i class="fas fa-eye"></i>
                     <h3>计算机视觉</h3>
                     <p>专注于视障人群智能辅助系统的研发，以及多模态模型在文档处理中的应用，致力于提升视觉障碍者的生活质量和文档处理效率。</p>
                 </div>
-                <div class="research-card">
+                <div class="research-card fade-in">
                     <i class="fas fa-robot"></i>
                     <h3>机器狗算法</h3>
                     <p>基于宇树科技Go2机器狗平台的算法研究与开发，探索四足机器人在复杂环境下的运动控制、路径规划和智能交互技术。</p>
                 </div>
-                <div class="research-card">
+                <div class="research-card fade-in">
                     <i class="fas fa-user-friends"></i>
                     <h3>数字人交互</h3>
                     <p>研究数字人技术在人机交互中的应用，包括虚拟形象生成、自然语言处理、情感计算等技术，构建更自然的人机交互体验。</p>
                 </div>
             </div>
+        </div>
+    </section>
 
+    <!-- 教学内容 -->
+    <section class="section" id="courses">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">教学内容</h2>
+                <p class="section-subtitle">基于知识图谱的Java全栈开发学习体系</p>
+            </div>
+            <div class="research-grid">
+                <div class="course-card fade-in">
+                    <div class="course-header">
+                        <h3>🌟 Java全栈开发</h3>
+                        <p>从Web基础到微服务架构的完整学习路径</p>
+                    </div>
+                    <div class="course-content">
+                        <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                            涵盖Java核心语言、Web开发、Spring框架、微服务架构等完整技术栈。
+                            通过交互式知识图谱，直观展示知识点之间的关系，点击即可深入学习。
+                            从基础语法到企业级应用，构建完整的Java开发能力。
+                        </p>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="background: rgba(52, 152, 219, 0.1); color: #3498db; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">Java核心</span>
+                            <span style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">Spring Boot</span>
+                            <span style="background: rgba(155, 89, 182, 0.1); color: #9b59b6; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">微服务</span>
+                            <span style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem;">项目实战</span>
+                        </div>
+                        <a href="Java全栈开发-Web到微服务/知识图谱/index.html" class="course-link">
+                            <i class="fas fa-sitemap"></i> 进入知识图谱学习
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-            <!-- 教学内容 -->
-        <section class="section" id="courses">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">教学内容</h2>
-                    <p class="section-subtitle">基于知识图谱的Java全栈开发学习体系</p>
-                </div>
-                <div class="research-grid">
-                    <div class="course-card">
-                        <div class="course-header">
-                            <h3>🌟 Java全栈开发</h3>
-                            <p>从Web基础到微服务架构的完整学习路径</p>
-                        </div>
-                        <div class="course-content">
+    <!-- 软件开发实战 -->
+    <section class="dev-section" id="dev-guide">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white; -webkit-text-fill-color: white;">从零开始软件开发项目</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">循序渐进的实战指南，带你动手完成第一个完整项目</p>
+            </div>
 
-                            <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
-                                涵盖Java核心语言、Web开发、Spring框架、微服务架构等完整技术栈。
-                                通过交互式知识图谱，直观展示知识点之间的关系，点击即可深入学习。
-                                从基础语法到企业级应用，构建完整的Java开发能力。
-                            </p>
-                            <div style="margin-bottom: 1rem;">
-                                <span style="background: rgba(52, 152, 219, 0.1); color: #3498db; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">Java核心</span>
-                                <span style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">Spring Boot</span>
-                                <span style="background: rgba(155, 89, 182, 0.1); color: #9b59b6; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">微服务</span>
-                                <span style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem;">项目实战</span>
+            <!-- 课程概述 -->
+            <div class="dev-card fade-in" style="margin-bottom: 3rem;">
+                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-book-open mr-2"></i>课程概述</h3>
+                <p class="text-lg opacity-90 mb-6">
+                    本实践指南聚焦于"从零开始"的项目开发体验，通过"分步拆解+迭代优化"的方式，让你掌握从需求分析到项目上线的全流程开发能力。无论你是刚开始学习编程的新手，还是已经掌握了基础但缺乏项目经验的学生，这个指南都能帮助你迈出实战开发的第一步。
+                </p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-brain text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">知识目标</h4>
+                        <p class="text-sm opacity-80">掌握软件开发全流程，理解各环节的核心产出物，熟悉主流技术栈的应用场景。</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-tools text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">能力目标</h4>
+                        <p class="text-sm opacity-80">能独立完成模块开发，能团队协作解决工程问题，能编写规范的技术文档。</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-lightbulb text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">素养目标</h4>
+                        <p class="text-sm opacity-80">培养用户思维、工程思维和责任意识，为实习和就业打下坚实的工程实践基础。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 开发步骤 -->
+            <div class="dev-card fade-in" style="margin-bottom: 3rem;">
+                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-list-ol mr-2"></i>软件开发核心步骤</h3>
+                <p class="text-lg opacity-90 mb-8">
+                    软件开发并非"写代码"单一环节，而是"需求→设计→开发→测试→部署→维护"的闭环流程。每个步骤都为后续环节负责，避免"直接写代码"的误区。
+                </p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="font-bold text-lg mb-2">需求分析</h4>
+                            <p class="text-sm opacity-80 mb-2">项目的"指南针"，约占10%-15%时间</p>
+                            <ul class="text-sm opacity-70 space-y-1">
+                                <li>• 定义用户画像，确定目标用户及核心痛点</li>
+                                <li>• 用"用户故事"描述需求</li>
+                                <li>• 用MoSCoW法则进行需求优先级排序</li>
+                            </ul>
+                            <p class="text-sm font-medium mt-2">输出物：《需求规格说明书》</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="font-bold text-lg mb-2">技术选型</h4>
+                            <p class="text-sm opacity-80 mb-2">匹配需求的"工具包"，约占5%-10%时间</p>
+                            <ul class="text-sm opacity-70 space-y-1">
+                                <li>• 前端：HTML/CSS/JS, Vue.js, React</li>
+                                <li>• 后端：Spring Boot, Django, Express</li>
+                                <li>• 数据库：MySQL, MongoDB</li>
+                            </ul>
+                            <p class="text-sm font-medium mt-2">输出物：《技术选型报告》</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="font-bold text-lg mb-2">系统设计</h4>
+                            <p class="text-sm opacity-80 mb-2">搭建项目的"骨架"，约占15%-20%时间</p>
+                            <ul class="text-sm opacity-70 space-y-1">
+                                <li>• 架构设计：推荐三层架构</li>
+                                <li>• 模块设计：按"高内聚、低耦合"原则</li>
+                                <li>• 数据库设计：绘制E-R图，设计数据表结构</li>
+                                <li>• 接口设计：定义模块间的交互规则</li>
+                            </ul>
+                            <p class="text-sm font-medium mt-2">输出物：架构图、模块划分说明书、数据库设计说明书、接口文档</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="font-bold text-lg mb-2">编码开发</h4>
+                            <p class="text-sm opacity-80 mb-2">填充项目的"血肉"，约占30%-35%时间</p>
+                            <ul class="text-sm opacity-70 space-y-1">
+                                <li>• 版本控制：使用Git，采用规范的分支策略</li>
+                                <li>• 编码规范：统一代码风格，函数单一职责</li>
+                                <li>• 每日同步：通过"站立会"同步进度</li>
+                                <li>• 分阶段开发：核心功能→扩展功能→优化迭代</li>
+                            </ul>
+                            <p class="text-sm font-medium mt-2">输出物：可运行的代码工程、《开发日志》</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4 class="font-bold text-lg mb-2">测试、部署与复盘</h4>
+                            <p class="text-sm opacity-80 mb-2">完善项目的"最后一公里"</p>
+                            <div class="grid md:grid-cols-3 gap-2 text-xs">
+                                <div>
+                                    <strong>测试验证</strong><br>
+                                    <span class="opacity-70">发现并修复Bug，确保项目"能跑通"且"跑的对"</span>
+                                </div>
+                                <div>
+                                    <strong>部署上线</strong><br>
+                                    <span class="opacity-70">将项目部署到公网，让用户能实际访问</span>
+                                </div>
+                                <div>
+                                    <strong>项目复盘</strong><br>
+                                    <span class="opacity-70">总结项目中的问题与经验，培养"持续改进"思维</span>
+                                </div>
                             </div>
-                            <a href="Java全栈开发-Web到微服务/知识图谱/index.html" class="course-link">
-                                <i class="fas fa-sitemap"></i> 进入知识图谱学习
-                            </a>
+                            <p class="text-sm font-medium mt-2">输出物：《测试报告》、《部署文档》、《项目复盘报告》</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+
+            <!-- 实践技巧 -->
+            <div class="dev-card fade-in">
+                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-lightbulb mr-2"></i>项目开发实践技巧</h3>
+                <p class="text-lg opacity-90 mb-6">
+                    在实际开发过程中，掌握一些实用技巧可以帮助你更高效地完成项目，避免常见陷阱。
+                </p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-3 text-lg">开发技巧</h4>
+                        <ul class="space-y-2 text-sm opacity-80">
+                            <li>• 先写伪代码，理清思路再编码</li>
+                            <li>• 每完成一个功能就提交一次Git</li>
+                            <li>• 遇到Bug先定位，再修复</li>
+                            <li>• 善用搜索引擎和官方文档</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3 text-lg">团队协作</h4>
+                        <ul class="space-y-2 text-sm opacity-80">
+                            <li>• 每日站会同步进度</li>
+                            <li>• 代码审查提高质量</li>
+                            <li>• 及时沟通避免重复劳动</li>
+                            <li>• 文档共享知识沉淀</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- 联系方式 -->
     <section class="section" id="contact">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header fade-in">
                 <h2 class="section-title">联系方式</h2>
                 <p class="section-subtitle">欢迎学术交流与合作</p>
             </div>
             <div class="contact-grid">
-                <div class="contact-card">
+                <div class="contact-card fade-in">
                     <i class="fas fa-envelope"></i>
                     <h3>邮箱</h3>
                     <p>shenjingao@gdust.edu.cn</p>
                 </div>
-                <div class="contact-card">
+                <div class="contact-card fade-in">
                     <i class="fas fa-map-marker-alt"></i>
                     <h3>办公地址</h3>
                     <p>松山湖校区 L3-1001</p>
                 </div>
-                <div class="contact-card">
+                <div class="contact-card fade-in">
                     <i class="fas fa-clock"></i>
                     <h3>办公时间</h3>
                     <p>周一至周五 9:00-17:00</p>
@@ -629,6 +968,67 @@
                     });
                 }
             });
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 鼠标跟随效果
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.querySelector('.cursor');
+            if (!cursor) {
+                const newCursor = document.createElement('div');
+                newCursor.className = 'cursor';
+                newCursor.style.cssText = `
+                    position: fixed;
+                    width: 20px;
+                    height: 20px;
+                    background: rgba(102, 126, 234, 0.3);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    transition: transform 0.1s ease;
+                `;
+                document.body.appendChild(newCursor);
+            }
+            
+            const cursor = document.querySelector('.cursor');
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        // 打字机效果
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
         });
     </script>
 </body>
