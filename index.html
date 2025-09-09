@@ -409,11 +409,11 @@
 
         .dev-card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             padding: 2rem;
             transition: var(--transition);
+            margin-bottom: 2rem;
         }
 
         .dev-card:hover {
@@ -421,57 +421,54 @@
             transform: translateY(-5px);
         }
 
+        /* 简化的时间线样式，提高兼容性 */
         .timeline {
             position: relative;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 20px 0;
         }
 
-        .timeline::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -2px;
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
         }
 
         .timeline-item {
-            padding: 10px 40px;
             position: relative;
-            background-color: inherit;
-            width: 50%;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
 
-        .timeline-item::after {
+        .timeline-item::before {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            right: -10px;
-            background-color: white;
-            border: 4px solid var(--secondary-color);
-            top: 15px;
+            left: -30px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            z-index: 1;
+            background-color: white;
+            border: 3px solid var(--secondary-color);
         }
 
-        .timeline-item:nth-child(even) {
-            left: 50%;
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .timeline-item:nth-child(even)::after {
-            left: -10px;
-        }
-
+        /* 确保时间线内容可见 */
         .timeline-content {
-            padding: 20px 30px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
+            padding: 0;
+            background: transparent;
+            position: static;
         }
 
         /* 联系方式 */
@@ -758,7 +755,7 @@
             </div>
 
             <!-- 课程概述 -->
-            <div class="dev-card fade-in" style="margin-bottom: 3rem;">
+            <div class="dev-card fade-in">
                 <h3 class="text-2xl font-bold mb-4"><i class="fas fa-book-open mr-2"></i>课程概述</h3>
                 <p class="text-lg opacity-90 mb-6">
                     本实践指南聚焦于"从零开始"的项目开发体验，通过"分步拆解+迭代优化"的方式，让你掌握从需求分析到项目上线的全流程开发能力。无论你是刚开始学习编程的新手，还是已经掌握了基础但缺乏项目经验的学生，这个指南都能帮助你迈出实战开发的第一步。
@@ -789,86 +786,88 @@
             </div>
 
             <!-- 开发步骤 -->
-            <div class="dev-card fade-in" style="margin-bottom: 3rem;">
+            <div class="dev-card fade-in">
                 <h3 class="text-2xl font-bold mb-4"><i class="fas fa-list-ol mr-2"></i>软件开发核心步骤</h3>
-                <p class="text-lg opacity-90 mb-8">
+                <p class="text-lg opacity-90 mb-4">
                     软件开发并非"写代码"单一环节，而是"需求→设计→开发→测试→部署→维护"的闭环流程。每个步骤都为后续环节负责，避免"直接写代码"的误区。
                 </p>
                 
                 <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4 class="font-bold text-lg mb-2">需求分析</h4>
-                            <p class="text-sm opacity-80 mb-2">项目的"指南针"，约占10%-15%时间</p>
-                            <ul class="text-sm opacity-70 space-y-1">
-                                <li>• 定义用户画像，确定目标用户及核心痛点</li>
-                                <li>• 用"用户故事"描述需求</li>
-                                <li>• 用MoSCoW法则进行需求优先级排序</li>
-                            </ul>
-                            <p class="text-sm font-medium mt-2">输出物：《需求规格说明书》</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4 class="font-bold text-lg mb-2">技术选型</h4>
-                            <p class="text-sm opacity-80 mb-2">匹配需求的"工具包"，约占5%-10%时间</p>
-                            <ul class="text-sm opacity-70 space-y-1">
-                                <li>• 前端：HTML/CSS/JS, Vue.js, React</li>
-                                <li>• 后端：Spring Boot, Django, Express</li>
-                                <li>• 数据库：MySQL, MongoDB</li>
-                            </ul>
-                            <p class="text-sm font-medium mt-2">输出物：《技术选型报告》</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4 class="font-bold text-lg mb-2">系统设计</h4>
-                            <p class="text-sm opacity-80 mb-2">搭建项目的"骨架"，约占15%-20%时间</p>
-                            <ul class="text-sm opacity-70 space-y-1">
-                                <li>• 架构设计：推荐三层架构</li>
-                                <li>• 模块设计：按"高内聚、低耦合"原则</li>
-                                <li>• 数据库设计：绘制E-R图，设计数据表结构</li>
-                                <li>• 接口设计：定义模块间的交互规则</li>
-                            </ul>
-                            <p class="text-sm font-medium mt-2">输出物：架构图、模块划分说明书、数据库设计说明书、接口文档</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4 class="font-bold text-lg mb-2">编码开发</h4>
-                            <p class="text-sm opacity-80 mb-2">填充项目的"血肉"，约占30%-35%时间</p>
-                            <ul class="text-sm opacity-70 space-y-1">
-                                <li>• 版本控制：使用Git，采用规范的分支策略</li>
-                                <li>• 编码规范：统一代码风格，函数单一职责</li>
-                                <li>• 每日同步：通过"站立会"同步进度</li>
-                                <li>• 分阶段开发：核心功能→扩展功能→优化迭代</li>
-                            </ul>
-                            <p class="text-sm font-medium mt-2">输出物：可运行的代码工程、《开发日志》</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4 class="font-bold text-lg mb-2">测试、部署与复盘</h4>
-                            <p class="text-sm opacity-80 mb-2">完善项目的"最后一公里"</p>
-                            <div class="grid md:grid-cols-3 gap-2 text-xs">
-                                <div>
-                                    <strong>测试验证</strong><br>
-                                    <span class="opacity-70">发现并修复Bug，确保项目"能跑通"且"跑的对"</span>
-                                </div>
-                                <div>
-                                    <strong>部署上线</strong><br>
-                                    <span class="opacity-70">将项目部署到公网，让用户能实际访问</span>
-                                </div>
-                                <div>
-                                    <strong>项目复盘</strong><br>
-                                    <span class="opacity-70">总结项目中的问题与经验，培养"持续改进"思维</span>
-                                </div>
+                    <div class="timeline-container">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg mb-2">需求分析</h4>
+                                <p class="text-sm opacity-80 mb-2">项目的"指南针"，约占10%-15%时间</p>
+                                <ul class="text-sm opacity-70 space-y-1">
+                                    <li>• 定义用户画像，确定目标用户及核心痛点</li>
+                                    <li>• 用"用户故事"描述需求</li>
+                                    <li>• 用MoSCoW法则进行需求优先级排序</li>
+                                </ul>
+                                <p class="text-sm font-medium mt-2">输出物：《需求规格说明书》</p>
                             </div>
-                            <p class="text-sm font-medium mt-2">输出物：《测试报告》、《部署文档》、《项目复盘报告》</p>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg mb-2">技术选型</h4>
+                                <p class="text-sm opacity-80 mb-2">匹配需求的"工具包"，约占5%-10%时间</p>
+                                <ul class="text-sm opacity-70 space-y-1">
+                                    <li>• 前端：HTML/CSS/JS, Vue.js, React</li>
+                                    <li>• 后端：Spring Boot, Django, Express</li>
+                                    <li>• 数据库：MySQL, MongoDB</li>
+                                </ul>
+                                <p class="text-sm font-medium mt-2">输出物：《技术选型报告》</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg mb-2">系统设计</h4>
+                                <p class="text-sm opacity-80 mb-2">搭建项目的"骨架"，约占15%-20%时间</p>
+                                <ul class="text-sm opacity-70 space-y-1">
+                                    <li>• 架构设计：推荐三层架构</li>
+                                    <li>• 模块设计：按"高内聚、低耦合"原则</li>
+                                    <li>• 数据库设计：绘制E-R图，设计数据表结构</li>
+                                    <li>• 接口设计：定义模块间的交互规则</li>
+                                </ul>
+                                <p class="text-sm font-medium mt-2">输出物：架构图、模块划分说明书、数据库设计说明书、接口文档</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg mb-2">编码开发</h4>
+                                <p class="text-sm opacity-80 mb-2">填充项目的"血肉"，约占30%-35%时间</p>
+                                <ul class="text-sm opacity-70 space-y-1">
+                                    <li>• 版本控制：使用Git，采用规范的分支策略</li>
+                                    <li>• 编码规范：统一代码风格，函数单一职责</li>
+                                    <li>• 每日同步：通过"站立会"同步进度</li>
+                                    <li>• 分阶段开发：核心功能→扩展功能→优化迭代</li>
+                                </ul>
+                                <p class="text-sm font-medium mt-2">输出物：可运行的代码工程、《开发日志》</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg mb-2">测试、部署与复盘</h4>
+                                <p class="text-sm opacity-80 mb-2">完善项目的"最后一公里"</p>
+                                <div class="grid md:grid-cols-3 gap-2 text-xs">
+                                    <div>
+                                        <strong>测试验证</strong><br>
+                                        <span class="opacity-70">发现并修复Bug，确保项目"能跑通"且"跑的对"</span>
+                                    </div>
+                                    <div>
+                                        <strong>部署上线</strong><br>
+                                        <span class="opacity-70">将项目部署到公网，让用户能实际访问</span>
+                                    </div>
+                                    <div>
+                                        <strong>项目复盘</strong><br>
+                                        <span class="opacity-70">总结项目中的问题与经验，培养"持续改进"思维</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-medium mt-2">输出物：《测试报告》、《部署文档》、《项目复盘报告》</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -988,29 +987,37 @@
             observer.observe(el);
         });
 
-        // 鼠标跟随效果
-        document.addEventListener('mousemove', (e) => {
-            const cursor = document.querySelector('.cursor');
-            if (!cursor) {
-                const newCursor = document.createElement('div');
-                newCursor.className = 'cursor';
-                newCursor.style.cssText = `
-                    position: fixed;
-                    width: 20px;
-                    height: 20px;
-                    background: rgba(102, 126, 234, 0.3);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 9999;
-                    transition: transform 0.1s ease;
-                `;
-                document.body.appendChild(newCursor);
+        // 优化的鼠标跟随效果（可选功能）
+        try {
+            // 检查浏览器是否支持所需功能
+            if (typeof document.createElement === 'function' && typeof document.querySelector === 'function') {
+                document.addEventListener('mousemove', (e) => {
+                    let cursor = document.querySelector('.cursor');
+                    if (!cursor) {
+                        const newCursor = document.createElement('div');
+                        newCursor.className = 'cursor';
+                        newCursor.style.cssText = `
+                            position: fixed;
+                            width: 20px;
+                            height: 20px;
+                            background: rgba(102, 126, 234, 0.3);
+                            border-radius: 50%;
+                            pointer-events: none;
+                            z-index: 9999;
+                            transition: transform 0.1s ease;
+                        `;
+                        document.body.appendChild(newCursor);
+                        cursor = newCursor;
+                    }
+                    
+                    cursor.style.left = e.clientX - 10 + 'px';
+                    cursor.style.top = e.clientY - 10 + 'px';
+                });
             }
-            
-            const cursor = document.querySelector('.cursor');
-            cursor.style.left = e.clientX - 10 + 'px';
-            cursor.style.top = e.clientY - 10 + 'px';
-        });
+        } catch (error) {
+            // 如果出错，不影响页面其他功能
+            console.log('鼠标跟随效果未启用');
+        }
 
         // 打字机效果
         function typeWriter(element, text, speed = 50) {
