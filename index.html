@@ -637,6 +637,29 @@
                 transform: translateY(0px);
             }
         }
+        
+        /* AI 编程实践 - 提示块与复制按钮样式 */
+        .prompt-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+        .copy-btn {
+            margin-top: .5rem;
+            padding: .4rem .8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .copy-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-light); }
     </style>
 </head>
 <body>
@@ -653,7 +676,7 @@
                 <li><a href="#about">关于我</a></li>
                 <li><a href="#research">研究领域</a></li>
                 <li><a href="#courses">教学内容</a></li>
-                <li><a href="#dev-guide">软件开发实战</a></li>
+                <li><a href="ai-practice.html">AI编程实践</a></li>
                 <li><a href="#contact">联系方式</a></li>
             </ul>
         </div>
@@ -674,11 +697,13 @@
             <div class="social-links">
                 <a href="#research" title="研究领域"><i class="fas fa-microscope"></i></a>
                 <a href="#courses" title="教学内容"><i class="fas fa-graduation-cap"></i></a>
-                <a href="#dev-guide" title="软件开发实战"><i class="fas fa-code"></i></a>
+                <a href="#practice-intro" title="AI编程实践与软件开发实战"><i class="fas fa-code"></i></a>
                 <a href="#contact" title="联系方式"><i class="fas fa-envelope"></i></a>
             </div>
         </div>
     </section>
+
+
 
     <!-- 研究领域 -->
     <section class="section" id="research">
@@ -746,274 +771,28 @@
         </div>
     </section>
 
-    <!-- 软件开发实战 -->
-    <section class="dev-section" id="dev-guide">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2 class="section-title" style="color: white; -webkit-text-fill-color: white;">从零开始软件开发项目</h2>
-                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">循序渐进的实战指南，带你动手完成第一个完整项目</p>
-            </div>
 
-            <!-- 课程概述 -->
-            <div class="dev-card fade-in">
-                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-book-open mr-2"></i>课程概述</h3>
-                <p class="text-lg opacity-90 mb-6">
-                    本实践指南聚焦于"从零开始"的项目开发体验，通过"分步拆解+迭代优化"的方式，让你掌握从需求分析到项目上线的全流程开发能力。无论你是刚开始学习编程的新手，还是已经掌握了基础但缺乏项目经验的学生，这个指南都能帮助你迈出实战开发的第一步。
-                </p>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-brain text-2xl"></i>
-                        </div>
-                        <h4 class="font-semibold mb-2">知识目标</h4>
-                        <p class="text-sm opacity-80">掌握软件开发全流程，理解各环节的核心产出物，熟悉主流技术栈的应用场景。</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-tools text-2xl"></i>
-                        </div>
-                        <h4 class="font-semibold mb-2">能力目标</h4>
-                        <p class="text-sm opacity-80">能独立完成模块开发，能团队协作解决工程问题，能编写规范的技术文档。</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-lightbulb text-2xl"></i>
-                        </div>
-                        <h4 class="font-semibold mb-2">素养目标</h4>
-                        <p class="text-sm opacity-80">培养用户思维、工程思维和责任意识，为实习和就业打下坚实的工程实践基础。</p>
-                    </div>
+        <!-- 实战指南（首页简化入口，位于教学内容之后） -->
+        <section class="section" id="practice-intro">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <h2 class="section-title">AI 编程实践与软件开发实战</h2>
+                    <p class="section-subtitle">合并版详细指南已迁移到独立页面，包含完整讲义与可复制 Prompt</p>
                 </div>
-            </div>
-
-            <!-- 开发步骤 -->
-            <div class="dev-card fade-in">
-                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-list-ol mr-2"></i>软件开发核心步骤</h3>
-                <p class="text-lg opacity-90 mb-4">
-                    软件开发并非"写代码"单一环节，而是"需求→设计→开发→测试→部署→维护"的闭环流程。每个步骤都为后续环节负责，避免"直接写代码"的误区。
-                </p>
-                
-                <div class="timeline">
-                    <div class="timeline-container">
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <h4 class="font-bold text-lg mb-2">需求分析</h4>
-                                <p class="text-sm opacity-80 mb-2">项目的"指南针"，约占10%-15%时间</p>
-                                <ul class="text-sm opacity-70 space-y-1">
-                                    <li>• 定义用户画像，确定目标用户及核心痛点</li>
-                                    <li>• 用"用户故事"描述需求</li>
-                                    <li>• 用MoSCoW法则进行需求优先级排序</li>
-                                </ul>
-                                <p class="text-sm font-medium mt-2">输出物：《需求规格说明书》</p>
-                                
-                                <!-- AI分析工具推荐 -->
-                                <div class="mt-4 p-3 bg-white/10 rounded-lg">
-                                    <h5 class="font-semibold text-sm mb-2">🧠 推荐AI分析工具：</h5>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                        <a href="https://chatgpt.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-comments mr-2"></i>
-                                            <span>ChatGPT - 需求分析助手</span>
-                                        </a>
-                                        <a href="https://claude.ai/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-brain mr-2"></i>
-                                            <span>Claude - 智能需求梳理</span>
-                                        </a>
-                                        <a href="https://www.notion.so/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-file-alt mr-2"></i>
-                                            <span>Notion AI - 文档协作</span>
-                                        </a>
-                                        <a href="https://miro.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-sitemap mr-2"></i>
-                                            <span>Miro - 思维导图</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="research-grid">
+                    <div class="course-card fade-in">
+                        <div class="course-header">
+                            <h3>从想法到上线：一站式实践</h3>
+                            <p>需求→接口→原型→后端→前端→测试与部署</p>
                         </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <h4 class="font-bold text-lg mb-2">技术选型</h4>
-                                <p class="text-sm opacity-80 mb-2">匹配需求的"工具包"，约占5%-10%时间</p>
-                                <ul class="text-sm opacity-70 space-y-1">
-                                    <li>• 前端：HTML/CSS/JS, Vue.js, React</li>
-                                    <li>• 后端：Spring Boot, Django, Express</li>
-                                    <li>• 数据库：MySQL, MongoDB</li>
-                                </ul>
-                                <p class="text-sm font-medium mt-2">输出物：《技术选型报告》</p>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <h4 class="font-bold text-lg mb-2">系统设计</h4>
-                                <p class="text-sm opacity-80 mb-2">搭建项目的"骨架"，约占15%-20%时间</p>
-                                <ul class="text-sm opacity-70 space-y-1">
-                                    <li>• 架构设计：推荐三层架构</li>
-                                    <li>• 模块设计：按"高内聚、低耦合"原则</li>
-                                    <li>• 数据库设计：绘制E-R图，设计数据表结构</li>
-                                    <li>• 接口设计：定义模块间的交互规则</li>
-                                </ul>
-                                <p class="text-sm font-medium mt-2">输出物：架构图、模块划分说明书、数据库设计说明书、接口文档</p>
-                                
-                                <!-- AI设计工具推荐 -->
-                                <div class="mt-4 p-3 bg-white/10 rounded-lg">
-                                    <h5 class="font-semibold text-sm mb-2">🎨 推荐AI设计工具：</h5>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                        <a href="https://www.figma.com/ai/?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-pencil-ruler mr-2"></i>
-                                            <span>Figma AI - 智能UI设计</span>
-                                        </a>
-                                        <a href="https://mastergo.com/ai?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-paint-brush mr-2"></i>
-                                            <span>MasterGo AI - 协作设计</span>
-                                        </a>
-                                        <a href="https://modao.cc/feature/ai?utm_channel=wl&utm_source=referrals&utm_keyword=aibot" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-mobile-alt mr-2"></i>
-                                            <span>墨刀AI - 原型设计</span>
-                                        </a>
-                                        <a href="https://www.processon.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-project-diagram mr-2"></i>
-                                            <span>ProcessOn - 流程图设计</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <h4 class="font-bold text-lg mb-2">编码开发</h4>
-                                <p class="text-sm opacity-80 mb-2">填充项目的"血肉"，约占30%-35%时间</p>
-                                <ul class="text-sm opacity-70 space-y-1">
-                                    <li>• 版本控制：使用Git，采用规范的分支策略</li>
-                                    <li>• 编码规范：统一代码风格，函数单一职责</li>
-                                    <li>• 每日同步：通过"站立会"同步进度</li>
-                                    <li>• 分阶段开发：核心功能→扩展功能→优化迭代</li>
-                                </ul>
-                                <p class="text-sm font-medium mt-2">输出物：可运行的代码工程、《开发日志》</p>
-                                
-                                <!-- AI编程工具推荐 -->
-                                <div class="mt-4 p-3 bg-white/10 rounded-lg">
-                                    <h5 class="font-semibold text-sm mb-2">🤖 推荐AI编程工具：</h5>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                        <a href="https://qoder.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-code mr-2"></i>
-                                            <span>Qoder - 智能编程助手</span>
-                                        </a>
-                                        <a href="https://cursor.com/cn?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-edit mr-2"></i>
-                                            <span>Cursor - AI代码编辑器</span>
-                                        </a>
-                                        <a href="https://github.com/features/copilot" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fab fa-github mr-2"></i>
-                                            <span>GitHub Copilot - 代码补全</span>
-                                        </a>
-                                        <a href="https://www.trae.cn/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-robot mr-2"></i>
-                                            <span>Trae - AI编程平台</span>
-                                        </a>
-                                        <a href="https://lingma.aliyun.com/lingma" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-cloud mr-2"></i>
-                                            <span>通义灵码 - 阿里云AI编程</span>
-                                        </a>
-                                        <a href="https://www.codebuddy.ai/?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-user-friends mr-2"></i>
-                                            <span>CodeBuddy - AI编程伙伴</span>
-                                        </a>
-                                        <a href="https://kiro.dev/?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-terminal mr-2"></i>
-                                            <span>Kiro - 开发辅助工具</span>
-                                        </a>
-                                        <a href="https://www.codeflying.net/?source=aibot&source_id=hot#/index" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-paper-plane mr-2"></i>
-                                            <span>CodeFlying - 代码飞行</span>
-                                        </a>
-                                        <a href="https://www.augmentcode.com/?utm_source=ai-bot.cn" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-plus-circle mr-2"></i>
-                                            <span>AugmentCode - 代码增强</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <h4 class="font-bold text-lg mb-2">测试、部署与复盘</h4>
-                                <p class="text-sm opacity-80 mb-2">完善项目的"最后一公里"</p>
-                                <div class="grid md:grid-cols-3 gap-2 text-xs">
-                                    <div>
-                                        <strong>测试验证</strong><br>
-                                        <span class="opacity-70">发现并修复Bug，确保项目"能跑通"且"跑的对"</span>
-                                    </div>
-                                    <div>
-                                        <strong>部署上线</strong><br>
-                                        <span class="opacity-70">将项目部署到公网，让用户能实际访问</span>
-                                    </div>
-                                    <div>
-                                        <strong>项目复盘</strong><br>
-                                        <span class="opacity-70">总结项目中的问题与经验，培养"持续改进"思维</span>
-                                    </div>
-                                </div>
-                                <p class="text-sm font-medium mt-2">输出物：《测试报告》、《部署文档》、《项目复盘报告》</p>
-                                
-                                <!-- AI测试与部署工具推荐 -->
-                                <div class="mt-4 p-3 bg-white/10 rounded-lg">
-                                    <h5 class="font-semibold text-sm mb-2">🚀 推荐AI测试与部署工具：</h5>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                        <a href="https://vercel.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-rocket mr-2"></i>
-                                            <span>Vercel - 前端部署平台</span>
-                                        </a>
-                                        <a href="https://www.netlify.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fas fa-globe mr-2"></i>
-                                            <span>Netlify - 静态网站部署</span>
-                                        </a>
-                                        <a href="https://github.com/features/actions" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fab fa-github mr-2"></i>
-                                            <span>GitHub Actions - CI/CD</span>
-                                        </a>
-                                        <a href="https://www.docker.com/" target="_blank" class="flex items-center p-2 bg-white/10 rounded hover:bg-white/20 transition-colors">
-                                            <i class="fab fa-docker mr-2"></i>
-                                            <span>Docker - 容器化部署</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="course-content">
+                            <p style="color: var(--text-light); margin-bottom: 1rem;">点击下方按钮进入完整实践指南页面。</p>
+                            <a href="ai-practice.html" class="course-link"><i class="fas fa-arrow-right"></i> 进入详细实践指南</a>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- 实践技巧 -->
-            <div class="dev-card fade-in">
-                <h3 class="text-2xl font-bold mb-4"><i class="fas fa-lightbulb mr-2"></i>项目开发实践技巧</h3>
-                <p class="text-lg opacity-90 mb-6">
-                    在实际开发过程中，掌握一些实用技巧可以帮助你更高效地完成项目，避免常见陷阱。
-                </p>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold mb-3 text-lg">开发技巧</h4>
-                        <ul class="space-y-2 text-sm opacity-80">
-                            <li>• 先写伪代码，理清思路再编码</li>
-                            <li>• 每完成一个功能就提交一次Git</li>
-                            <li>• 遇到Bug先定位，再修复</li>
-                            <li>• 善用搜索引擎和官方文档</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold mb-3 text-lg">团队协作</h4>
-                        <ul class="space-y-2 text-sm opacity-80">
-                            <li>• 每日站会同步进度</li>
-                            <li>• 代码审查提高质量</li>
-                            <li>• 及时沟通避免重复劳动</li>
-                            <li>• 文档共享知识沉淀</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
     <!-- 联系方式 -->
     <section class="section" id="contact">
@@ -1148,6 +927,21 @@
         // 页面加载动画
         window.addEventListener('load', () => {
             document.body.style.opacity = '1';
+        });
+
+        // 提示复制按钮
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-target');
+                const el = document.getElementById(id);
+                if (!el) return;
+                const text = el.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    const old = btn.innerText;
+                    btn.innerText = '已复制';
+                    setTimeout(() => btn.innerText = old, 1200);
+                });
+            });
         });
     </script>
 </body>

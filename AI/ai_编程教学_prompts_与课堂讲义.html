@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>前后端分离教学讲义（简洁版）</title>
+  <style>
+    :root{
+      --bg:#071022; --card:#071828; --accent:#06b6d4; --muted:#9fb7c6; --glass:rgba(255,255,255,0.03);
+      --accent-2:#38bdf8; --panel:#0b1b2a; --text:#e6eef6;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Microsoft YaHei",Arial;color:var(--text);background:linear-gradient(180deg,#041026 0%, #071022 100%);-webkit-font-smoothing:antialiased}
+    .container{max-width:1180px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;background:linear-gradient(90deg,#042033,#07202a);border-radius:14px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#022}
+    h1{font-size:18px;margin:0}
+    .subtitle{color:var(--muted);font-size:13px}
+    main{display:grid;grid-template-columns:220px 1fr;gap:18px;margin-top:18px}
+    nav{background:var(--card);padding:12px;border-radius:12px;height:calc(100vh - 170px);overflow:auto}
+    nav a{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;color:var(--muted);text-decoration:none;margin-bottom:6px}
+    nav a:hover{background:var(--glass);color:var(--text)}
+    nav a.active{background:linear-gradient(90deg,rgba(6,182,212,0.12),rgba(56,189,248,0.06));color:var(--accent)}
+    .content{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:18px;border-radius:12px;min-height:60vh}
+    section{margin-bottom:20px}
+    h2{margin:0 0 10px 0;color:var(--accent)}
+    .muted{color:var(--muted);font-size:14px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .card{background:var(--panel);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+    .card h3{margin:0 0 8px 0;color:var(--accent)}
+    .prompt{background:#011720;border-radius:8px;padding:12px;font-family:SFMono-Regular,Menlo,Monaco,monospace;font-size:13px;white-space:pre-wrap;position:relative}
+    .copy{position:absolute;right:8px;top:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#9feffa;padding:6px;border-radius:6px;cursor:pointer}
+    .outputs{margin-top:10px;background:rgba(255,255,255,0.01);padding:10px;border-radius:8px;color:var(--muted)}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+    @media (max-width:900px){main{grid-template-columns:1fr}nav{height:auto}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">JS</div>
+        <div>
+          <h1>前后端分离 教学讲义</h1>
+          <div class="subtitle">Spring Boot + 前端（React/Vue） | 单体模块化 | 学生自学版</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="download" class="btn">下载</button>
+      </div>
+    </header>
+
+    <main>
+      <nav>
+        <a href="#stack">技术栈</a>
+        <a href="#stages" class="active">阶段化教学</a>
+      </nav>
+
+      <div class="content">
+        <section id="stack">
+          <h2>技术栈</h2>
+          <p class="muted">后端：Java 17、Spring Boot、Spring Data JPA。前端：React（Vite）或 Vue 3（Vite）。数据库：Postgres/MySQL（课堂可用 H2）。容器：Docker + Docker Compose。测试：JUnit5、Mockito。</p>
+        </section>
+
+        <section id="stages">
+          <h2>阶段化教学（每步均需完整交付）</h2>
+          <div class="grid">
+
+            <div class="card">
+              <h3>1. 需求（完整验收用例）</h3>
+              <div class="muted">目标：输出完整验收用例，覆盖正常、边界、异常与性能场景。</div>
+              <div class="prompt" id="req">【Prompt】
+把需求写清，输出：
+1) 一句话功能概述
+2) 完整验收用例文档（分组、每条含输入/预期/步骤/优先级）
+3) MVP 功能清单
+4) 风险与假设说明
+</div>
+              <button class="copy" data-target="req">复制</button>
+              <div class="outputs">输出：需求文档、完整验收用例、MVP、风险说明</div>
+            </div>
+
+            <div class="card">
+              <h3>2. 接口（完整 RESTful 列表）</h3>
+              <div class="muted">目标：列出所有 REST 接口及错误矩阵与鉴权与性能备注。</div>
+              <div class="prompt" id="api">【Prompt】
+列出完整 RESTful 接口清单：方法、路径、参数、Body、成功/失败响应、错误码说明、鉴权要求、性能备注。
+输出：RESTful-APIs.md、示例请求/响应 JSON、curl 示例。
+</div>
+              <button class="copy" data-target="api">复制</button>
+              <div class="outputs">输出：完整接口文档、示例 JSON、curl 示例</div>
+            </div>
+
+            <div class="card">
+              <h3>3. 原型（高保真设计说明）</h3>
+              <div class="muted">目标：输出高保真设计说明，包含页面、组件、交互、视觉规范与示例数据。</div>
+              <div class="prompt" id="proto">【Prompt】
+根据需求与接口，输出完整高保真设计说明：页面清单、组件与交互、视觉规范、示例数据、导出资源清单、无障碍与移动适配说明。
+输出：high-fidelity-design.md + 每页示例数据 JSON。
+</div>
+              <button class="copy" data-target="proto">复制</button>
+              <div class="outputs">输出：高保真设计说明、示例数据、资源清单</div>
+            </div>
+
+            <div class="card">
+              <h3>4. 后端（完整实现）</h3>
+              <div class="muted">目标：实现接口文档中全部路由，包含校验、异常、权限与性能注释。</div>
+              <div class="prompt" id="backend">【Prompt】
+根据接口文档，生成完整 Spring Boot 项目代码：Entity/Repo/Service/Controller、全局异常、校验、application.yml、pom.xml、性能说明。
+输出：后端代码文件夹、配置与运行说明。
+</div>
+              <button class="copy" data-target="backend">复制</button>
+              <div class="outputs">输出：后端代码库、配置、运行说明</div>
+            </div>
+
+            <div class="card">
+              <h3>5. 前端（完整对接）</h3>
+              <div class="muted">目标：实现所有页面并精确对接后端，包含鉴权、加载/错误/空态处理。</div>
+              <div class="prompt" id="frontend">【Prompt】
+实现前端项目（React/Vue）：组件化、API 封装、鉴权、响应式与无障碍支持。输出：前端代码库、构建与运行说明。
+</div>
+              <button class="copy" data-target="frontend">复制</button>
+              <div class="outputs">输出：前端代码库、运行说明、对接记录</div>
+            </div>
+
+            <div class="card">
+              <h3>6. 测试（覆盖 + 报告）</h3>
+              <div class="muted">目标：实现单元、集成与性能测试并输出报告与覆盖率。</div>
+              <div class="prompt" id="test">【Prompt】
+生成完整测试套件：单元测试、集成测试（H2/Testcontainers）、性能测试脚本。输出：测试代码、脚本、报告、覆盖率结果。
+</div>
+              <button class="copy" data-target="test">复制</button>
+              <div class="outputs">输出：测试代码、报告、性能脚本</div>
+            </div>
+
+            <div class="card">
+              <h3>7. 打包与部署（Docker + CI）</h3>
+              <div class="muted">目标：生成 Docker 与 CI，使合并后自动构建与测试。</div>
+              <div class="prompt" id="deploy">【Prompt】
+生成发布方案：后端/前端 Dockerfile、docker-compose.yml、.github/workflows/ci.yml、部署与回滚说明。输出：发布文件夹与说明文档。
+</div>
+              <button class="copy" data-target="deploy">复制</button>
+              <div class="outputs">输出：Dockerfile、docker-compose、CI 配置、部署说明</div>
+            </div>
+
+          </div>
+        </section>
+
+        <footer>
+          本文档为学生自学最终版，按阶段逐项交付完整产物。
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // copy prompt text
+    document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',e=>{const id=btn.getAttribute('data-target');const el=document.getElementById(id);if(!el) return;navigator.clipboard.writeText(el.innerText).then(()=>{const t=btn.innerText;btn.innerText='已复制';setTimeout(()=>btn.innerText=t,1200)})}));
+    // download html
+    document.getElementById('download').addEventListener('click',()=>{const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='教学讲义_简洁版.html';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)});
+  </script>
+</body>
+</html>
