@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Web 入门路线</title>
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, #f4f6ff, #f8fbff 25%, #eef3ff 55%, #e3edff 75%, #dae5ff);
+      --card: #ffffff;
+      --primary: #0b6bcb;
+      --accent: #12b886;
+      --muted: #4a5568;
+      --border: #e2e8f0;
+      --shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+      color: #0f172a;
+      background: var(--bg);
+    }
+    header { padding: 32px 24px 8px; text-align: center; }
+    header h1 { margin: 0 0 12px; font-size: 32px; letter-spacing: 0.5px; }
+    header p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .entry-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, #0b6bcb, #12b886);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 8px 20px rgba(11, 107, 203, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .entry-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(11, 107, 203, 0.35);
+    }
+    .entry-link span {
+      font-size: 16px;
+    }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px 48px;
+      display: grid;
+      gap: 20px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    h2 { margin: 0 0 12px; font-size: 20px; color: var(--primary); letter-spacing: 0.3px; }
+    .grid { display: grid; gap: 14px; }
+    @media (min-width: 860px) { .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: #fdfefe;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card h3 { margin: 0; font-size: 18px; color: #0f172a; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; background: rgba(11, 107, 203, 0.08); color: var(--primary); font-size: 12px; margin-right: 6px; }
+    a.card-link { text-decoration: none; color: inherit; transition: transform 0.1s ease, box-shadow 0.1s ease; }
+    a.card-link:hover { transform: translateY(-3px); box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12); }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 8px 0 0; list-style: none; }
+    .pill-list li { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(18, 184, 134, 0.08); color: #0f172a; font-size: 13px; }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Java Web 入门路线</h1>
+    <p>完成 Java 基础后，直接点击下方卡片进入对应教程；所有卡片包含讲解步骤、示例代码、作业与演示脚本。</p>
+    <a class="entry-link" href="../index.html">
+      <span>↩</span> 返回 Java 全栈主页
+    </a>
+  </header>
+
+  <main>
+    <section>
+      <h2>核心必学（打好 Web 基础）</h2>
+      <div class="grid two">
+        <a class="card-link" href="t1-http-basics.html">
+          <div class="card">
+            <h3>1. HTTP 基础与浏览器交互</h3>
+            <div><span class="tag">起点</span><span class="tag">基础</span></div>
+            <p>请求行/方法/状态码/常用 Header，Cookie vs Session，F12+Postman+curl 调试。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t2-frontend-minimal.html">
+          <div class="card">
+            <h3>2. 前端最小必备</h3>
+            <div><span class="tag">并行</span></div>
+            <p>HTML 表单、基础 CSS、原生 JS fetch/axios 发送 JSON、展示响应。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t3-env-build.html">
+          <div class="card">
+            <h3>3. 开发环境与构建</h3>
+            <div><span class="tag">工具</span></div>
+            <p>JDK17+、IDEA、Maven、项目结构、依赖管理、Git 最小流程。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t4-servlet.html">
+          <div class="card">
+            <h3>4. Servlet 容器与 JSP</h3>
+            <div><span class="tag">核心</span></div>
+            <p>Tomcat 部署、Servlet 生命周期、Filter、JSP 对比 JSON 输出。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t5-spring-boot.html">
+          <div class="card">
+            <h3>5. Spring Boot 基础</h3>
+            <div><span class="tag">高频</span></div>
+            <p>@SpringBootApplication、Starter、application.yaml、内嵌 Tomcat 与热部署。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t6-spring-mvc.html">
+          <div class="card">
+            <h3>6. Spring MVC 请求处理</h3>
+            <div><span class="tag">必做</span></div>
+            <p>路由、参数校验、全局异常、统一响应、拦截器链路。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t7-data-access.html">
+          <div class="card">
+            <h3>7. 数据访问与数据库基础</h3>
+            <div><span class="tag">数据</span></div>
+            <p>MySQL 表设计、JDBC/连接池、MyBatis 或 JPA 的 CRUD。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t8-rest-api.html">
+          <div class="card">
+            <h3>8. RESTful API 设计与调试</h3>
+            <div><span class="tag">接口</span></div>
+            <p>资源路径、幂等性、状态码约定、统一响应、Swagger/Knife4j。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t9-auth-security.html">
+          <div class="card">
+            <h3>9. 会话、认证与基础安全</h3>
+            <div><span class="tag">安全</span></div>
+            <p>Cookie/Session、JWT、CORS、CSRF、防重复提交与弱口令。</p>
+          </div>
+        </a>
+        <a class="card-link" href="t10-logging-testing-deploy.html">
+          <div class="card">
+            <h3>10. 日志、测试与部署</h3>
+            <div><span class="tag">上线</span></div>
+            <p>Slf4j+Logback、MockMvc/JUnit、打包、内嵌/外置 Tomcat 部署。</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>进阶与补充（上方未细讲的方向）</h2>
+      <p class="muted">Java Web 常见扩展，按课程进度或项目需要择机加入。</p>
+      <ul class="pill-list">
+        <li>Spring Security 完整权限体系</li>
+        <li>Redis 缓存：击穿/穿透/雪崩</li>
+        <li>消息队列：RabbitMQ / Kafka</li>
+        <li>对象/文件存储：本地上传、OSS/七牛</li>
+        <li>搜索：Elasticsearch 基础检索</li>
+        <li>接口网关与限流：Nginx / Spring Cloud Gateway</li>
+        <li>Spring Cloud 微服务：注册发现、负载均衡、配置中心</li>
+        <li>前端框架：Vue / React（SPA 与 API 对接）</li>
+        <li>部署与容器：Docker 镜像/Compose，基础 CI/CD</li>
+        <li>监控与可观测：日志/指标/链路（Prometheus/Grafana/Zipkin）</li>
+        <li>性能调优：JVM、线程池、连接池参数</li>
+        <li>数据库进阶：索引与 SQL 调优、事务隔离</li>
+        <li>安全进阶：SQL 注入 / XSS / CSRF 防护实战</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

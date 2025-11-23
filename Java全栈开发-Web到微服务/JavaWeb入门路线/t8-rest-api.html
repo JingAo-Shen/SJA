@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESTful API 设计与调试（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RESTful API 设计与调试（零基础详细版）</h1>
+    <p>目标：能设计资源风格路径、统一响应与错误码，使用 Swagger/Knife4j 生成接口文档，并用 Postman/浏览器验证。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60 分钟</span><span class="pill">准备：已有 Spring Boot + 数据访问</span></p>
+      <ul>
+        <li>设计资源路径与方法，理解幂等性。</li>
+        <li>统一响应模型与业务错误码。</li>
+        <li>使用 OpenAPI/Swagger/Knife4j 输出文档并在线调试。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：统一响应模型</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[设计统一响应 ApiResp] --> B[Controller 返回 ApiResp]
+  B --> C[客户端/前端]
+  A --> D[错误码约定]
+  D --> C
+</pre>
+<pre><code class="language-java">record ApiResp&lt;T&gt;(int code, String msg, T data) {
+  static &lt;T&gt; ApiResp&lt;T&gt; ok(T data) { return new ApiResp<>(0, "ok", data); }
+  static ApiResp&lt;Void&gt; err(int code, String msg) { return new ApiResp<>(code, msg, null); }
+}</code></pre>
+      <p>约定：HTTP 状态码反映通道是否畅通；业务码 code 反映业务结果（0 成功）。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：RESTful 路径与幂等性（Todo 示例）</h2>
+<pre><code class="language-java">@RestController
+@RequestMapping("/api/todos")
+public class TodoRestController {
+  private final TodoService service;
+  public TodoRestController(TodoService service) { this.service = service; }
+
+  @PostMapping
+  public ApiResp&lt;Todo&gt; create(@RequestBody @Valid Todo req) {
+    return ApiResp.ok(service.create(req));
+  }
+
+  @GetMapping("/{id}")
+  public ApiResp&lt;Todo&gt; get(@PathVariable long id) {
+    return service.find(id)
+      .map(ApiResp::ok)
+      .orElseGet(() -&gt; ApiResp.err(404, "not found"));
+  }
+
+  @GetMapping
+  public ApiResp&lt;List&lt;Todo&gt;&gt; list(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size) {
+    return ApiResp.ok(service.page(page, size));
+  }
+}</code></pre>
+      <p>说明：GET/PUT/DELETE 设计为幂等；POST 非幂等。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：状态码与业务码建议</h2>
+      <ul>
+        <li>HTTP：200 成功；400 参数错误；401 未授权；404 资源不存在；500 服务器异常。</li>
+        <li>业务：0 成功；4001 参数校验失败；4004 数据不存在；5000 未知错误。</li>
+        <li>约定响应体：<code>{ code, msg, data }</code>。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 4：配置 Swagger/Knife4j</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[Controller 注解] --> B[OpenAPI/Swagger 文档]
+  B --> C[Swagger UI/Knife4j]
+  C --> D[在线调试接口]
+</pre>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.springdoc&lt;/groupId&gt;
+  &lt;artifactId&gt;springdoc-openapi-starter-webmvc-ui&lt;/artifactId&gt;
+  &lt;version&gt;2.5.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- 如需 Knife4j，在上方基础上再加 knife4j-openapi3-ui --&gt;</code></pre>
+<pre><code class="language-java">@Configuration
+@OpenAPIDefinition(info = @Info(title = "Todo API", version = "1.0"))
+public class SwaggerConfig {}</code></pre>
+      <p>启动后访问 <code>/swagger-ui/index.html</code>（或 Knife4j UI）在线调试。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：操作与验证</h2>
+      <ol>
+        <li>在 Swagger UI 执行 POST /api/todos，查看响应结构。</li>
+        <li>执行 GET /api/todos?page=1&size=2，观察分页。</li>
+        <li>请求不存在的 id，返回业务码 404，说明 HTTP 200 + 业务码 404 的区别。</li>
+        <li>用 Postman 重复上述请求，保存为集合。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>Swagger 页面 404</strong>：确认依赖引入、访问路径、是否 WebMVC 项目。</li>
+        <li><strong>返回中文乱码</strong>：默认 Spring Boot JSON 为 UTF-8，一般无需额外配置。</li>
+        <li><strong>分页错误</strong>：确认 page/size 校验，offset 计算是否正确。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>在统一响应中加入 traceId（UUID），每次请求生成并返回。</li>
+        <li>为 POST/PUT 编写 400/409/500 的错误返回示例，并在 Swagger 文档中声明响应。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>为 Todo 增加搜索参数（title 关键字），在 Swagger 中声明。</li>
+        <li>导出接口文档（Swagger JSON 或 HTML），随作业提交。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

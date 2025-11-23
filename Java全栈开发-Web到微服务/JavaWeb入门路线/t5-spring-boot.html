@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spring Boot 基础（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Spring Boot 基础（零基础详细版）</h1>
+    <p>目标：用 Spring Initializr 生成项目，理解 Starter/自动装配，编写 HelloController，配置 application.yaml，并启用热部署。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60 分钟</span><span class="pill">准备：JDK17+，Maven，IDEA</span></p>
+      <ul>
+        <li>使用 Spring Initializr 生成项目并导入 IDEA。</li>
+        <li>理解 @SpringBootApplication、Starter、自动装配。</li>
+        <li>编写 @RestController 并返回 JSON。</li>
+        <li>通过 application.yaml 配置端口、应用名，启用 devtools 热部署。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：使用 Spring Initializr 生成项目</h2>
+      <ol>
+        <li>打开 <a href="https://start.spring.io" target="_blank">start.spring.io</a>。</li>
+        <li>选择：Project=Maven、Language=Java、Spring Boot=3.x、Packaging=Jar、Java=17。</li>
+        <li>Dependencies 选择：Spring Web、Validation、Lombok、(可选) DevTools。</li>
+        <li>填写 Group（如 <code>demo</code>）、Artifact（如 <code>boot-demo</code>），点击 Generate 下载。</li>
+        <li>解压后用 IDEA 打开该目录。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Step 2：项目结构与入口类</h2>
+      <pre class="mermaid">
+flowchart TD
+  A[入口 DemoApplication] --> B[SpringApplication.run]
+  B --> C[自动装配 AutoConfiguration]
+  C --> D[内嵌 Tomcat 启动]
+  D --> E[扫描组件 Controller/Service/...]
+  E --> F[对外暴露 REST 接口]
+</pre>
+      <ul>
+        <li><code>src/main/java</code>：业务代码；<code>src/main/resources</code>：配置文件。</li>
+        <li><code>pom.xml</code>：依赖与插件；<code>application.yaml/properties</code>：应用配置。</li>
+      </ul>
+<pre><code class="language-java">@SpringBootApplication
+public class DemoApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
+}</code></pre>
+      <p>注：@SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：编写第一个 Controller</h2>
+<pre><code class="language-java">@RestController
+@RequestMapping("/api")
+public class HelloController {
+  @GetMapping("/hello")
+  public Map&lt;String, Object&gt; hello(@RequestParam(defaultValue = "world") String name) {
+    return Map.of("msg", "Hello " + name);
+  }
+}</code></pre>
+      <p>说明：@RestController = @Controller + @ResponseBody；@RequestParam 读取查询参数。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：配置 application.yaml</h2>
+<pre><code class="language-yaml">server:
+  port: 8080
+spring:
+  application:
+    name: boot-demo
+  devtools:
+    restart:
+      enabled: true</code></pre>
+      <p>保存后，重启或由 devtools 自动重启生效。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：运行与热部署</h2>
+      <ol>
+        <li>在 IDEA 右上角运行 DemoApplication，访问 <code>http://localhost:8080/api/hello</code>。</li>
+        <li>修改返回内容，保存，观察 devtools 是否自动重启；刷新浏览器验证。</li>
+        <li>若端口被占用，改 application.yaml 的 port，重启。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Starter 与自动装配要点</h2>
+      <ul>
+        <li>starter（如 spring-boot-starter-web）是依赖集合，内含 Spring MVC、内嵌 Tomcat、JSON 序列化。</li>
+        <li>自动装配：根据 classpath + 配置文件加载 Bean；可引入 spring-boot-starter-actuator 并查看 <code>/actuator/beans</code>。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>端口被占用</strong>：修改 server.port 或关闭占用进程。</li>
+        <li><strong>热部署不生效</strong>：确认引入 devtools，且未在生产环境运行；IDEA 需开启自动构建（Settings → Compiler → Build project automatically）。</li>
+        <li><strong>404</strong>：检查 @RequestMapping 路径；确认应用是否启动成功（控制台无异常）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>新增 GET /api/ping 返回 <code>{"ok":true}</code>。</li>
+        <li>使用 @Value 读取自定义配置 <code>demo.welcome</code>，在返回结果中输出。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>添加 actuator 依赖，调用 <code>/actuator/health</code> 并截图。</li>
+        <li>在 README 记录启动命令、端口、常用配置项；说明 devtools 注意事项。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

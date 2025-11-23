@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servlet 容器与 Servlet/JSP（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Servlet 容器与 Servlet/JSP（零基础详细版）</h1>
+    <p>目标：会在 Tomcat 上编写表单处理 Servlet，理解生命周期与 Filter，使用 JSP 输出并对比 JSON。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60-90 分钟</span><span class="pill">准备：已安装 JDK、Maven，Tomcat（外置）或 Maven Tomcat 插件</span></p>
+      <ul>
+        <li>理解 Servlet 容器职责，内嵌 vs 外置差异。</li>
+        <li>编写 TodoServlet 处理 GET/POST。</li>
+        <li>编写 Filter 记录请求日志；JSP 输出页面并对比 JSON。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：创建 Maven Web 项目</h2>
+<pre><code class="language-bash">mvn archetype:generate ^
+  -DgroupId=demo ^
+  -DartifactId=servlet-demo ^
+  -DarchetypeArtifactId=maven-archetype-webapp ^
+  -DinteractiveMode=false
+cd servlet-demo</code></pre>
+      <p>目录要点：<code>src/main/java</code> 写 Servlet/Filter，<code>src/main/webapp</code> 放 JSP 和静态资源，<code>pom.xml</code> 定义依赖与插件。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：添加 Servlet API 依赖与 Tomcat 插件</h2>
+<pre><code class="language-xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;jakarta.servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jakarta.servlet-api&lt;/artifactId&gt;
+    &lt;version&gt;5.0.0&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    &lt;plugin&gt;
+      &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+      &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+      &lt;version&gt;2.2&lt;/version&gt;
+      &lt;configuration&gt;
+        &lt;path&gt;/servlet-demo&lt;/path&gt;
+        &lt;port&gt;8080&lt;/port&gt;
+      &lt;/configuration&gt;
+    &lt;/plugin&gt;
+  &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+      <p>说明：scope=provided 表示运行时由容器提供；Tomcat 插件方便本地跑。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：编写 Servlet 与 Filter</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[浏览器请求] --> B[Filter 日志/鉴权]
+  B --> C[Servlet 处理 GET/POST]
+  C --> D1[JSON 响应]
+  C --> D2[JSP 渲染转发]
+</pre>
+<pre><code class="language-java">// src/main/java/demo/web/TodoServlet.java
+@WebServlet("/todos")
+public class TodoServlet extends HttpServlet {
+  private final List&lt;String&gt; todos = new ArrayList<>();
+
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    req.setCharacterEncoding("UTF-8");
+    String title = req.getParameter("title");
+    todos.add(title);
+    resp.setContentType("application/json;charset=UTF-8");
+    resp.getWriter().write("{\"size\":" + todos.size() + "}");
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    resp.setContentType("application/json;charset=UTF-8");
+    resp.getWriter().write(new ObjectMapper().writeValueAsString(todos));
+  }
+}</code></pre>
+<pre><code class="language-java">// src/main/java/demo/web/LogFilter.java
+@WebFilter("/*")
+public class LogFilter implements Filter {
+  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+      throws IOException, ServletException {
+    HttpServletRequest r = (HttpServletRequest) req;
+    long t0 = System.nanoTime();
+    System.out.println("REQ " + r.getMethod() + " " + r.getRequestURI());
+    chain.doFilter(req, res);
+    System.out.println("COST " + (System.nanoTime() - t0)/1_000_000 + "ms");
+  }
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Step 4：编写 JSP 对比输出</h2>
+<pre><code class="language-html">&lt;%-- src/main/webapp/index.jsp --%&gt;
+&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h3&gt;JSP 渲染 todos&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;% java.util.List list = (java.util.List) request.getAttribute("todos"); %&gt;
+    &lt;% if(list != null) { for(Object t: list){ %&gt;
+      &lt;li&gt;&lt;%= t %&gt;&lt;/li&gt;
+    &lt;% }} %&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <p>对比：JSP 用于服务端渲染；JSON 用于前后端分离，现代项目更常用后者。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：运行</h2>
+      <ul>
+        <li>用插件：<code>mvn tomcat7:run</code>，访问 <code>http://localhost:8080/servlet-demo/todos</code>。</li>
+        <li>外置 Tomcat：<code>mvn package</code> 生成 war，放入 Tomcat webapps，启动后访问同路径。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>操作步骤（课堂演示）</h2>
+      <ol>
+        <li>POST /todos 新增一条，刷新 GET /todos 查看 JSON 列表。</li>
+        <li>在 Filter 中打印耗时，刷新查看日志。</li>
+        <li>访问 JSP 页面，展示列表，说明 JSON/前后端分离的优势。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>404</strong>：检查 @WebServlet 路径或 web.xml 映射。</li>
+        <li><strong>编码问题</strong>：POST 表单需 <code>req.setCharacterEncoding("UTF-8")</code>，响应设 <code>application/json;charset=UTF-8</code>。</li>
+        <li><strong>端口被占用</strong>：修改插件 port，或关闭占用程序。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>添加删除接口：POST /todos?action=del&index=0 或 DELETE /todos/{id}。</li>
+        <li>在 Filter 中加入简单鉴权：若 header 不含 X-Token，则 401。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>将 Filter 日志改为“时间 | 方法 | 路径 | 耗时 ms”格式。</li>
+        <li>在 JSP 页面加入表单，提交给 Servlet，再回显结果。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

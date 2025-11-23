@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>开发环境与构建（零基础详细版，含 Maven 全流程）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>开发环境与构建（零基础详细版，含 Maven 全流程）</h1>
+    <p>目标：从零安装 JDK、Maven、IDEA，配置镜像与本地仓库，创建第一个 Maven 项目并构建运行，掌握常用生命周期与依赖范围，完成 Git 最小使用。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60-120 分钟</span><span class="pill">准备：Windows 或 macOS 一台</span></p>
+      <ul>
+        <li>安装并验证 JDK 17+。</li>
+        <li>安装并验证 Maven 3.8+，配置镜像与本地仓库路径。</li>
+        <li>安装 IDEA（社区版即可），导入并运行 Maven 项目。</li>
+        <li>理解 Maven 坐标、依赖范围、生命周期与常用命令。</li>
+        <li>用命令行创建项目、编译、测试、打包并运行。</li>
+        <li>掌握 Git 的 init/add/commit/status/push。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：安装 JDK 17+</h2>
+      <ol>
+        <li>下载：<a href="https://www.oracle.com/java/technologies/downloads/" target="_blank">Oracle JDK</a> 或 <a href="https://adoptium.net" target="_blank">Adoptium</a>，选 17 LTS。</li>
+        <li>安装：Windows 一路 Next；macOS 拖入 Applications。</li>
+        <li>配置环境变量（Windows）：<ul>
+          <li>新建系统变量 <code>JAVA_HOME</code> 指向 JDK 安装目录（例：<code>C:\Program Files\Java\jdk-17</code>）。</li>
+          <li>在 Path 添加 <code>%JAVA_HOME%\bin</code>。</li>
+        </ul></li>
+        <li>验证：终端执行 <code>java -version</code>、<code>javac -version</code>，应显示 17.x。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Step 2：安装 Maven 3.8+</h2>
+      <ol>
+        <li>下载：<a href="https://maven.apache.org/download.cgi" target="_blank">官方下载</a>，选 Binary zip/tar.gz。</li>
+        <li>解压到如 <code>C:\dev\apache-maven-3.9.9</code>（macOS 可放 <code>/Users/&lt;name&gt;/dev/apache-maven-3.9.9</code>）。</li>
+        <li>配置环境变量（Windows）：新建 <code>MAVEN_HOME</code> 指向解压目录，在 Path 添加 <code>%MAVEN_HOME%\bin</code>。</li>
+        <li>验证：终端执行 <code>mvn -v</code>，应显示 Maven 版本与 Java 17。</li>
+      </ol>
+      <p>本地仓库默认路径：<code>~/.m2/repository</code>（Windows 为 <code>C:\Users\&lt;用户&gt;\.m2\repository</code>）。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：配置镜像与本地仓库（settings.xml）</h2>
+      <pre class="mermaid">
+flowchart TD
+  A[安装 JDK] --> B[安装 Maven]
+  B --> C[配置 settings.xml 镜像/本地仓库]
+  C --> D[mvn archetype 生成项目]
+  D --> E[mvn clean/package/test/install]
+  E --> F[IDEA 导入运行]
+</pre>
+      <p>编辑 <code>~/.m2/settings.xml</code>（没有则创建）。示例：阿里云镜像 + 指定本地仓库路径。</p>
+<pre><code class="language-xml">&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+  &lt;localRepository&gt;D:/maven-repo&lt;/localRepository&gt;
+  &lt;mirrors&gt;
+    &lt;mirror&gt;
+      &lt;id&gt;aliyun&lt;/id&gt;
+      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+      &lt;name&gt;aliyun maven&lt;/name&gt;
+      &lt;url&gt;https://maven.aliyun.com/repository/public&lt;/url&gt;
+    &lt;/mirror&gt;
+  &lt;/mirrors&gt;
+&lt;/settings&gt;</code></pre>
+      <p>作用：加速依赖下载；本地仓库存放依赖，重用后不再重复下载。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：用命令行创建第一个 Maven 项目</h2>
+      <ol>
+        <li>在目标目录打开终端（Win 地址栏输入 cmd）。</li>
+        <li>生成最小示例工程：</li>
+      </ol>
+<pre><code class="language-bash">mvn archetype:generate ^
+  -DgroupId=demo ^
+  -DartifactId=hello-maven ^
+  -DarchetypeArtifactId=maven-archetype-quickstart ^
+  -DinteractiveMode=false</code></pre>
+      <p>说明：groupId=组织或域名倒写；artifactId=项目名；archetype=骨架模板。</p>
+      <ol start="3">
+        <li>进入目录并编译/打包：</li>
+      </ol>
+<pre><code class="language-bash">cd hello-maven
+mvn clean package</code></pre>
+      <p>首次会下载依赖。成功后 <code>target/hello-maven-1.0-SNAPSHOT.jar</code> 生成。</p>
+      <ol start="4">
+        <li>运行：</li>
+      </ol>
+<pre><code class="language-bash">java -cp target/hello-maven-1.0-SNAPSHOT.jar demo.App</code></pre>
+      <p>应输出 “Hello World!”。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：理解项目结构、POM、依赖范围</h2>
+      <ul>
+        <li><code>src/main/java</code> 业务代码；<code>src/test/java</code> 测试代码。</li>
+        <li><code>pom.xml</code>：定义坐标、依赖、插件。</li>
+        <li>依赖范围 scope：<code>compile</code>（默认，全程可用）、<code>provided</code>（编译/测试可用，运行由容器提供，如 Servlet API）、<code>test</code>（仅测试，如 JUnit）、<code>runtime</code>（运行期需要，如 JDBC Driver）、<code>system</code>（几乎不用）。</li>
+      </ul>
+<pre><code class="language-xml">&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;demo&lt;/groupId&gt;
+  &lt;artifactId&gt;hello-maven&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+      &lt;version&gt;4.13.2&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>Step 6：掌握 Maven 生命周期与常用命令</h2>
+      <ul>
+        <li>核心阶段（phase）：<code>clean</code> 清理、<code>compile</code> 编译、<code>test</code> 测试、<code>package</code> 打包、<code>install</code> 安装到本地仓库。</li>
+        <li>执行某阶段会自动执行之前的阶段（执行 package 会先 compile/test）。</li>
+        <li>常用：<code>mvn clean</code>、<code>mvn clean package</code>、<code>mvn test</code>、<code>mvn install</code>。</li>
+        <li>查看坐标/属性：<code>mvn help:evaluate -Dexpression=project.version</code>。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 7：在 IDEA 中导入与运行</h2>
+      <ol>
+        <li>IDEA → Open → 选 <code>hello-maven</code> 目录。</li>
+        <li>等待依赖下载（右下角进度）。</li>
+        <li>右键 <code>src/main/java/demo/App.java</code> → Run ‘App.main’。</li>
+        <li>IDEA Maven 面板可点击生命周期（clean/package）。</li>
+      </ol>
+      <p>若提示 JDK 未配置：File → Project Structure → SDK 选择 JDK 17。</p>
+    </section>
+
+    <section>
+      <h2>Step 8：Git 最小使用</h2>
+<pre><code class="language-bash">cd hello-maven
+git init
+git status
+git add .
+git commit -m "init project"
+# 若有远程
+git remote add origin https://your.git.repo/hello-maven.git
+git push -u origin main</code></pre>
+      <ul>
+        <li>.gitignore：使用 Java/Maven 模板，忽略 <code>target</code>、IDE 配置等。</li>
+        <li>改动后用 <code>git status</code> 看红/绿文件，<code>git diff</code> 查看差异。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>常见报错与排查</h2>
+      <ul>
+        <li><strong>mvn 不是内部命令</strong>：检查 MAVEN_HOME/Path，重开终端。</li>
+        <li><strong>JAVA_HOME 未设置</strong>：设置 JDK 路径并在 Path 中加 <code>%JAVA_HOME%\bin</code>。</li>
+        <li><strong>依赖下载失败</strong>：配置镜像；检查网络/代理；清理本地仓库后重试。</li>
+        <li><strong>IDEA SDK 未设置</strong>：Project Structure 中选择 JDK 17。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>修改 App.java 输出 “Hello Java Web”。</li>
+        <li>新增 Calculator.add 方法，并写 JUnit 测试断言 add(1,2)=3，运行 <code>mvn test</code>。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>在 README 记录安装路径、环境变量、镜像配置、本地仓库路径、构建/运行命令。</li>
+        <li>推到自己的 Git 仓库，截图提交记录与远程链接。</li>
+        <li>POM 添加 <code>lombok</code> 依赖，重新 <code>mvn compile</code> 验证编译通过。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

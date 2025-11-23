@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP 基础与浏览器交互（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HTTP 基础与浏览器交互（零基础详细版）</h1>
+    <p>目标：理解 HTTP 请求/响应的组成，能用浏览器 F12、Postman、curl 构造与调试请求。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60 分钟</span><span class="pill">准备：Chrome/Edge，Postman 或 Thunder Client</span></p>
+      <ul>
+        <li>知道请求行/方法/路径/协议版本，理解幂等性。</li>
+        <li>掌握常见状态码和基础 Header。</li>
+        <li>能用 F12/ Postman/ curl 发送 GET/POST JSON，请求带 Cookie。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>核心概念</h2>
+      <ul>
+        <li>请求行：<code>METHOD URL HTTP/1.1</code>（方法、路径、协议版本）。</li>
+        <li>常见方法：GET（查，幂等）、POST（增，非幂等）、PUT（改，幂等）、DELETE（删，幂等）。</li>
+        <li>状态码：200 成功；302 重定向；400/404 客户端错误；500 服务器错误。</li>
+        <li>常用 Header：Content-Type（正文类型）、Accept（期望返回类型）、Authorization（认证）、Cookie（会话标识）。</li>
+        <li>Cookie vs Session：Cookie 存浏览器；Session 存服务器，SessionID 通过 Cookie 关联。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>工具准备</h2>
+      <ul>
+        <li><strong>浏览器 F12</strong>：Network 面板查看请求/响应头、预览、时间轴。</li>
+        <li><strong>Postman/Thunder Client</strong>：可视化构造请求，保存用例。</li>
+        <li><strong>curl</strong>：命令行发请求，便于脚本化与快速验证。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>操作步骤（从易到难）</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[浏览器/Postman/curl] --> B[HTTP 请求: 方法 + URL + Header + Body]
+  B --> C[服务器处理]
+  C --> D[HTTP 响应: 状态码 + Header + Body]
+  D --> E[浏览器 F12/工具查看结果]
+</pre>
+      <h3>步骤 1：浏览器 F12 观察真实请求</h3>
+      <ol>
+        <li>打开 <code>https://httpbin.org</code>，按 F12 → Network。</li>
+        <li>刷新页面，点击任意请求，查看 Request Headers、Response Headers、Preview。</li>
+        <li>重点认：方法、URL、状态码、Content-Type、Cookie、响应体。</li>
+      </ol>
+      <h3>步骤 2：用 curl 构造请求</h3>
+<pre><code class="language-bash"># GET 并查看响应头
+curl -i https://httpbin.org/get
+
+# POST JSON
+curl -i -X POST https://httpbin.org/post \
+  -H "Content-Type: application/json" \
+  -d "{\"title\":\"hello\",\"done\":false}"
+
+# 自定义 Header
+curl -i https://httpbin.org/headers -H "X-Demo: hello"
+</code></pre>
+      <p>参数说明：<code>-i</code> 显示响应头；<code>-X</code> 方法；<code>-H</code> 头；<code>-d</code> 正文。</p>
+      <h3>步骤 3：Postman/Thunder Client 调试</h3>
+      <ol>
+        <li>新建请求：POST <code>https://httpbin.org/post</code>。</li>
+        <li>Body 选择 raw + JSON，填 <code>{"title":"demo","done":false}</code>。</li>
+        <li>发送后查看 Status、Headers、Body；切换为 GET，观察幂等性（重复请求无副作用）。</li>
+      </ol>
+      <h3>步骤 4：Cookie 简单示例</h3>
+<pre><code class="language-bash"># 服务器写入 Cookie
+curl -i https://httpbin.org/cookies/set?token=abc123
+# 客户端携带 Cookie 访问
+curl -i --cookie "token=abc123" https://httpbin.org/cookies</code></pre>
+      <p>说明：服务端通过 Set-Cookie 写入；下次请求客户端在 Cookie 头携带，用于会话标识。</p>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>400 Bad Request</strong>：检查方法、路径、参数格式，Content-Type 是否与正文一致。</li>
+        <li><strong>401 Unauthorized</strong>：缺少认证信息；补充 Authorization 或 Cookie。</li>
+        <li><strong>404 Not Found</strong>：路径错误或资源不存在；确认 URL。</li>
+        <li><strong>500 Server Error</strong>：服务器内部异常；查看响应体或后端日志。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ol>
+        <li>用 Postman 调用 <code>https://api.github.com/users/octocat</code>，截图请求与响应。</li>
+        <li>用 curl 向 httpbin 发送自定义 Header：<code>X-Demo: hello</code>，截图响应。</li>
+        <li>写出 200、302、404 的含义及各自一个示例场景。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>整理 5 个状态码及含义，附 1 个请求/响应截图。</li>
+        <li>保存 3 条命令：GET、POST JSON、带 Cookie，并写下输出。</li>
+        <li>用 curl 模拟 2 次 GET、2 次 POST，观察幂等与非幂等差异。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>教学提示</h2>
+      <ul>
+        <li>演示时放大终端/浏览器字体，方便跟读。</li>
+        <li>网络不稳可预录 F12/Postman 操作视频备用。</li>
+        <li>反复强调“请求/响应”模型和方法幂等性，为后续框架学习打基础。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

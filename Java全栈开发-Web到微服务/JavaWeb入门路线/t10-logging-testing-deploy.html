@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日志、测试与部署（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>日志、测试与部署（零基础详细版）</h1>
+    <p>目标：配置基础日志，编写 MockMvc/JUnit 用例，完成打包并以内嵌/外置 Tomcat 运行。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60-90 分钟</span><span class="pill">准备：Spring Boot + Todo 接口</span></p>
+      <ul>
+        <li>配置 Slf4j + Logback。</li>
+        <li>编写 MockMvc/JUnit 测试覆盖核心接口。</li>
+        <li>打包并以内嵌/外置 Tomcat 运行。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：日志配置</h2>
+<pre><code class="language-java">private static final Logger log = LoggerFactory.getLogger(TodoService.class);
+
+public Todo create(Todo t) {
+  log.info("create todo title={}", t.getTitle());
+  mapper.insert(t);
+  return t;
+}</code></pre>
+<pre><code class="language-xml">&lt;!-- src/main/resources/logback-spring.xml --&gt;
+&lt;configuration&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="STDOUT"/&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+      <p>说明：INFO 级别输出基础日志；可按需增加文件输出。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：MockMvc/JUnit 测试</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[MockMvc 调用 Controller] --> B[业务处理]
+  B --> C[返回响应]
+  C --> D[断言状态码/内容]
+  D --> E[测试报告]
+</pre>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+<pre><code class="language-java">@SpringBootTest
+@AutoConfigureMockMvc
+class TodoControllerTest {
+  @Autowired MockMvc mvc;
+
+  @Test
+  void createAndList() throws Exception {
+    mvc.perform(post("/api/todos")
+        .contentType("application/json")
+        .content("{\"title\":\"demo\",\"done\":false}"))
+      .andExpect(status().isOk())
+      .andExpect(content().string(containsString("demo")));
+
+    mvc.perform(get("/api/todos"))
+      .andExpect(status().isOk())
+      .andExpect(content().string(containsString("demo")));
+  }
+}</code></pre>
+      <p>说明：@SpringBootTest 启动上下文；@AutoConfigureMockMvc 注入 MockMvc；断言状态码与响应体。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：打包与运行</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[mvn clean package] --> B[JAR]
+  B --> C[内嵌启动 java -jar]
+  A --> D[WAR (skipTests)]
+  D --> E[部署到外置 Tomcat]
+</pre>
+<pre><code class="language-bash">mvn clean package
+# 内嵌运行
+java -jar target/demo-0.0.1-SNAPSHOT.jar
+
+# 外置 Tomcat（打 war）
+mvn clean package -DskipTests
+# 将 demo-0.0.1-SNAPSHOT.war 放入 Tomcat webapps
+# 启动 Tomcat，访问 http://localhost:8080/demo</code></pre>
+      <p>说明：Jar 适合快速运行；War 可部署在集中 Tomcat。课堂可各演示一次。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：操作与验证</h2>
+      <ol>
+        <li>运行 <code>mvn test</code>，查看通过结果。</li>
+        <li>故意改接口返回值让测试失败，再修复，演示回归。</li>
+        <li>打包 jar 运行；再打包 war 放 Tomcat，对比访问路径。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>测试找不到接口</strong>：检查 Controller 路径、启动端口、上下文加载是否成功。</li>
+        <li><strong>war 部署 404</strong>：确认访问路径包含上下文（如 /demo/api/...）。</li>
+        <li><strong>日志过多</strong>：调整 root level 或针对包设置日志级别。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>为删除接口补充失败用例（未登录或未找到）。</li>
+        <li>在日志中加入 traceId（UUID）打印，请求进入/退出都带上。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>写一份 README：启动命令、配置项、默认账号、常见问题。</li>
+        <li>补充一个集成测试：创建-查询-删除 的完整流程。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

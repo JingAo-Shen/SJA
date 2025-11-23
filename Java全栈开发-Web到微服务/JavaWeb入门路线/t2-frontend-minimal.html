@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端最小必备（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>前端最小必备（零基础详细版）</h1>
+    <p>目标：写出一个含表单的静态页面，能用 fetch/axios 发送 JSON 请求并展示响应，为后端练习提供最小前端能力。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60 分钟</span><span class="pill">准备：任意浏览器，静态服务器或直接 file://</span></p>
+      <ul>
+        <li>理解 HTML 结构、表单元素、基础 CSS。</li>
+        <li>能用 fetch 发送 JSON 请求并显示 JSON 响应。</li>
+        <li>知道跨域的概念（细节放在安全章节）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：编写最小页面</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[表单输入] --> B[JS 采集数据]
+  B --> C[fetch/axios 发送 JSON 请求]
+  C --> D[后端 API]
+  D --> E[返回 JSON]
+  E --> F[页面用 JSON.stringify 渲染]
+</pre>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Todo 前端最小版&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: Arial, sans-serif; max-width: 640px; margin: 24px auto; }
+    form { display: flex; gap: 8px; margin-bottom: 12px; }
+    input, button { padding: 8px; font-size: 14px; }
+    pre { background: #0b2545; color: #e2e8f0; padding: 10px; border-radius: 8px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;新增待办&lt;/h2&gt;
+  &lt;form id="todoForm"&gt;
+    &lt;input name="title" placeholder="待办标题" required /&gt;
+    &lt;button type="submit"&gt;提交&lt;/button&gt;
+  &lt;/form&gt;
+  &lt;button id="listBtn"&gt;获取列表&lt;/button&gt;
+  &lt;pre id="resp"&gt;&lt;/pre&gt;
+
+  &lt;script&gt;
+    const respEl = document.getElementById('resp');
+    document.getElementById('todoForm').addEventListener('submit', async (e) =&gt; {
+      e.preventDefault();
+      const title = e.target.title.value;
+      const res = await fetch('http://localhost:8080/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, done: false })
+      });
+      respEl.textContent = await res.text();
+    });
+    document.getElementById('listBtn').addEventListener('click', async () =&gt; {
+      const res = await fetch('http://localhost:8080/api/todos');
+      respEl.textContent = await res.text();
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+      <p>保存为 <code>index.html</code>。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：本地打开与运行</h2>
+      <ul>
+        <li>方法 A：直接双击 <code>index.html</code> 用浏览器打开（file://）。</li>
+        <li>方法 B：用静态服务器（推荐，便于跨域演示）：</li>
+      </ul>
+<pre><code class="language-bash"># Python 3 自带
+python -m http.server 8000
+# 或 VSCode Live Server 插件</code></pre>
+      <p>浏览器访问 <code>http://localhost:8000</code>。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：理解 fetch 配置</h2>
+      <ul>
+        <li><code>method</code>：HTTP 方法，POST/GET/PUT/DELETE。</li>
+        <li><code>headers</code>：设置 Content-Type 为 <code>application/json</code>。</li>
+        <li><code>body</code>：用 <code>JSON.stringify</code> 序列化对象。</li>
+        <li>响应：用 <code>await res.text()</code> 或 <code>await res.json()</code> 读取。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 4：用 axios（可选）</h2>
+<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+axios.post('http://localhost:8080/api/todos', { title: 'demo', done: false })
+  .then(res =&gt; console.log(res.data))
+  .catch(err =&gt; console.error(err));
+&lt;/script&gt;</code></pre>
+      <p>说明：axios 默认将对象转为 JSON，并自动解析 JSON 响应。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：格式化显示 JSON</h2>
+<pre><code class="language-js">function showJson(el, data) {
+  el.textContent = JSON.stringify(data, null, 2);
+}</code></pre>
+      <p>将 <code>respEl.textContent = await res.text();</code> 换成：</p>
+<pre><code class="language-js">const data = await res.json();
+showJson(respEl, data);</code></pre>
+    </section>
+
+    <section>
+      <h2>Step 6：跨域初识</h2>
+      <ul>
+        <li>如果前端端口与后端不同（如 8000 → 8080），浏览器会发起预检（OPTIONS）。</li>
+        <li>若收到 CORS 错误，需要后端开启允许的 Origin/Methods/Headers（详见安全章节）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>增加“标记完成”按钮，发送 PUT /api/todos/{id}，传 JSON <code>{done:true}</code>。</li>
+        <li>将响应通过 <code>JSON.stringify(..., null, 2)</code> 美化显示。</li>
+        <li>加 loading 文案：请求开始时显示“加载中...”，完成后隐藏。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>用表格展示 todos 的 title/done 状态。</li>
+        <li>提取后端地址为常量（如 <code>const API_BASE = 'http://localhost:8080'</code>），便于切换本地/线上。</li>
+        <li>用 axios 重写 fetch 逻辑，对比差异。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>教学提示</h2>
+      <ul>
+        <li>演示时可故意让接口 404/500，帮助学生通过 Network 面板定位问题。</li>
+        <li>跨域问题在后续安全章节详细展开，此处只做初识。</li>
+        <li>强调“最小可用前端”：核心是请求与展示，不扩展复杂布局或框架。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

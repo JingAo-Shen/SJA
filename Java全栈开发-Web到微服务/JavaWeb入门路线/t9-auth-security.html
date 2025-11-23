@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会话、认证与基础安全（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>会话、认证与基础安全（零基础详细版）</h1>
+    <p>目标：实现 Session 或 JWT 登录保护，配置 CORS，了解 CSRF、防弱口令与防重复提交。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60-90 分钟</span><span class="pill">准备：已有 Spring Boot + Todo 接口</span></p>
+      <ul>
+        <li>实现 Session 登录与鉴权拦截。</li>
+        <li>实现 JWT 登录与无状态鉴权。</li>
+        <li>配置 CORS，理解 CSRF 与弱口令、重复提交风险。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：Session 版本</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[登录请求] --> B[校验账号密码]
+  B -->|通过| C[写 Session: uid]
+  C --> D[后续请求携带 SessionID]
+  D --> E[拦截器检查 uid] --> F[放行访问资源]
+  B -->|失败| G[返回 401]
+</pre>
+<pre><code class="language-java">record LoginReq(String username, String password) {}
+
+@PostMapping("/api/login")
+public ApiResp&lt;Void&gt; login(@RequestBody LoginReq req, HttpSession session) {
+  if ("admin".equals(req.username()) && "123456".equals(req.password())) {
+    session.setAttribute("uid", 1L);
+    return ApiResp.ok(null);
+  }
+  return ApiResp.err(401, "bad credentials");
+}
+
+@GetMapping("/api/profile")
+public ApiResp&lt;Map&lt;String, Object&gt;&gt; profile(HttpSession session) {
+  Object uid = session.getAttribute("uid");
+  if (uid == null) return ApiResp.err(401, "unauthorized");
+  return ApiResp.ok(Map.of("uid", uid, "role", "admin"));
+}</code></pre>
+      <p>拦截器校验 Session：</p>
+<pre><code class="language-java">@Override
+public void addInterceptors(InterceptorRegistry registry) {
+  registry.addInterceptor(new HandlerInterceptor() {
+    public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) {
+      if (req.getRequestURI().startsWith("/api/login")) return true;
+      if (req.getSession().getAttribute("uid") == null) { res.setStatus(401); return false; }
+      return true;
+    }
+  });
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Step 2：JWT 版本（示意）</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[登录请求] --> B[生成 JWT: uid+过期时间+签名]
+  B --> C[返回 token 给前端]
+  C --> D[前端放入 Authorization: Bearer xxx]
+  D --> E[过滤器/拦截器解析校验签名]
+  E -->|合法| F[设置 uid 上下文后放行]
+  E -->|非法/过期| G[返回 401]
+</pre>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+  &lt;artifactId&gt;jjwt-api&lt;/artifactId&gt;
+  &lt;version&gt;0.11.5&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+  &lt;artifactId&gt;jjwt-impl&lt;/artifactId&gt;
+  &lt;version&gt;0.11.5&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+  &lt;artifactId&gt;jjwt-jackson&lt;/artifactId&gt;
+  &lt;version&gt;0.11.5&lt;/version&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+<pre><code class="language-java">String token = Jwts.builder()
+  .setSubject("1") // uid
+  .setExpiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+  .signWith(SignatureAlgorithm.HS256, "secret")
+  .compact();</code></pre>
+<pre><code class="language-java">// 拦截器/过滤器中校验
+String header = req.getHeader("Authorization");
+if (header == null || !header.startsWith("Bearer ")) { res.setStatus(401); return false; }
+String jwt = header.substring(7);
+// 解析校验签名，取出 uid，放入上下文</code></pre>
+      <p>说明：JWT 适合无状态；要设置过期时间与刷新策略，密钥务必保密。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：配置 CORS</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[前端 http://localhost:5173] -->|预检 OPTIONS| B[后端 8080]
+  B --> C[检查允许的 Origin/Methods/Headers]
+  C -->|通过| D[正常处理实际请求]
+  C -->|不通过| E[浏览器拦截 CORS 错误]
+</pre>
+<pre><code class="language-java">@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/api/**")
+      .allowedOrigins("http://localhost:5173")
+      .allowedMethods("GET","POST","PUT","DELETE")
+      .allowCredentials(true);
+  }
+}</code></pre>
+      <p>说明：前端端口不同会触发跨域，需设置允许的来源、方法、是否带凭证。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：操作与验证</h2>
+      <ol>
+        <li>未登录访问 /api/profile，返回 401；登录后再次访问成功。</li>
+        <li>退出：<code>session.invalidate()</code> 或前端清理 token。</li>
+        <li>跨域：从 5173 端口调用 8080，未配置 CORS 前失败，配置后成功。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>安全提示（基础）</h2>
+      <ul>
+        <li>密码存储：使用 BCrypt，不要明文。</li>
+        <li>防重复提交：前端按钮禁用 + 后端幂等检查（唯一索引/幂等键）。</li>
+        <li>弱口令：登录失败次数限制（如 5 次锁定 5 分钟）。</li>
+        <li>CSRF：Cookie + Session 跨站时需 CSRF Token（本课不展开）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>401 一直返回</strong>：检查拦截器放行的路径；确认登录后写入 Session 或生成 token。</li>
+        <li><strong>CORS 错误</strong>：确保 allowedOrigins/Methods 正确，且前端请求携带的头在允许列表内。</li>
+        <li><strong>JWT 解析失败</strong>：确认签名算法与密钥一致；检查过期时间。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>为 Todo 增删接口增加登录校验。</li>
+        <li>实现“滑动过期”：Session/JWT 30 分钟有效，访问时刷新过期时间。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>接入 BCrypt 校验密码，记录失败次数，超过 5 次锁定 5 分钟。</li>
+        <li>撰写对比：Session 与 JWT 的优缺点与适用场景。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

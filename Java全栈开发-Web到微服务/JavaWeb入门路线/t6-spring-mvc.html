@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spring MVC 请求处理（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Spring MVC 请求处理（零基础详细版）</h1>
+    <p>目标：掌握路由、参数校验、统一异常/响应、拦截器链路，完成一个带校验与简单鉴权的 Todo 接口。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：60-90 分钟</span><span class="pill">准备：已有 Spring Boot 项目</span></p>
+      <ul>
+        <li>编写 RestController 路由，返回 JSON。</li>
+        <li>使用 @Valid + Hibernate Validator 做参数校验。</li>
+        <li>用 @ControllerAdvice 统一异常与响应结构。</li>
+        <li>用 HandlerInterceptor 记录耗时并做简单鉴权。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：定义 DTO 与统一响应</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[请求] --> B[Controller 接收 DTO]
+  B --> C[参数校验 @Valid]
+  C --> D[业务处理/服务层]
+  D --> E[统一响应 ApiResp]
+  E --> F[异常走 @ControllerAdvice 返回错误码]
+</pre>
+<pre><code class="language-java">import jakarta.validation.constraints.NotBlank;
+
+record TodoReq(@NotBlank(message = "标题必填") String title, boolean done) {}
+
+record ApiResp&lt;T&gt;(int code, String msg, T data) {
+  static &lt;T&gt; ApiResp&lt;T&gt; ok(T data) { return new ApiResp<>(0, "ok", data); }
+  static ApiResp&lt;Void&gt; err(int code, String msg) { return new ApiResp<>(code, msg, null); }
+}</code></pre>
+      <p>说明：使用 record 简化数据类；code=0 表示成功，其他为业务错误。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：编写 Controller</h2>
+<pre><code class="language-java">@RestController
+@RequestMapping("/api/todos")
+public class TodoController {
+  private final List&lt;TodoReq&gt; todos = new CopyOnWriteArrayList<>();
+
+  @PostMapping
+  public ApiResp&lt;TodoReq&gt; create(@Valid @RequestBody TodoReq req) {
+    todos.add(req);
+    return ApiResp.ok(req);
+  }
+
+  @GetMapping
+  public ApiResp&lt;List&lt;TodoReq&gt;&gt; list() {
+    return ApiResp.ok(todos);
+  }
+}</code></pre>
+      <p>说明：@RequestBody 解析 JSON，@Valid 触发校验。</p>
+    </section>
+
+    <section>
+      <h2>Step 3：统一异常处理</h2>
+<pre><code class="language-java">@ControllerAdvice
+public class GlobalExceptionHandler {
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity&lt;ApiResp&lt;Void&gt;&gt; handleValid(MethodArgumentNotValidException ex) {
+    String msg = ex.getBindingResult().getFieldError().getDefaultMessage();
+    return ResponseEntity.badRequest().body(ApiResp.err(400, msg));
+  }
+}</code></pre>
+      <p>说明：捕获参数校验异常，返回 400 与统一格式。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：拦截器记录耗时与简单鉴权</h2>
+<pre><code class="language-java">@Configuration
+public class WebConfig implements WebMvcConfigurer {
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(new HandlerInterceptor() {
+      private final Logger log = LoggerFactory.getLogger("ReqTime");
+      @Override
+      public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) {
+        req.setAttribute("t0", System.currentTimeMillis());
+        // 简单鉴权：POST 需要头 X-Token
+        if ("POST".equals(req.getMethod()) && req.getHeader("X-Token") == null) {
+          res.setStatus(401);
+          return false;
+        }
+        return true;
+      }
+      @Override
+      public void afterCompletion(HttpServletRequest req, HttpServletResponse res, Object handler, Exception ex) {
+        long cost = System.currentTimeMillis() - (long) req.getAttribute("t0");
+        log.info("{} {} cost={}ms", req.getMethod(), req.getRequestURI(), cost);
+      }
+    });
+  }
+}</code></pre>
+      <p>说明：可扩展为统一日志或链路追踪；鉴权逻辑可后续替换为 Session/JWT。</p>
+    </section>
+
+    <section>
+      <h2>Step 5：运行与验证</h2>
+      <ol>
+        <li>启动应用，POST /api/todos 不带 X-Token，预期 401。</li>
+        <li>带 X-Token 发送 POST，正常返回；故意缺少 title，返回 400 和错误信息。</li>
+        <li>GET /api/todos，查看统一响应结构 <code>{code,msg,data}</code>。</li>
+        <li>查看控制台日志的耗时信息。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>400 校验失败但信息为空</strong>：确认 message 是否填写；检查 BindingResult 读取逻辑。</li>
+        <li><strong>拦截器未生效</strong>：确认配置类被扫描；检查 addInterceptors 是否注册。</li>
+        <li><strong>响应中文乱码</strong>：确保返回 JSON 时设置 UTF-8（默认 Spring Boot 已处理）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>给 TodoReq 增加 <code>priority</code> 字段，范围 1-5，校验不通过时返回 400。</li>
+        <li>为 GET /api/todos 增加分页参数 page/size，并返回对应子集。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>自定义 BizException，统一处理返回 409，并在代码中模拟抛出。</li>
+        <li>给拦截器增加 header 白名单，或改为基于 Session/JWT 的鉴权（衔接后续安全章节）。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>

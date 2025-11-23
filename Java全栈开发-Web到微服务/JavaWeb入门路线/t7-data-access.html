@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据访问与数据库基础（零基础详细版）</title>
+  <style>
+    :root { --bg:#f7f9ff; --card:#fff; --primary:#0b6bcb; --muted:#4a5568; --border:#e2e8f0; }
+    body { margin:0; font-family:"Segoe UI","PingFang SC",system-ui; color:#0f172a; background:var(--bg); }
+    header { padding:24px 16px 8px; text-align:center; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:var(--muted); }
+    main { max-width:1100px; margin:0 auto; padding:0 16px 32px; display:grid; gap:16px; }
+    section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; box-shadow:0 8px 25px rgba(15,23,42,0.08); }
+    h2 { margin:0 0 10px; color:var(--primary); font-size:20px; }
+    h3 { margin:0 0 8px; font-size:17px; }
+    p { margin:6px 0; color:var(--muted); line-height:1.6; }
+    ul, ol { margin:6px 0 0 20px; color:var(--muted); line-height:1.6; padding-left:14px; }
+    pre { background:#0b2545; color:#e2e8f0; padding:10px 12px; border-radius:10px; overflow-x:auto; font-size:13px; line-height:1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    a { color:var(--primary); text-decoration:none; }
+    .pill { display:inline-block; padding:2px 10px; border:1px solid var(--border); border-radius:999px; margin-right:6px; background:rgba(11,107,203,0.08); font-size:12px; }
+    .back { text-align:right; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>数据访问与数据库基础（零基础详细版）</h1>
+    <p>目标：会创建数据库表、配置数据源，使用 MyBatis 或 JPA 完成 CRUD，理解连接池与简单事务。</p>
+    <div class="back"><a href="index.html">← 返回一级入口</a></div>
+  </header>
+
+  <main>
+    <section>
+      <h2>学习目标与前置</h2>
+      <p><span class="pill">建议用时：90 分钟</span><span class="pill">准备：本地 MySQL、Spring Boot 项目</span></p>
+      <ul>
+        <li>创建 todo 表并完成 CRUD。</li>
+        <li>配置 HikariCP 数据源。</li>
+        <li>了解分页查询、事务和常见数据库异常。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Step 1：准备数据库</h2>
+      <ol>
+        <li>启动 MySQL，创建数据库：<code>create database demo default charset utf8mb4;</code></li>
+        <li>创建表：</li>
+      </ol>
+<pre><code class="language-sql">CREATE TABLE todo (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  done TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+      <p>字段说明：id 自增主键；title 必填；done 布尔；created_at 记录创建时间。</p>
+    </section>
+
+    <section>
+      <h2>Step 2：配置数据源（application.yaml）</h2>
+<pre><code class="language-yaml">spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo?useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000</code></pre>
+      <p>修改用户名/密码与实际一致。Hikari 参数：最大连接数、最小空闲、连接超时。</p>
+    </section>
+
+    <section>
+      <h2>方案 A：MyBatis 示例</h2>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;3.0.3&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<pre><code class="language-java">@Data
+public class Todo {
+  private Long id;
+  private String title;
+  private Boolean done;
+  private LocalDateTime createdAt;
+}</code></pre>
+<pre><code class="language-java">@Mapper
+public interface TodoMapper {
+  @Insert("insert into todo(title, done) values(#{title}, #{done})")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  int insert(Todo todo);
+
+  @Select("select * from todo order by id desc limit #{offset}, #{size}")
+  List&lt;Todo&gt; page(@Param("offset") int offset, @Param("size") int size);
+
+  @Update("update todo set done=#{done} where id=#{id}")
+  int updateDone(@Param("id") long id, @Param("done") boolean done);
+
+  @Delete("delete from todo where id=#{id}")
+  int delete(@Param("id") long id);
+}</code></pre>
+      <p>分页 offset 计算：<code>(page) * size</code>，若从 0 开始。</p>
+    </section>
+
+    <section>
+      <h2>方案 B：JPA 示例（可选）</h2>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+<pre><code class="language-java">@Entity
+@Table(name = "todo")
+public class TodoEntity {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  private String title;
+  private Boolean done;
+  private LocalDateTime createdAt;
+}</code></pre>
+<pre><code class="language-java">public interface TodoRepo extends JpaRepository&lt;TodoEntity, Long&gt; {
+  Page&lt;TodoEntity&gt; findByDone(boolean done, Pageable pageable);
+}</code></pre>
+<pre><code class="language-java">@Service
+public class TodoService {
+  private final TodoRepo repo;
+  public TodoService(TodoRepo repo) { this.repo = repo; }
+  public TodoEntity create(TodoEntity t) { return repo.save(t); }
+  public Page&lt;TodoEntity&gt; page(int page, int size) { return repo.findAll(PageRequest.of(page, size)); }
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Step 3：Controller 接入分页</h2>
+      <pre class="mermaid">
+flowchart LR
+  A[Controller] --> B[Service/Mapper]
+  B --> C[连接池 HikariCP]
+  C --> D[(MySQL)]
+  D --> B
+  B --> E[统一响应返回分页数据]
+</pre>
+<pre><code class="language-java">@GetMapping("/api/todos")
+public ApiResp&lt;List&lt;Todo&gt;&gt; list(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
+  int offset = page * size;
+  return ApiResp.ok(todoMapper.page(offset, size));
+}</code></pre>
+      <p>注意校验 page/size 非负，避免大数攻击。</p>
+    </section>
+
+    <section>
+      <h2>Step 4：事务与异常（简单版）</h2>
+<pre><code class="language-java">@Service
+public class TodoAppService {
+  private final TodoMapper mapper;
+  public TodoAppService(TodoMapper mapper) { this.mapper = mapper; }
+
+  @Transactional
+  public void markDoneAndLog(long id) {
+    mapper.updateDone(id, true);
+    // 可在此处写入日志表，若异常会整体回滚
+  }
+}</code></pre>
+      <p>常见异常：重复键（唯一索引）、连接超时、SQL 语法错误；可用 try-catch 转为业务错误码。</p>
+    </section>
+
+    <section>
+      <h2>常见问题与排查</h2>
+      <ul>
+        <li><strong>连接失败</strong>：检查 URL、用户名密码、防火墙/端口。</li>
+        <li><strong>中文乱码</strong>：URL 参数 <code>useUnicode=true&characterEncoding=utf8</code>（新驱动默认支持 utf8mb4）。</li>
+        <li><strong>分页数据错误</strong>：确认 offset 计算；检查排序字段。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课堂练习</h2>
+      <ul>
+        <li>实现“标记完成”接口，调用 updateDone 返回影响行数。</li>
+        <li>在列表接口增加 done 过滤参数（true/false）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>课后巩固</h2>
+      <ul>
+        <li>为 title 增加唯一索引，尝试插入重复数据，捕获异常并返回 409。</li>
+        <li>撰写说明：Hikari 常用参数（max pool size、idle timeout）含义与推荐值。</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>
