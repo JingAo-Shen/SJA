@@ -80,6 +80,31 @@ cd servlet-demo</code></pre>
     </section>
 
     <section>
+      <h2>Tomcat 介绍与工作原理</h2>
+      <p>Tomcat 是 Apache 软件基金会维护的开源 Servlet/JSP 容器，负责解析 HTTP/HTTPS 请求、分发线程、执行 Servlet 代码并返回响应。它提供了 Web Server（连接器）与 Servlet Engine（容器）两部分：前者监听端口接收请求，后者根据 URL 映射把请求交给具体的 Servlet、Filter、JSP。</p>
+      <ul>
+        <li><strong>启动与目录结构</strong>：bin 目录存放启动脚本，conf 内包括 server.xml（端口、虚拟主机）、web.xml（全局 Servlet 映射）、context.xml（数据源等）；webapps 下的每个子目录或 war 文件对应一个 Web 应用。</li>
+        <li><strong>请求处理流程</strong>：Connector 读取请求 → 创建 HttpServletRequest/Response 对象 → 依次经过 Filter 链 → 调用 Servlet service/doGet/doPost → 可转发到 JSP → 生成响应并写回客户端。</li>
+        <li><strong>线程与会话</strong>：每个请求默认由线程池处理，可通过 server.xml 调整最大线程数；容器负责创建 HttpSession，提供黏性会话、持久化等策略。</li>
+        <li><strong>部署方式</strong>：支持解压 war、保留 war 直接热部署、或者通过 Maven/Gradle 插件远程发布；日志位于 logs 目录，可通过 catalina.out、localhost_access_log 查询运行状态。</li>
+        <li><strong>常见配置</strong>：server.xml 中的 &lt;Connector&gt; 可切换 NIO/NIO2/Apr 协议，context.xml 能声明 JNDI 数据源、环境变量，web.xml 可统一配置编码过滤器、安全约束。</li>
+      </ul>
+      <p>理解这些概念后，在本地只需把 war 放入 <code>webapps</code> 并启动 Tomcat，即可用浏览器验证 Servlet/JSP 行为，调试和线上部署流程也都会保持一致。</p>
+    </section>
+
+    <section>
+      <h2>在 IntelliJ IDEA 中使用 Tomcat</h2>
+      <ol>
+        <li><strong>准备工作</strong>：确认使用 IntelliJ IDEA Ultimate（社区版没有应用服务器集成功能），并提前下载好独立的 Tomcat。导入或创建 Maven Web 项目后检查 <code>pom.xml</code> 中存在 war 打包配置。</li>
+        <li><strong>创建运行配置</strong>：依次点击 Run &gt; Edit Configurations &gt; “+” &gt; Tomcat Server &gt; Local，首次创建会提示选择 Tomcat 安装目录（即解压目录）。IDEA 会自动识别 bin、conf 并创建默认配置。</li>
+        <li><strong>部署应用</strong>：切换到 Deployment 标签，点击 “+” 选择 “Artifact” 或 “war exploded”，一般建议选择 <code>project-name:war exploded</code> 方便热部署；Context path 建议与项目名一致（如 <code>/servlet-demo</code>）。</li>
+        <li><strong>调优与调试</strong>：在 Server 标签可修改端口、JRE、VM options；在 “Before launch” 中添加 “Build” 或 “Build Artifacts” 确保每次运行前自动编译。点击 Debug 运行即可在 Servlet 的 <code>doGet</code>/<code>doPost</code> 设置断点单步排查。</li>
+        <li><strong>验证与热部署</strong>：启动后 IDEA 控制台会输出 Tomcat 日志，浏览器访问 <code>http://localhost:8080/servlet-demo</code> 进行验证。修改 JSP 或类后点击 “Update classes and resources” 可热更新，避免频繁重启。</li>
+      </ol>
+      <p>IDEA 对 Tomcat 的一体化支持覆盖了启动、调试、日志查看、热部署和远程部署（可在 Deployment 中配置 SFTP/FTP）。熟练这些操作可以显著缩短“改代码 → 构建 → 启动 → 验证”的迭代周期。</p>
+    </section>
+
+    <section>
       <h2>Step 3：编写 Servlet 与 Filter</h2>
       <pre class="mermaid">
 flowchart LR
