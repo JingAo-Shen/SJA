@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分布式事务 - 学习资料</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: radial-gradient(circle at 20% 20%, #ffe08a 0%, #feca57 25%, transparent 35%),
+                        radial-gradient(circle at 80% 20%, #ff9ff3 0%, #c56cf0 28%, transparent 40%),
+                        linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.75);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.14);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: translateY(-2px);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.08);
+            margin: 20px 0;
+            padding: 28px 26px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .tag {
+            display: inline-block;
+            margin: 0 10px 10px 0;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: #2b2b2b;
+            font-weight: bold;
+            border-radius: 14px;
+        }
+        
+        .learning-path, .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+        
+        .path-item, .pattern-item {
+            background: rgba(0,0,0,0.2);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #feca57;
+            transition: all 0.25s ease;
+        }
+        
+        .path-item:hover, .pattern-item:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.08);
+        }
+        
+        ul {
+            padding-left: 18px;
+        }
+        
+        .resource-link {
+            display: inline-block;
+            margin: 10px 12px 0 0;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: #2b2b2b;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+        
+        .tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .tip {
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← 返回知识图谱</a>
+    
+    <div class="header">
+        <h1>🧭 分布式事务</h1>
+        <p>跨服务数据一致性方案与工程落地实践</p>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <h2>🎯 学习目标</h2>
+            <ul>
+                <li>理解 CAP、BASE 背景下的分布式事务基本诉求</li>
+                <li>掌握 XA/2PC、TCC、Saga、可靠消息最终一致性等核心模式</li>
+                <li>能在 Spring Cloud/Spring Boot 体系中选择并落地合适的方案</li>
+                <li>形成观测、补偿、限流降级等配套治理手段</li>
+            </ul>
+            <div>
+                <span class="tag">一致性</span>
+                <span class="tag">可用性</span>
+                <span class="tag">补偿</span>
+                <span class="tag">可观测性</span>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>🧩 核心模式速览</h2>
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <h3>XA / 2PC</h3>
+                    <p>依赖数据库协调器的强一致事务，两阶段提交。适合同构数据库、低并发、对一致性要求绝对严格的场景。</p>
+                </div>
+                <div class="pattern-item">
+                    <h3>TCC</h3>
+                    <p>Try/Confirm/Cancel 三步，要求业务实现预留与补偿。适合强业务耦合但希望减少锁持有时间的高并发场景。</p>
+                </div>
+                <div class="pattern-item">
+                    <h3>Saga</h3>
+                    <p>长事务拆分为一系列本地事务 + 反向补偿，常见于订单/库存/账户等链路。需要幂等、可重入的补偿设计。</p>
+                </div>
+                <div class="pattern-item">
+                    <h3>可靠消息 + 最终一致</h3>
+                    <p>通过消息队列（如 RabbitMQ）实现事务消息与重试，配合本地事务表或 Outbox Pattern，追求高可用与可扩展。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>🛠 实战落地步骤</h2>
+            <div class="learning-path">
+                <div class="path-item">
+                    <h3>1. 场景评估</h3>
+                    <ul>
+                        <li>分析一致性 vs 可用性优先级，确认 SLA</li>
+                        <li>识别跨服务/跨库的写入链路与失败模式</li>
+                        <li>确定是否需要隔离级别、超时、幂等约束</li>
+                    </ul>
+                </div>
+                <div class="path-item">
+                    <h3>2. 方案选择</h3>
+                    <ul>
+                        <li>同构数据库且对一致性绝对敏感：XA/2PC</li>
+                        <li>需要业务补偿且高并发：TCC/Saga</li>
+                        <li>强调可用性与解耦：可靠消息 + 最终一致</li>
+                    </ul>
+                </div>
+                <div class="path-item">
+                    <h3>3. 工程实现</h3>
+                    <ul>
+                        <li>结合 Spring 事务管理器配置数据源与超时</li>
+                        <li>实现幂等键（业务唯一标识）与重试策略</li>
+                        <li>在网关/服务间传递 TraceId 便于链路追踪</li>
+                    </ul>
+                </div>
+                <div class="path-item">
+                    <h3>4. 治理与观测</h3>
+                    <ul>
+                        <li>对补偿、重试、死信队列配置可观测指标</li>
+                        <li>建立失败告警与人工兜底通道</li>
+                        <li>压测事务链路，验证超时/降级/回滚链路</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>📐 设计要点与最佳实践</h2>
+            <div class="tips">
+                <div class="tip">
+                    <h3>幂等性</h3>
+                    <p>使用业务唯一键、状态机或版本号控制重复执行；接口设计遵循「最多一次或至少一次」清晰语义。</p>
+                </div>
+                <div class="tip">
+                    <h3>隔离与锁</h3>
+                    <p>优先使用乐观锁/版本号减少长事务持锁；必要时结合分布式锁控制资源争用。</p>
+                </div>
+                <div class="tip">
+                    <h3>补偿与回滚</h3>
+                    <p>补偿操作必须可重入、可部分成功；为幂等失败设置终止阈值与人工介入流程。</p>
+                </div>
+                <div class="tip">
+                    <h3>消息可靠性</h3>
+                    <p>Outbox + 事务消息 + 重试/回查，搭配死信队列；消费端做好幂等与重放保护。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>🔗 延伸学习</h2>
+            <a class="resource-link" href="../RabbitMQ教程/index.html">RabbitMQ 教程</a>
+            <a class="resource-link" href="../MySQL教程/index.html">MySQL 基础</a>
+            <a class="resource-link" href="../SpringCloud微服务开发/index.html">Spring Cloud 微服务开发</a>
+            <a class="resource-link" href="../MySQL优化/index.html">MySQL 优化</a>
+        </div>
+    </div>
+</body>
+</html>

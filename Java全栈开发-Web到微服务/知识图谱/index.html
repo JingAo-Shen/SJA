@@ -595,6 +595,9 @@
                 {id: "Config", name: "配置中心", category: "微服务", level: 6,
                  description: "集中配置管理", 
                  link: "配置中心.html"},
+                {id: "DistributedTransaction", name: "分布式事务", category: "微服务", level: 6,
+                 description: "跨服务数据一致性方案，涵盖XA/2PC、TCC、Saga与可靠消息", 
+                 link: "分布式事务.html"},
                 
                 // 工具部署层
                 {id: "Maven", name: "Maven", category: "工具部署", level: 2,
@@ -742,6 +745,10 @@
                 {source: "SpringCloud", target: "Hystrix", relation: "包含", type: "contains"},
                 {source: "SpringCloud", target: "Gateway", relation: "包含", type: "contains"},
                 {source: "SpringCloud", target: "Config", relation: "包含", type: "contains"},
+                {source: "Microservices", target: "DistributedTransaction", relation: "保障一致性", type: "requires"},
+                {source: "DistributedTransaction", target: "Transaction", relation: "扩展", type: "extends"},
+                {source: "DistributedTransaction", target: "RabbitMQ", relation: "结合异步", type: "uses"},
+                {source: "DistributedTransaction", target: "MySQL", relation: "落地数据库", type: "uses"},
                 {source: "Eureka", target: "Ribbon", relation: "配合", type: "collaborates"},
                 {source: "Ribbon", target: "Hystrix", relation: "保护", type: "protects"},
                 
