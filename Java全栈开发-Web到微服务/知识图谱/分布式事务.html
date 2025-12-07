@@ -5,246 +5,368 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>分布式事务 - 学习资料</title>
     <style>
+        :root {
+            --bg-1: #0f2027;
+            --bg-2: #203a43;
+            --bg-3: #2c5364;
+            --card: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.14);
+            --text: #f6f7fb;
+            --muted: #c9d6df;
+            --accent-1: #feca57;
+            --accent-2: #ff9ff3;
+            --accent-3: #48dbfb;
+        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             padding: 0;
             font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: radial-gradient(circle at 20% 20%, #ffe08a 0%, #feca57 25%, transparent 35%),
-                        radial-gradient(circle at 80% 20%, #ff9ff3 0%, #c56cf0 28%, transparent 40%),
-                        linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: white;
-            line-height: 1.6;
+            background:
+                radial-gradient(circle at 16% 18%, rgba(254,202,87,0.35) 0%, rgba(254,202,87,0.18) 22%, transparent 45%),
+                radial-gradient(circle at 82% 14%, rgba(72,219,251,0.35) 0%, rgba(72,219,251,0.18) 24%, transparent 46%),
+                linear-gradient(135deg, #101820, #1c2f3a, #24445a);
+            color: var(--text);
+            line-height: 1.7;
+            padding-bottom: 80px;
         }
-        
-        .header {
-            background: rgba(0,0,0,0.75);
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px 80px;
-        }
-        
+        a { color: inherit; }
         .back-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 18px;
+            left: 18px;
             background: rgba(255,255,255,0.14);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 24px;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.18);
-        }
-        
-        .back-btn:hover {
-            background: rgba(255,255,255,0.22);
-            transform: translateY(-2px);
-        }
-        
-        .content-section {
-            background: rgba(255,255,255,0.08);
-            margin: 20px 0;
-            padding: 28px 26px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        }
-        
-        h1, h2, h3 {
-            margin-top: 0;
-            letter-spacing: 0.5px;
-        }
-        
-        .tag {
-            display: inline-block;
-            margin: 0 10px 10px 0;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #2b2b2b;
-            font-weight: bold;
-            border-radius: 14px;
-        }
-        
-        .learning-path, .pattern-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 18px;
-            margin-top: 20px;
-        }
-        
-        .path-item, .pattern-item {
-            background: rgba(0,0,0,0.2);
-            padding: 16px;
-            border-radius: 12px;
-            border-left: 4px solid #feca57;
+            backdrop-filter: blur(8px);
             transition: all 0.25s ease;
+            z-index: 2;
         }
-        
-        .path-item:hover, .pattern-item:hover {
-            transform: translateY(-4px);
-            background: rgba(255,255,255,0.08);
+        .back-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        .container { max-width: 1180px; margin: 0 auto; padding: 40px 20px; }
+        .hero {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35);
         }
-        
-        ul {
-            padding-left: 18px;
-        }
-        
-        .resource-link {
-            display: inline-block;
-            margin: 10px 12px 0 0;
-            padding: 10px 14px;
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
-            color: #2b2b2b;
-            text-decoration: none;
+        .hero h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: .5px; }
+        .hero p { margin: 0; color: var(--muted); }
+        .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .badge {
+            padding: 6px 12px;
             border-radius: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: #1b1b1b;
+            font-weight: 700;
         }
-        
-        .resource-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        .grid { display: grid; gap: 16px; margin-top: 22px; }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 18px 16px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
         }
-        
-        .tips {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
+        h2 { margin: 0 0 12px; font-size: 22px; }
+        h3 { margin: 0 0 8px; font-size: 17px; }
+        ul { padding-left: 18px; margin: 8px 0 0; }
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .kpi {
+            padding: 14px 14px 12px;
+            border-radius: 14px;
+            border: 1px dashed var(--border);
+            background: rgba(0,0,0,0.25);
         }
-        
-        .tip {
-            padding: 14px;
-            border-radius: 12px;
+        .kpi strong { display: block; font-size: 18px; }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th, .table td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
             background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
+            font-weight: 700;
+        }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .chip { padding: 6px 10px; border-radius: 12px; background: rgba(255,255,255,0.12); }
+        .code {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: Consolas, Menlo, monospace;
+            font-size: 13px;
+            overflow: auto;
         }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-btn">← 返回知识图谱</a>
-    
-    <div class="header">
-        <h1>🧭 分布式事务</h1>
-        <p>跨服务数据一致性方案与工程落地实践</p>
-    </div>
-    
     <div class="container">
-        <div class="content-section">
-            <h2>🎯 学习目标</h2>
-            <ul>
-                <li>理解 CAP、BASE 背景下的分布式事务基本诉求</li>
-                <li>掌握 XA/2PC、TCC、Saga、可靠消息最终一致性等核心模式</li>
-                <li>能在 Spring Cloud/Spring Boot 体系中选择并落地合适的方案</li>
-                <li>形成观测、补偿、限流降级等配套治理手段</li>
-            </ul>
-            <div>
-                <span class="tag">一致性</span>
-                <span class="tag">可用性</span>
-                <span class="tag">补偿</span>
-                <span class="tag">可观测性</span>
+        <div class="hero">
+            <h1>🧭 分布式事务</h1>
+            <p>跨服务数据一致性方案，覆盖模式选型、工程落地、观测与治理闭环。</p>
+            <div class="badge-row">
+                <span class="badge">一致性</span>
+                <span class="badge">可用性</span>
+                <span class="badge">幂等补偿</span>
+                <span class="badge">可观测性</span>
             </div>
         </div>
-        
-        <div class="content-section">
-            <h2>🧩 核心模式速览</h2>
-            <div class="pattern-grid">
-                <div class="pattern-item">
-                    <h3>XA / 2PC</h3>
-                    <p>依赖数据库协调器的强一致事务，两阶段提交。适合同构数据库、低并发、对一致性要求绝对严格的场景。</p>
-                </div>
-                <div class="pattern-item">
-                    <h3>TCC</h3>
-                    <p>Try/Confirm/Cancel 三步，要求业务实现预留与补偿。适合强业务耦合但希望减少锁持有时间的高并发场景。</p>
-                </div>
-                <div class="pattern-item">
-                    <h3>Saga</h3>
-                    <p>长事务拆分为一系列本地事务 + 反向补偿，常见于订单/库存/账户等链路。需要幂等、可重入的补偿设计。</p>
-                </div>
-                <div class="pattern-item">
-                    <h3>可靠消息 + 最终一致</h3>
-                    <p>通过消息队列（如 RabbitMQ）实现事务消息与重试，配合本地事务表或 Outbox Pattern，追求高可用与可扩展。</p>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>🌱 循序渐进导读</h2>
+                <h3>先理解单机事务（便利店买可乐）</h3>
+                <ul>
+                    <li>付5元 + 扣1瓶可乐要么全做要么全不做，失败就退钱。</li>
+                    <li>ACID 口诀：原子性(全做/全不做)、一致性(总价值守恒)、隔离性(互不打扰)、持久性(结果不会丢)。</li>
+                </ul>
+                <h3>升级为分布式事务（电商买可乐）</h3>
+                <ul>
+                    <li>订单、库存、支付、物流分属不同服务/库，仍需“要么都成功，要么都失败”。</li>
+                    <li>难点：网络不可靠、各服务独立、强一致往往牺牲性能。</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>📌 核心概念（降难度版）</h2>
+                <ul>
+                    <li>分布式事务：跨节点/跨服务的一组操作保持原子性。</li>
+                    <li>目标：强一致 or 最终一致（多数业务接受“稍后一致”）。</li>
+                    <li>选型思路：先问实时一致性是否刚需；如果不是，优先最终一致 + 补偿/重试。</li>
+                </ul>
+                <h3>新手友好：本地消息表方案</h3>
+                <ul>
+                    <li>订单服务：本地事务写订单 + 写“扣库存”消息(未发送)。</li>
+                    <li>定时/出站任务：扫描未发送消息 → 发 MQ 给库存服务。</li>
+                    <li>库存服务：扣库存成功 → 回写状态；失败会被重试，保证最终一致。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>🎯 学习目标</h2>
+                <ul>
+                    <li>理解 CAP/BASE 背景下的跨服务事务诉求与权衡</li>
+                    <li>掌握 XA/2PC、TCC、Saga、可靠消息四大模式的适用边界</li>
+                    <li>能在 Spring Boot / Spring Cloud 体系完成方案选型与落地</li>
+                    <li>建立幂等、补偿、限流降级、可观测的配套治理体系</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>📊 关键指标</h2>
+                <div class="kpi-row">
+                    <div class="kpi"><strong>一致性等级</strong>强一致 / 最终一致 / 读己之写</div>
+                    <div class="kpi"><strong>可用性</strong>降级、超时、熔断阈值</div>
+                    <div class="kpi"><strong>幂等性</strong>业务唯一键、版本号或状态机</div>
+                    <div class="kpi"><strong>恢复力</strong>补偿/重试/死信队列与人工兜底</div>
                 </div>
             </div>
         </div>
-        
-        <div class="content-section">
-            <h2>🛠 实战落地步骤</h2>
-            <div class="learning-path">
-                <div class="path-item">
+
+        <div class="card">
+            <h2>🧩 模式对比</h2>
+            <table class="table">
+                <tr>
+                    <th>模式</th>
+                    <th>优点</th>
+                    <th>适用场景</th>
+                    <th>注意事项</th>
+                </tr>
+                <tr>
+                    <td>XA / 2PC</td>
+                    <td>强一致、开发成本低</td>
+                    <td>同构数据库、低并发、强一致要求高</td>
+                    <td>锁粒度大、性能受限，协调器单点</td>
+                </tr>
+                <tr>
+                    <td>TCC</td>
+                    <td>短事务、锁保持时间短</td>
+                    <td>高并发、需业务可补偿、接口可预留资源</td>
+                    <td>需实现 Try/Confirm/Cancel，补偿幂等</td>
+                </tr>
+                <tr>
+                    <td>Saga</td>
+                    <td>拆分长链路，异步补偿</td>
+                    <td>订单/库存/账户等长链路业务</td>
+                    <td>补偿可重入，状态机设计清晰</td>
+                </tr>
+                <tr>
+                    <td>可靠消息 + 最终一致</td>
+                    <td>微信转账：先扣钱写“消息”，再异步通知；失败反复重试</td>
+                    <td>对实时性要求可稍放宽的链路</td>
+                    <td>Outbox/事务消息、重复消费幂等处理</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>🏠 生活案例辅助理解</h2>
+            <div class="grid grid-3">
+                <div class="card" style="padding:14px;">
+                    <h3>外卖下单</h3>
+                    <ul>
+                        <li>业务链路：创建订单 → 扣优惠券 → 扣库存 → 支付 → 通知商家</li>
+                        <li>方案倾向：可靠消息 + 最终一致（下单写本地 + Outbox 投递 MQ，消费端幂等）</li>
+                        <li>补偿思路：支付失败则回冲优惠券与库存，通知失败走重试/告警</li>
+                    </ul>
+                </div>
+                <div class="card" style="padding:14px;">
+                    <h3>机票 + 酒店联订</h3>
+                    <ul>
+                        <li>业务链路：机票预占 → 酒店预占 → 支付 → 确认</li>
+                        <li>方案倾向：Saga（预占成功即刻返回，补偿取消预占）或 TCC（Try 预留、Confirm 扣减、Cancel 释放）</li>
+                        <li>补偿思路：任一环节失败触发反向取消，配合超时回收资源</li>
+                    </ul>
+                </div>
+                <div class="card" style="padding:14px;">
+                    <h3>转账 + 红包</h3>
+                    <ul>
+                        <li>业务链路：扣出账账户 → 记账流水 → 入账到账户/红包</li>
+                        <li>方案倾向：TCC（扣款预留、确认入账、失败回滚）或 XA/2PC（同库强一致的小范围场景）</li>
+                        <li>补偿思路：失败时返还出账余额，流水幂等防重复扣/冲</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🛠 落地步骤</h2>
+            <div class="grid grid-4 grid-2">
+                <div class="card" style="padding:14px;">
                     <h3>1. 场景评估</h3>
                     <ul>
-                        <li>分析一致性 vs 可用性优先级，确认 SLA</li>
-                        <li>识别跨服务/跨库的写入链路与失败模式</li>
-                        <li>确定是否需要隔离级别、超时、幂等约束</li>
+                        <li>梳理跨服务/跨库的写链路与失败模式</li>
+                        <li>确认 SLA、超时预算、一致性等级</li>
+                        <li>识别业务幂等键、隔离级别需求</li>
                     </ul>
                 </div>
-                <div class="path-item">
+                <div class="card" style="padding:14px;">
                     <h3>2. 方案选择</h3>
                     <ul>
-                        <li>同构数据库且对一致性绝对敏感：XA/2PC</li>
-                        <li>需要业务补偿且高并发：TCC/Saga</li>
-                        <li>强调可用性与解耦：可靠消息 + 最终一致</li>
+                        <li>强一致优先：XA/2PC</li>
+                        <li>高并发可补偿：TCC 或 Saga</li>
+                        <li>解耦与可用：可靠消息 + 最终一致</li>
                     </ul>
                 </div>
-                <div class="path-item">
+                <div class="card" style="padding:14px;">
                     <h3>3. 工程实现</h3>
                     <ul>
-                        <li>结合 Spring 事务管理器配置数据源与超时</li>
-                        <li>实现幂等键（业务唯一标识）与重试策略</li>
-                        <li>在网关/服务间传递 TraceId 便于链路追踪</li>
+                        <li>配置事务管理器、超时、重试</li>
+                        <li>实现幂等键与状态校验</li>
+                        <li>传递 TraceId 便于链路追踪</li>
                     </ul>
                 </div>
-                <div class="path-item">
+                <div class="card" style="padding:14px;">
                     <h3>4. 治理与观测</h3>
                     <ul>
-                        <li>对补偿、重试、死信队列配置可观测指标</li>
-                        <li>建立失败告警与人工兜底通道</li>
-                        <li>压测事务链路，验证超时/降级/回滚链路</li>
+                        <li>补偿/重试/死信队列暴露指标</li>
+                        <li>告警阈值、人工兜底流程</li>
+                        <li>压测事务链路，验证降级/回滚</li>
                     </ul>
                 </div>
             </div>
         </div>
-        
-        <div class="content-section">
-            <h2>📐 设计要点与最佳实践</h2>
-            <div class="tips">
-                <div class="tip">
-                    <h3>幂等性</h3>
-                    <p>使用业务唯一键、状态机或版本号控制重复执行；接口设计遵循「最多一次或至少一次」清晰语义。</p>
-                </div>
-                <div class="tip">
-                    <h3>隔离与锁</h3>
-                    <p>优先使用乐观锁/版本号减少长事务持锁；必要时结合分布式锁控制资源争用。</p>
-                </div>
-                <div class="tip">
-                    <h3>补偿与回滚</h3>
-                    <p>补偿操作必须可重入、可部分成功；为幂等失败设置终止阈值与人工介入流程。</p>
-                </div>
-                <div class="tip">
-                    <h3>消息可靠性</h3>
-                    <p>Outbox + 事务消息 + 重试/回查，搭配死信队列；消费端做好幂等与重放保护。</p>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>📐 设计要点</h2>
+                <div class="grid grid-2">
+                    <div class="card" style="padding:12px;">
+                        <h3>幂等</h3>
+                        <ul>
+                            <li>业务唯一键 / 版本号 / 状态机控制重复执行</li>
+                            <li>接口语义明确：最多一次或至少一次</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="padding:12px;">
+                        <h3>锁与隔离</h3>
+                        <ul>
+                            <li>优先乐观锁，必要时分布式锁</li>
+                            <li>缩短锁持有时间，避免长事务</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="padding:12px;">
+                        <h3>补偿</h3>
+                        <ul>
+                            <li>补偿可重入、可部分成功</li>
+                            <li>设置终止阈值与人工介入</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="padding:12px;">
+                        <h3>消息可靠</h3>
+                        <ul>
+                            <li>Outbox + 事务消息 + 重试/回查</li>
+                            <li>消费端幂等与重复保护</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="card">
+                <h2>🧪 校验清单</h2>
+                <ul>
+                    <li>链路压测：延迟、吞吐、超时对比基线</li>
+                    <li>失败演练：服务宕机、网络分区、半成功场景</li>
+                    <li>幂等验证：重试/重放是否产生脏数据</li>
+                    <li>补偿验证：补偿是否可重入、是否有终止阈值</li>
+                    <li>观测：Trace、Metrics、Log 三件套是否覆盖补偿/重试</li>
+                </ul>
+            </div>
         </div>
-        
-        <div class="content-section">
-            <h2>🔗 延伸学习</h2>
-            <a class="resource-link" href="../RabbitMQ教程/index.html">RabbitMQ 教程</a>
-            <a class="resource-link" href="../MySQL教程/index.html">MySQL 基础</a>
-            <a class="resource-link" href="../SpringCloud微服务开发/index.html">Spring Cloud 微服务开发</a>
-            <a class="resource-link" href="../MySQL优化/index.html">MySQL 优化</a>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>🧰 工程片段示例（Spring Boot + Outbox）</h2>
+                <div class="code">
+@"
+// 伪代码：本地事务 + Outbox 记录 + 异步投递
+@Transactional
+public void placeOrder(OrderCmd cmd) {
+    orderRepo.save(cmd.toOrder());
+    outboxRepo.save(Outbox.of(cmd.toEvent()));
+}
+
+// 定时/监听出站消息
+public void flushOutbox() {
+    outboxRepo.findPending().forEach(event -> {
+        mq.send(event);
+        outboxRepo.markSent(event.id());
+    });
+}
+"@
+                </div>
+                <div class="chips">
+                    <span class="chip">幂等键：业务唯一号</span>
+                    <span class="chip">消费端：重复保护</span>
+                    <span class="chip">死信队列：兜底</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🔗 延伸学习</h2>
+                <div class="chips">
+                    <span class="chip">RabbitMQ 教程</span>
+                    <span class="chip">MySQL 基础与优化</span>
+                    <span class="chip">Spring Cloud 微服务开发</span>
+                    <span class="chip">分布式锁 / 缓存一致性</span>
+                </div>
+                <p style="margin-top:10px;color:var(--muted);">结合消息、数据库与网关限流策略，让一致性与可用性达到平衡。</p>
+            </div>
         </div>
     </div>
 </body>
