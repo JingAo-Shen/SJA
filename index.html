@@ -253,6 +253,13 @@
             gap: 2rem;
         }
 
+        /* 推荐学习资源网格 */
+        @media (max-width: 768px) {
+            .research-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .research-card {
             background: var(--card-bg);
             padding: 2rem;
@@ -337,6 +344,78 @@
             color: white;
             padding: 2rem;
             text-align: center;
+        }
+
+        /* 推荐学习资源标签样式 */
+        .resource-tag {
+            display: inline-block;
+            margin: 0 0.25rem 0.5rem 0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .resource-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* 推荐学习资源卡片样式 */
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .resource-header {
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .resource-content {
+            padding: 1.5rem;
+        }
+
+        .resource-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .resource-tags {
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
 
         .course-semester {
@@ -676,6 +755,7 @@
                 <li><a href="#about">关于我</a></li>
                 <li><a href="#research">研究领域</a></li>
                 <li><a href="#courses">教学内容</a></li>
+                <li><a href="career-planning/index.html">职业生涯规划</a></li>
                 <li><a href="ai-practice.html">AI编程实践</a></li>
                 <li><a href="#contact">联系方式</a></li>
             </ul>
@@ -792,6 +872,39 @@
     </section>
 
 
+    <!-- 大学职业生涯规划 -->
+    <section class="section" id="career-planning">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">大学职业生涯规划</h2>
+                <p class="section-subtitle">为未来做好准备：从自我认知到行动计划的完整指南</p>
+            </div>
+            <div class="research-grid">
+                <div class="course-card fade-in">
+                    <div class="course-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h3>📘 规划你的未来</h3>
+                        <p>从自我认知到职业探索的完整路径</p>
+                    </div>
+                    <div class="course-content">
+                        <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                            大学是人生的重要转折点，也是职业发展的关键阶段。
+                            通过系统性的自我认知、职业探索和目标设定，
+                            你可以更好地规划自己的未来，为步入职场做好充分准备。
+                        </p>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="background: rgba(102, 126, 234, 0.1); color: #667eea; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">自我认知</span>
+                            <span style="background: rgba(118, 75, 162, 0.1); color: #764ba2; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; margin-right: 0.5rem;">职业探索</span>
+                            <span style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem;">行动计划</span>
+                        </div>
+                        <a href="career-planning/index.html" class="course-link">
+                            <i class="fas fa-compass"></i> 开始你的职业生涯规划之旅
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
         <!-- 实战指南（首页简化入口，位于教学内容之后） -->
         <section class="section" id="practice-intro">
             <div class="container">
@@ -813,6 +926,59 @@
                 </div>
             </div>
         </section>
+
+    <!-- 推荐学习资源 -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">推荐学习资源</h2>
+                <p class="section-subtitle">精选优质技术博客与学习平台</p>
+            </div>
+            <div class="research-grid">
+                <div class="resource-card fade-in">
+                    <div class="resource-header" style="background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);">
+                        <h3>📘 Learning Research</h3>
+                        <p>高效学习与研究方法论</p>
+                    </div>
+                    <div class="resource-content">
+                        <p class="resource-description">
+                            由pengsida开发的学习研究项目，帮助开发者和研究人员更高效地学习、管理和分享知识，
+                            特别是在技术领域的深度学习与研究方法。
+                        </p>
+                        <div class="resource-tags">
+                            <span class="resource-tag" style="background: rgba(255, 107, 107, 0.1); color: #FF6B6B;">学习方法</span>
+                            <span class="resource-tag" style="background: rgba(78, 205, 196, 0.1); color: #4ECDC4;">研究技巧</span>
+                            <span class="resource-tag" style="background: rgba(78, 109, 179, 0.1); color: #4e6db3;">知识管理</span>
+                        </div>
+                        <a href="https://github.com/pengsida/learning_research" target="_blank" class="resource-link">
+                            <i class="fab fa-github"></i> 访问项目主页
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="resource-card fade-in">
+                    <div class="resource-header" style="background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);">
+                        <h3>🌐 Best Blogs</h3>
+                        <p>精选技术博客聚合平台</p>
+                    </div>
+                    <div class="resource-content">
+                        <p class="resource-description">
+                            BestBlogs.dev汇集了顶级软件编程、人工智能等领域的文章，
+                            利用大语言模型进行评分、摘要、翻译等处理，提供RSS订阅源和精选推送。
+                        </p>
+                        <div class="resource-tags">
+                            <span class="resource-tag" style="background: rgba(108, 92, 231, 0.1); color: #6C5CE7;">技术博客</span>
+                            <span class="resource-tag" style="background: rgba(162, 155, 254, 0.1); color: #A29BFE;">AI前沿</span>
+                            <span class="resource-tag" style="background: rgba(255, 107, 107, 0.1); color: #FF6B6B;">精选推送</span>
+                        </div>
+                        <a href="https://www.bestblogs.dev/" target="_blank" class="resource-link">
+                            <i class="fas fa-external-link-alt"></i> 浏览精选博客
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- 联系方式 -->
     <section class="section" id="contact">
